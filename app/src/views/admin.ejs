@@ -147,7 +147,7 @@
                                 }
 
                                 // The fetch operation
-                                fetch(`http://localhost:3000/api/users?search=${encodeURIComponent(searchTerm)}`)
+                                fetch(`/api/users?search=${encodeURIComponent(searchTerm)}`)
                                     .then(res => res.json())
                                     .then(data => {
                                         handleSearch(data); 
