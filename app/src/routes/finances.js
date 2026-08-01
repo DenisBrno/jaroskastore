@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getInventory, getPohybySum, getPohyby, createProduct, transferItem, createPohyb, updateInventory, updateUserCredit } = require('../utils/db');
+const { getInventory, getPohybySum, getPohyby, createProduct, transferItem, createPohyb, updateInventory, updateUserCredit, getUserCredit } = require('../utils/db');
 
 router.get('/payment', async (req, res) => {
     if (!req.session.username || req.session.userId !== 0) {
@@ -46,6 +46,27 @@ router.post('/payment', async (req, res) => {
         const orderPromises = [];
         const celkovyBonus = parseInt(req.body.bonus) || 0;
         let bonusBylPridelen = false;
+        let celkovaCastka = 0;
+        for (const [key, value] of Object.entries(req.body)) {
+            const quantity = parseInt(value);
+            
+            if (key.startsWith('qty-') && quantity > 0) {
+                const productName = key.replace('qty-', '');
+                const produktData = produkty.find(p => p.nazev === productName);
+                const cenaZaKus = produktData ? produktData.cena : 0;
+
+                if (!bonusBylPridelen) {
+                    bonusBylPridelen = true;
+                    celkovaCastka += celkovyBonus;
+                }
+                celkovaCastka += cenaZaKus;
+
+            }
+        }
+
+        if(celkovaCastka > getUserCredit(req.body.userId)){
+            res.redirect('order?error=insufficientCredit')
+        }
         
         for (const [key, value] of Object.entries(req.body)) {
             const quantity = parseInt(value);
@@ -66,6 +87,7 @@ router.post('/payment', async (req, res) => {
                 orderPromises.push(updateUserCredit(req.body.userId, -req.body.amount-req.body.bonus));
             }
         }
+
 
         await Promise.all(orderPromises);
         res.redirect('/payment?status=success');
