@@ -318,6 +318,17 @@ const getUserCredit = async (userId) => {
   }
 }
 
+const getOrderDetails = async (orderId) => {
+  const queryText = 'SELECT id, customer_name, product_name, quantity, created_at, status, ucebna, prestavka_start, prestavka_end, poznamka FROM objednavky_tb WHERE id=$1';
+  try {
+    const { rows } = await userDB_pool.query(queryText, [orderId]);
+    return rows;
+  } catch (err) {
+    console.error('Chyba při získávání objednávek:', err);
+    return [];
+  }
+}
+
 // 2. Export funkcí na konci souboru
 module.exports = {
   userDB_pool,
@@ -336,5 +347,6 @@ module.exports = {
   getPohybySum,
   getUsers,
   updateUserCredit,
-  getUserCredit
+  getUserCredit,
+  getOrderDetails
 };

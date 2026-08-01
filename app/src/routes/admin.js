@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getOrders, createUser, toggleOrderStatus, updateUserCredit } = require('../utils/db');
+const { getOrders, createUser, toggleOrderStatus, updateUserCredit, getOrderDetails } = require('../utils/db');
 
 router.get('/admin', async (req, res) => {
     if (!req.session.username || req.session.userId !== 0) {
@@ -39,6 +39,11 @@ router.post('/admin/toggle-order', async (req, res) => {
 
     const { orderId } = req.body;
     await toggleOrderStatus(orderId);
+    
+    orderDetails = await getOrderDetails(orderId);
+
+    updateInventory(orderDetails.product_name, 0, -orderDetails.quantity)
+
     res.redirect('/admin');
 });
 

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs').promises;
 const path = require('path');
-const { getInventory, addOrder , getUserCredit} = require('../utils/db');
+const { getInventory, addOrder , getUserCredit, updateUserCredit} = require('../utils/db');
 
 router.get('/order', async (req, res) => {
     if (!req.session.username) {
@@ -54,17 +54,22 @@ router.post('/order', async (req, res) => {
 
             let userCredit = await getUserCredit(req.session.userId);
             userCredit = userCredit[0].kredit;
-            if(userCredit-produktData.cena < 0){
-                res.redirect('order?error=insufficientCredit');
-            }
-            
-            const success = await addOrder(req.session.username, produkt, numPocet, ucebna, zacatek_prestavky, konec_prestavky, poznamka);
 
-            if (success) {
-                res.redirect('/order?status=success');
-            } else {
-                res.redirect('/order?error=db');
+            if(userCredit-(produktData.cena*numPocet) < 0){
+                res.redirect('order?error=insufficientCredit');
+                return -1;
             }
+
+            const successOrder = await addOrder(req.session.username, produkt, numPocet, ucebna, zacatek_prestavky, konec_prestavky, poznamka);
+            const successFunds = await updateUserCredit(req.session.userId, -(produktData.cena*numPocet));
+            const successTransfer = await createPohyb(produktData.nazev, 'P', numPocet, produktData.cena, 0, `Credit, userId:${req.session.userId}`)
+            if (!successOrder || !successFunds || !successTransfer) {
+                res.redirect('/order?error=db');
+                return -1;
+            } 
+
+            res.redirect('/order?status=success');
+            return 0;
         } else {
             res.redirect('/order?error=invalid');
         }
