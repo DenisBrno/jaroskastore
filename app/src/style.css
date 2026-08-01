@@ -1,0 +1,709 @@
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #f8fafc;
+    color: #1e293b;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.5;
+    overflow-x: auto;
+}
+
+.container {
+    max-width: 1100px;
+    width: 100%;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Zarovná děti na střed */
+    gap: 40px;
+}
+
+/* Auth Bar */
+.auth-bar {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-auth {
+    padding: 8px 16px;
+    background: white;
+    color: #004aad;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.9em;
+    font-weight: 600;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s;
+}
+
+.btn-auth:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.btn-logout {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.btn-logout:hover {
+    background: #fecaca;
+}
+
+.btn-order {
+    background: #004aad;
+    color: white;
+    border: none;
+}
+
+.btn-order:hover {
+    background: #003a8c;
+    color: white;
+}
+
+.btn-admin {
+    background: #f59e0b;
+    color: white;
+    border: none;
+}
+
+.btn-admin:hover {
+    background: #d97706;
+    color: white;
+}
+
+.user-info {
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    overflow-x: scroll;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox, Safari 18.2+, Chromium 121+ */
+}
+
+/* Admin Panel */
+.admin-panel {
+    width: 100%;
+    background: white;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+.admin-section {
+    margin-bottom: 40px;
+}
+
+.admin-section h3 {
+    color: #1e293b;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 10px;
+}
+
+.admin-container {
+    overflow-x:scroll;
+}
+
+.admin-section table {
+    width: 100%;
+    overflow-x: scroll;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    min-width: 600px;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto; /* Tohle zapne vodorovné posouvání */
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Jemný stín, aby tabulka vynikla */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px; /* Důležité: Tabulka se nebude smršťovat, ale raději se začne scrollovat */
+    background: white;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+
+.status-badge-admin {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8em;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-pending { background: #fef3c7; color: #92400e; }
+.status-completed { background: #dcfce7; color: #166534; }
+.status-cancelled { background: #fee2e2; color: #991b1b; }
+
+.status-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 2px;
+    border-radius: 4px;
+    transition: background 0.2s;
+    line-height: 1;
+}
+
+.btn-toggle:hover {
+    background: #f1f5f9;
+}
+
+.admin-form {
+    max-width: 500px;
+}
+
+.admin-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.admin-form input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    font-size: 1em;
+}
+
+/* Order Form */
+.order-form h2 {
+    color: #004aad;
+    margin-top: 0;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.order-form select, .order-form input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    font-size: 1em;
+    background: #f8fafc;
+}
+
+.order-form textarea {
+    width: 100%;
+    height: 7em;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    font-size: 1em;
+    background: #f8fafc;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: #004aad;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.btn-submit:hover {
+    background: #003a8c;
+}
+
+.btn-cancel {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+.btn-cancel:hover {
+    color: #1e293b;
+}
+
+/* Auth Forms */
+.auth-form-container {
+    max-width: 400px;
+    width: 100%;
+    background: white;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+.auth-form h2 {
+    color: #004aad;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.auth-form .form-group {
+    margin-bottom: 20px;
+}
+
+.auth-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    font-size: 1em;
+}
+
+.auth-form button {
+    width: 100%;
+    padding: 12px;
+    background: #004aad;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background 0.2s;
+}
+
+.auth-form button:hover {
+    background: #003a8c;
+}
+
+.auth-error {
+    color: #ef4444;
+    background: #fef2f2;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.85em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.auth-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #64748b;
+    text-decoration: none;
+}
+
+.auth-link:hover {
+    color: #004aad;
+}
+
+#nadchazejici-hodina, #kontejner-produktu {
+    width: 100%;
+}
+
+/* Hero Section / Header */
+.hero-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    box-sizing: border-box;
+    gap: 30px;
+}
+
+.header-content {
+    flex: 1;
+}
+
+.hero-section h1 {
+    color: #004aad;
+    margin: 0;
+    font-size: 3em;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.subtitle {
+    font-size: 1.2em;
+    color: #64748b;
+    margin-top: 10px;
+}
+
+/* Status Card in Hero */
+.status-card {
+    background: #004aad;
+    color: white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 10px 15px -3px rgba(0, 74, 173, 0.2);
+}
+
+.status-card h3 {
+    margin: 0 0 15px 0;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+.status-badge {
+    font-size: 1.4em;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.status-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.status-time { font-size: 1.1em; opacity: 0.9; }
+.status-room { font-weight: 600; }
+
+.btn-secondary {
+    display: inline-block;
+    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 0.85em;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background: white;
+    color: #004aad;
+}
+
+/* Products Grid */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 24px;
+    width: 100%;
+}
+
+.product-item {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    border: 1px solid #f1f5f9;
+}
+
+.product-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    border-color: #004aad;
+}
+
+.chlazeno-tag {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 0.7em;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+
+.product-image {
+    width: 100%;
+    height: 160px;
+    object-fit: contain;
+    margin-bottom: 20px;
+}
+
+.product-name {
+    font-weight: 700;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    color: #334155;
+    height: 3.5em; /* Fix výšky pro zarovnání */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.product-price {
+    color: #004aad;
+    font-size: 1.8em;
+    font-weight: 800;
+    margin: 10px 0;
+}
+
+.product-stock {
+    color: #94a3b8;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+/* Promo Card */
+.promo-card {
+    background: linear-gradient(135deg, #004aad 0%, #0066ff 100%);
+    color: white;
+    padding: 40px;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 10px 15px -3px rgba(0, 74, 173, 0.3);
+}
+
+.promo-card h2 { margin-top: 0; font-size: 2em; }
+.promo-card a { color: white; font-weight: 700; }
+.promo-divider { border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 25px 0; }
+
+/* Rozvrh Page */
+.rozvrh-container { width: 100%; }
+.rozvrh-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.rozvrh-header h1 { font-size: 2.5em; color: #004aad; margin: 0; }
+
+.btn-back {
+    padding: 12px 20px;
+    background: white;
+    color: #64748b;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 600;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    transition: all 0.2s;
+}
+
+.btn-back:hover { color: #004aad; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+
+.rozvrh-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.den-karta {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    border: 2px solid transparent;
+}
+
+.den-karta.dnes {
+    border-color: #004aad;
+    background: #f0f7ff;
+}
+
+.den-karta h2 {
+    color: #004aad;
+    margin: 0 0 20px 0;
+    font-size: 1.5em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.den-karta.dnes h2::after {
+    content: "DNES";
+    font-size: 0.5em;
+    background: #004aad;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.lekce-list { display: flex; flex-direction: column; gap: 12px; }
+
+.lekce-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+
+.lekce-item.highlight {
+    background: #004aad;
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 74, 173, 0.3);
+}
+
+.lekce-item.highlight .cas { color: white; }
+
+.now-label {
+    font-size: 0.7em;
+    font-weight: 800;
+    background: #fbbf24;
+    color: #78350f;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+}
+
+.lekce-item .cas { font-weight: 700; color: #475569; }
+.lekce-item .ucebna { font-weight: 600; }
+
+.volno { color: #94a3b8; font-style: italic; text-align: center; margin: 20px 0; }
+
+/* Finance & Stats */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 24px;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    border: 1px solid #f1f5f9;
+}
+
+.stat-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 0.9em;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 1.8em;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.stat-card.income .stat-value { color: #166534; }
+.stat-card.expenses .stat-value { color: #991b1b; }
+.stat-card.profit .stat-value { color: #004aad; }
+
+.finance-section {
+    width: 100%;
+    background: white;
+    padding: 30px;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+.finance-section h2 {
+    color: #004aad;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 10px;
+}
+
+.table-wrapper {
+    max-height: 600px;
+    overflow-y: auto;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.table-wrapper thead th {
+    position: sticky;
+    top: 0;
+    background: #f8fafc;
+    z-index: 10;
+}
+
+.date-divider {
+    background-color: #f1f5f9 !important;
+    font-weight: 700;
+    text-align: center;
+    color: #475569;
+}
+
+.date-divider td {
+    padding: 10px;
+}
+
+/* Form layout for management */
+.mgmt-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 30px;
+    width: 100%;
+}
+
+@media (max-width: 850px) {
+    .hero-section { flex-direction: column; text-align: center; padding: 30px; }
+    .status-card { width: 100%; }
+    .hero-section h1 { font-size: 2.2em; }
+}
+
+@media (max-width: 600px) {
+    .container { padding: 20px 15px; gap: 25px; }
+    .hero-section { border-radius: 20px; width: 100%; padding: 25px; }
+    .hero-section h1 { font-size: 1.8em; }
+    .status-card { padding: 20px; }
+    .promo-card { padding: 25px; border-radius: 20px; }
+    .rozvrh-header { flex-direction: column; gap: 15px; text-align: center; }
+}

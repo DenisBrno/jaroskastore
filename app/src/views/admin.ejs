@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <%- include('partials/head', { title: 'Admin Panel' }) %>
+</head>
+<body>
+    <div class="container">
+        <%- include('partials/auth_bar', { session: session }) %>
+
+        <div class="admin-panel">
+            <h2>Admin Panel</h2>
+            
+            <section class="admin-section">
+                <h3>Posledních 10 objednávek</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Datum</th>
+                                <th>Zákazník</th>
+                                <th>Produkt</th>
+                                <th>Počet</th>
+                                <th>Učebna</th>
+                                <th>Přestávka</th>
+                                <th>Poznámka</th>
+                                <th>Stav</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (objednavky.length > 0) { %>
+                                <% objednavky.forEach(o => { %>
+                                    <tr>
+                                        <td><%= o.id %></td>
+                                        <td><%= new Date(o.created_at).toLocaleString('cs-CZ') %></td>
+                                        <td><%= o.customer_name %></td>
+                                        <td><%= o.product_name %></td>
+                                        <td><%= o.quantity %></td>
+                                        <td><%= o.ucebna %></td>
+                                        <td><%= o.prestavka_start %> - <%= o.prestavka_end %></td>
+                                        <td><%= o.poznamka %></td>
+                                        <td>
+                                            <div class="status-cell">
+                                                <span class="status-badge-admin <%= o.status ? 'status-completed' : 'status-pending' %>">
+                                                    <%= o.status ? 'Vyřízeno' : 'Čeká' %>
+                                                </span>
+                                                <form action="/admin/toggle-order" method="POST" style="margin:0">
+                                                    <input type="hidden" name="orderId" value="<%= o.id %>">
+                                                    <button type="submit" class="btn-toggle" title="Změnit stav">🔄</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr><td colspan="9">Žádné objednávky.</td></tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="admin-section">
+                <h3>Vytvořit účet pro zákazníka</h3>
+                <form action="/admin/create-user" method="POST" class="admin-form">
+                    <div class="form-group">
+                        <label for="new_username">Uživatelské jméno</label>
+                        <input type="text" id="new_username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new_password">Heslo</label>
+                        <input type="password" id="new_password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Vytvořit uživatele</button>
+                </form>
+            </section>
+
+            <section class="admin-section">
+                <h3>Dobít kredit zákazníkovi</h3>
+                <form action="/admin/addCredit" method="POST" class="admin-form">
+                    <div id="user-selection-wrap">
+                        <label for="charge">Zákazník</label>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            placeholder="Search and select user..." 
+                            autocomplete="off"
+                        >
+                        <input type="hidden" id="selectedUserId" name="userId">
+
+                        <div class="dropdown-list" id="dropdownList"></div>
+                        <script>
+                            const searchInput = document.getElementById('searchInput');
+                            const dropdownList = document.getElementById('dropdownList');
+                            const selectedUserId = document.getElementById('selectedUserId');
+
+                            searchInput.addEventListener('input', (e) => {
+                                const searchTerm = e.target.value.toLowerCase();
+                                dropdownList.innerHTML = '';
+
+                                if (!searchTerm) {
+                                    dropdownList.classList.remove('show');
+                                    return;
+                                }
+
+                                if(searchTerm.length < 3) {
+                                    return;
+                                }
+
+                                let users = []; 
+
+                                function handleSearch(data) {
+                                    users = data; 
+                                    console.log("Data is finally loaded:", users);
+
+                                    if (users.length > 0) {
+                                    users.forEach(user => {
+                                        const item = document.createElement('div');
+                                        item.classList.add('dropdown-item');
+                                        item.setAttribute('id',`dropdown-item-${user.id}`);
+                                        item.textContent = user.id+' '+user.login+' '+user.kredit+' Kč';
+                                        
+                                        item.addEventListener('click', () => {
+                                            searchInput.value = user.login;        
+                                            selectedUserId.value = user.id;       
+                                            dropdownList.classList.remove('show');
+                                            console.log(`Selected User ID: ${user.id}`);
+                                            let items = [];
+                                            items = document.getElementsByClassName('dropdown-item');
+                                            for (let i = 0; i < items.length; i++) {
+                                                if(items[i].attributes.id.value.endsWith(user.id)){
+                                                    items[i].style.color='red';
+                                                } else {
+                                                    items[i].style.color='black';
+                                                }
+                                            }
+                                        });
+
+                                        dropdownList.appendChild(item);
+                                    });
+                                        dropdownList.classList.add('show');
+                                    } else {
+                                        // If no users match, show a "No results" message or hide it
+                                        dropdownList.classList.remove('show');
+                                    }
+                                    
+                                }
+
+                                // The fetch operation
+                                fetch(`http://localhost:3000/api/users?search=${encodeURIComponent(searchTerm)}`)
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        handleSearch(data); 
+                                    });
+                                });
+
+                        </script>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="charge">Kredit</label>
+                        <input type="number" id="charge" name="charge" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Dobít kredit</button>
+                </form>
+            </section>
+            
+            <a href="/" class="btn-cancel">Zpět na hlavní stránku</a>
+        </div>
+    </div>
+</body>
+</html>

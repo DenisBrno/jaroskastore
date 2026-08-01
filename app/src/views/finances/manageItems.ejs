@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <%- include('../partials/head', { title: 'Správa skladu' }) %>
+</head>
+<body>
+    <div class="container">
+        <%- include('../partials/auth_bar', { session: session }) %>
+        
+        <div class="rozvrh-header">
+            <h1>Správa skladu</h1>
+        </div>
+
+        <div class="finance-section">
+            <h2>Aktuální stav zásob</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Název produktu</th>
+                            <th>Sklad doma</th>
+                            <th>Sklad škola</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% inventory.forEach(item => { %>
+                            <tr>
+                                <td><strong><%= item.name %></strong></td>
+                                <td><%= item.homeQuantity %> ks</td>
+                                <td><%= item.schoolQuantity %> ks</td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mgmt-grid">
+            <div class="finance-section">
+                <h2>Přemístit produkt</h2>
+                <p style="font-size: 0.9em; color: #64748b; margin-bottom: 20px;">Převod zásob z domácího skladu do školy.</p>
+                <form action="/manage-items/transfer" method="POST" class="auth-form" style="max-width: none;">
+                    <div class="form-group">
+                        <label for="produkt">Produkt</label>
+                        <select id="produkt" name="produkt" required style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0;">
+                            <option value="" disabled selected>Vyberte produkt</option>
+                            <% inventory.forEach(p => { %>
+                                <option value="<%= p.name %>"><%= p.name %> (doma: <%= p.homeQuantity %>)</option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="mnozstvi">Množství (ks)</label>
+                        <input type="number" id="mnozstvi" name="mnozstvi" required min="1">
+                    </div>
+                    <button type="submit">Provést převod</button>
+                </form>
+            </div>
+
+            <div class="finance-section">
+                <h2>Nový produkt</h2>
+                <p style="font-size: 0.9em; color: #64748b; margin-bottom: 20px;">Přidání úplně nového druhu zboží do evidence.</p>
+                <form action="/manage-items/create" method="POST" class="auth-form" style="max-width: none;">
+                    <div class="form-group">
+                        <label for="produkt">Název produktu</label>
+                        <input type="text" id="produkt" name="produkt" required placeholder="např. Coca Cola">
+                    </div>
+                    <div class="form-group">
+                        <label for="sklad_doma">Počáteční stav doma</label>
+                        <input type="number" id="sklad_doma" name="sklad_doma" required min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="sklad_skola">Počáteční stav škola</label>
+                        <input type="number" id="sklad_skola" name="sklad_skola" required min="0" value="0">
+                    </div>
+                    <button type="submit">Vytvořit produkt</button>
+                </form>
+            </div>
+        </div>
+        <a href="/" class="auth-link">Zpět na hlavní stránku</a>
+    </div>
+</body>
+</html>

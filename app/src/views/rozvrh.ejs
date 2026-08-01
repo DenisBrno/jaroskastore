@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <%- include('partials/head', { title: 'Týdenní rozvrh' }) %>
+</head>
+<body>
+    <div class="container">
+        <%- include('partials/auth_bar', { session: session }) %>
+
+        <div class="rozvrh-container">
+            <header class="rozvrh-header">
+                <h1>Týdenní rozvrh</h1>
+                <a href="/" class="btn-back">← Zpět k produktům</a>
+            </header>
+            <div class="rozvrh-grid">
+                <% 
+                const dnyNázvy = {
+                    "Po": "Pondělí",
+                    "Út": "Úterý",
+                    "St": "Středa",
+                    "Čt": "Čtvrtek",
+                    "Pá": "Pátek"
+                };
+                const ted = new Date();
+                const dnyZkratky = ["Ne", "Po", "Út", "St", "Čt", "Pá", "So"];
+                const dnesZkratka = dnyZkratky[ted.getDay()];
+
+                for (const [zkratka, nazev] of Object.entries(dnyNázvy)) {
+                    const lekceDne = rozvrh[zkratka] || [];
+                    const jeDnes = zkratka === dnesZkratka;
+                %>
+                    <div class="den-karta <%= jeDnes ? 'dnes' : '' %>">
+                        <h2><%= nazev %></h2>
+                        <div class="lekce-list">
+                            <% if (lekceDne.length > 0) { %>
+                                <% lekceDne.forEach(l => { 
+                                    const jeAktualni = aktualniLekce && 
+                                                     jeDnes && 
+                                                     l.hodina === aktualniLekce.hodina && 
+                                                     l.ucebna === aktualniLekce.ucebna;
+                                %>
+                                    <div class="lekce-item <%= jeAktualni ? 'highlight' : '' %>">
+                                        <span class="cas"><%= l.hodina %></span>
+                                        <span class="ucebna"><%= l.ucebna %></span>
+                                    </div>
+                                <% }); %>
+                            <% } else { %>
+                                <p class="volno">V tento den nejsem ve škole.</p>
+                            <% } %>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

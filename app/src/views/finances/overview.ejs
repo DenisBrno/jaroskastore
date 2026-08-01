@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <%- include('../partials/head', { title: 'Finanční přehled' }) %>
+</head>
+<body>
+    <div class="container">
+        <%- include('../partials/auth_bar', { session: session }) %>
+        
+        <div class="rozvrh-header">
+            <h1>Finanční přehled</h1>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card income">
+                <h3>Celkové příjmy</h3>
+                <div class="stat-value"><%= totalIncome %> Kč</div>
+            </div>
+            <div class="stat-card expenses">
+                <h3>Celkové výdaje</h3>
+                <div class="stat-value"><%= totalExpenses %> Kč</div>
+            </div>
+            <div class="stat-card profit">
+                <h3>Zisk</h3>
+                <div class="stat-value"><%= (totalIncome - totalExpenses).toFixed(0) %> Kč</div>
+            </div>
+        </div>
+
+        <div class="finance-section">
+            <h2>Historie pohybů</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Čas</th>
+                            <th>Produkt</th>
+                            <th>Počet</th>
+                            <th>Celková cena</th>
+                            <th>Poznámka</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% 
+                        let posledniDatum = null; 
+                        pohyby.forEach(pohyb => { 
+                            const aktualniDatum = new Date(pohyb.cas).toLocaleDateString('cs-CZ');
+                            if (aktualniDatum !== posledniDatum) { 
+                        %>
+                            <tr class="date-divider">
+                                <td colspan="5">
+                                    <%= aktualniDatum %>
+                                </td>
+                            </tr>
+                        <% 
+                                posledniDatum = aktualniDatum;
+                            } 
+                        %>
+                            <tr>
+                                <td><%= new Date(pohyb.cas).toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' }) %></td>
+                                <td><%= pohyb.produkt %></td>
+                                <td><%= pohyb.mnozstvi %></td>
+                                <td><%= pohyb.celkem %> Kč</td>
+                                <td><%= pohyb.poznamka %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 15px;">
+            <a href="/finances/table" class="btn-auth btn-order">Podrobná tabulka prodejů</a>
+            <a href="/manage-items" class="btn-auth btn-admin">Spravovat sklad</a>
+        </div>
+        <a href="/" class="btn-cancel">Zpět na hlavní stránku</a>
+
+    </div>
+</body>
+</html>

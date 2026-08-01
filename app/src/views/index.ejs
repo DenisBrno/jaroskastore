@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <%- include('partials/head', { title: 'Domů' }) %>
+</head>
+<body>
+    <div class="container">
+        <%- include('partials/auth_bar', { session: session }) %>
+        
+        <div class="hero-section">
+            <div class="header-content">
+                <h1>Jaroška.store</h1>
+                <p class="subtitle">Levnější alternativa k automatu u jídelny.</p>
+            </div>
+            <div class="status-card">
+                <h3>Kde mě najdeš?</h3>
+                <% if (!lekce) { %>
+                    <div class="status-badge offline">Dnes už nejsem ve škole</div>
+                <% } else { %>
+                    <div class="status-badge online"><%= lekce.stav %></div>
+                    <div class="status-details">
+                        <span class="status-time"><%= lekce.hodina %></span>
+                        <span class="status-room">Učebna: <%= lekce.ucebna %></span>
+                    </div>
+                <% } %>
+                <a href="/rozvrh" class="btn-secondary">Zobrazit rozvrh na celý týden</a>
+            </div>
+        </div>
+
+        <div class="products-grid">
+            <% produkty.forEach(p => { 
+                const isMonster = p.nazev.toLowerCase().includes('monster');
+                const isComingSoon = p.nazev.toLowerCase().includes('voda');
+                const isRedBull = p.nazev.toLowerCase().includes('redbull');
+                const isPepper = p.nazev.toLowerCase().includes('pepper');
+            %>
+                <div class="product-item">
+                    <!-- <% if (isMonster || isRedBull || isPepper) { %>
+                        // <div class="chlazeno-tag">chlazený</div>
+                    <% } %> -->
+                    <% if (isComingSoon) { %>
+                        <div class="chlazeno-tag">Coming soon...</div>
+                    <% } %>
+                    <img src="<%= p.img %>" alt="<%= p.nazev %>" class="product-image">
+                    <div class="product-name"><%= p.nazev %></div>
+                    <div class="product-price"><%= p.cena %> Kč</div>
+                    <div class="product-stock">Skladem: <%= p.skladem %> ks</div>
+                </div>
+            <% }); %>
+        </div>
+
+        <div class="promo-card">
+            <h2>💸 Množstevní sleva!</h2>
+            <p>Při nákupu <strong>4 a více kusů</strong> (libovolná kombinace) získáš <strong>slevu 2 Kč na každou položku</strong>.</p>
+            <hr class="promo-divider">
+            <p>Pro větší objednávky nebo bližší informace mi napiš do zpráv na Instagramu:<br>
+            <a href="https://www.instagram.com/jaroska.store" target="_blank" rel="noopener noreferrer">@jaroska.store</a></p>
+        </div>
+    </div>
+</body>
+</html>

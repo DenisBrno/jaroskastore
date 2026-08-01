@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <%- include('../partials/head', { title: 'Podrobná tabulka prodejů' }) %>
+</head>
+<body>
+    <div class="container">
+        <%- include('../partials/auth_bar', { session: session }) %>
+        
+        <div class="rozvrh-header">
+            <h1>Podrobná tabulka prodejů</h1>
+            <a href="/finances" class="btn-back">Zpět na finance</a>
+        </div>
+
+        <div class="finance-section">
+            <h2>Filtry</h2>
+            <form action="/finances/table" method="GET" class="stats-grid" style="align-items: flex-end;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="produkt">Produkt</label>
+                    <select name="produkt" id="produkt" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <option value="">Všechny produkty</option>
+                        <% produktyList.forEach(p => { %>
+                            <option value="<%= p %>" <%= selectedProdukt === p ? 'selected' : '' %>><%= p %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="dny">Časové období</label>
+                    <select name="dny" id="dny" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <option value="" <%= selectedDny === '' ? 'selected' : '' %>>Všechna období</option>
+                        <option value="1" <%= selectedDny === '1' ? 'selected' : '' %>>Posledních 24 hodin</option>
+                        <option value="7" <%= selectedDny === '7' ? 'selected' : '' %>>Posledních 7 dní</option>
+                        <option value="30" <%= selectedDny === '30' ? 'selected' : '' %>>Posledních 30 dní</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn-auth btn-order" style="height: 42px; width: 100%;">Filtrovat</button>
+                    <a href="/finances/table" class="btn-auth" style="height: 42px; display: flex; align-items: center; justify-content: center; text-decoration: none;">Reset</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="finance-section">
+            <h2>Seznam prodejů</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Datum a čas</th>
+                            <th>Produkt</th>
+                            <th>Množství</th>
+                            <th>Cena za kus</th>
+                            <th>Celkem</th>
+                            <th>Poznámka</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (pohyby.length === 0) { %>
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 40px; color: #64748b;">Žádné prodeje nenalezeny pro vybrané filtry.</td>
+                            </tr>
+                        <% } else { %>
+                            <% pohyby.forEach(pohyb => { %>
+                                <tr>
+                                    <td><%= new Date(pohyb.cas).toLocaleString('cs-CZ') %></td>
+                                    <td><strong><%= pohyb.produkt %></strong></td>
+                                    <td><%= pohyb.mnozstvi %> ks</td>
+                                    <td><%= pohyb.cena_za_kus %> Kč</td>
+                                    <td><%= pohyb.celkem %> Kč</td>
+                                    <td><span style="font-size: 0.85em; color: #64748b;"><%= pohyb.poznamka %></span></td>
+                                </tr>
+                            <% }) %>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Celkem prodáno kusů</h3>
+                <div class="stat-value"><%= totalSold %> ks</div>
+            </div>
+            <div class="stat-card profit">
+                <h3>Celkový příjem z prodejů</h3>
+                <div class="stat-value"><%= totalProfit.toFixed(0) %> Kč</div>
+            </div>
+        </div>
+
+        <a href="/" class="auth-link">Zpět na hlavní stránku</a>
+    </div>
+</body>
+</html>

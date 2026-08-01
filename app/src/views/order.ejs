@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <%- include('partials/head', { title: 'Objednávka' }) %>
+</head>
+<body>
+    <div class="container">
+        <%- include('partials/auth_bar', { session: session }) %>
+
+        <% if (status === 'success') { %>
+            <div class="auth-form-container" style="text-align:center">
+                <h2 style="color: #059669">Objednávka byla úspěšně odeslána! ✅</h2>
+                <p>Děkujeme za váš nákup. Brzy se vám ozvu.</p>
+                <a href="/" class="btn-submit" style="display:inline-block; text-decoration:none; margin-top:20px">Zpět na hlavní stránku</a>
+            </div>
+        <% } else { %>
+            <div class="auth-form-container">
+                <form action="/order" method="POST" class="order-form">
+                    <h2>Nová objednávka</h2>
+                    
+                    <% if (error === 'db') { %>
+                        <div class="auth-error">Chyba při ukládání do databáze. Zkuste to prosím znovu.</div>
+                    <% } else if (error === 'invalid') { %>
+                        <div class="auth-error">Neplatné údaje v objednávce.</div>
+                    <% } else if(error === 'insufficientCredit'){%>
+                        <div class="auth-error">Nedostatek kreditu. Podívej se na <a href="/rozvrh">rozvrh</a> a dobij si kredit.</div> 
+                    <% } %>
+
+                    <div class="form-group">
+                        <label for="produkt">Produkt</label>
+                        <select id="produkt" name="produkt" required>
+                            <option value="" disabled selected>Vyberte si produkt</option>
+                            <% produkty.forEach(p => { %>
+                                <option value="<%= p.nazev %>"><%= p.nazev %> (<%= p.cena %> Kč)</option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pocet">Počet kusů</label>
+                        <input type="number" id="pocet" name="pocet" min="1" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ucebna">Učebna</label>
+                        <input type="text" id="ucebna" name="ucebna" placeholder="2Csv">
+                    </div>            
+                    <div class="form-group">
+                        <label for="zacatek_prestavky">Začátek přestávky</label>
+                        <input type="time" id="zacatek_prestavky" name="zacatek_prestavky" value="09:35">
+                    </div>            
+                    <div class="form-group">
+                        <label for="konec_prestavky">Konec přestávky</label>
+                        <input type="time" id="konec_prestavky" name="konec_prestavky" value="09:45">
+                    </div>
+                    <div class="form-group">
+                        <label for="poznamka">Poznámka k objednávce</label>
+                        <textarea id="poznamka" name="poznamka"></textarea>
+                    </div>            
+                    
+                    <div class="form-group">
+                        Aktuální kredit: <%= credit %> Kč
+                    </div>
+
+                    <button type="submit" class="btn-submit">Odeslat objednávku</button>
+                    <a href="/" class="btn-cancel">Zrušit</a>
+                </form>
+            </div>
+        <% } %>
+    </div>
+</body>
+</html>
