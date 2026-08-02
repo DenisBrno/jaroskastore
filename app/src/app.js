@@ -3,7 +3,7 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
-const { userDB_pool } = require('./utils/db');
+const { userDbPool } = require('./utils/db');
 
 const app = express();
 const port = 3000;
@@ -26,7 +26,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Session store configuration
 const store = new pgSession({
-    pool: userDB_pool,
+    pool: userDbPool,
     tableName: 'session'
 });
 
