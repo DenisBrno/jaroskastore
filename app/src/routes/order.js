@@ -62,7 +62,7 @@ router.post('/order', async (req, res) => {
 
             const successOrder = await addOrder(req.session.username, produkt, numPocet, ucebna, zacatek_prestavky, konec_prestavky, poznamka);
             const successFunds = await updateUserCredit(req.session.userId, -(produktData.cena*numPocet));
-            const successTransfer = await createPohyb(produktData.nazev, 'P', numPocet, produktData.cena, 0, `Credit, userId:${req.session.userId}`)
+            
             if (!successOrder || !successFunds || !successTransfer) {
                 res.redirect('/order?error=db');
                 return -1;

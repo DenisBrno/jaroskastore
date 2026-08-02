@@ -39,11 +39,6 @@ router.post('/admin/toggle-order', async (req, res) => {
 
     const { orderId } = req.body;
     await toggleOrderStatus(orderId);
-    
-    orderDetails = await getOrderDetails(orderId);
-
-    updateInventory(orderDetails.product_name, 0, -orderDetails.quantity)
-
     res.redirect('/admin');
 });
 
