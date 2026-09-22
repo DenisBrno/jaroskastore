@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getInventory, getPohybySum, getPohyby, createProduct, transferItem, createPohyb, updateInventory, updateUserCredit } = require('../utils/db');
+const { getInventory, getMovementsSum, getMovements, createProduct, transferItem, createMovement, updateInventory, updateUserCredit } = require('../utils/db');
 
 router.get('/payment', async (req, res) => {
     if (!req.session.username || req.session.userId !== 0) {
@@ -30,7 +30,6 @@ router.post('/payment', async (req, res) => {
 
     let produkty = [];
 
-    console.log(req.body);
     try {
         const inventoryResult = await getInventory();
         produkty = inventoryResult.map(item => ({
@@ -44,8 +43,8 @@ router.post('/payment', async (req, res) => {
 
     try {
         const orderPromises = [];
-        const celkovyBonus = parseInt(req.body.bonus) || 0;
-        let bonusBylPridelen = false;
+        const celkovaSleva = parseInt(req.body.sleva) || 0;
+        let slevaPridelena = false;
         
         for (const [key, value] of Object.entries(req.body)) {
             const quantity = parseInt(value);
@@ -55,13 +54,13 @@ router.post('/payment', async (req, res) => {
                 const produktData = produkty.find(p => p.nazev === productName);
                 const cenaZaKus = produktData ? produktData.cena : 0;
 
-                let bonusKZapisu = 0;
-                if (!bonusBylPridelen) {
-                    bonusKZapisu = celkovyBonus;
-                    bonusBylPridelen = true;
+                let slevaKZapisu = 0;
+                if (!slevaPridelena) {
+                    slevaKZapisu = celkovaSleva;
+                    slevaPridelena = true;
                 }
 
-                orderPromises.push(createPohyb(productName, 'P', quantity, cenaZaKus, bonusKZapisu, `${req.body.paymentMethod}, userId:${req.body.userId}`));
+                orderPromises.push(createMovement(productName, 'P', quantity, cenaZaKus, -slevaKZapisu, `${req.body.paymentMethod}, userId:${req.body.userId}`));
 				orderPromises.push(updateInventory(productName, 0, -quantity));
                 orderPromises.push(updateUserCredit(req.body.userId, -req.body.amount-req.body.bonus));
             }
@@ -81,8 +80,8 @@ router.get('/finances', async (req, res) => {
         return res.redirect('/login');
     }
     try {
-		const totalExpenses = await getPohybySum(null, 'N');
-    	const totalIncome = await getPohybySum(null, 'P');
+		const totalExpenses = await getMovementsSum(null, 'N');
+    	const totalIncome = await getMovementsSum(null, 'P');
 
         const inventoryResult = await getInventory();
         const inventory = inventoryResult.map(item => ({
@@ -91,7 +90,7 @@ router.get('/finances', async (req, res) => {
             schoolQuantity: item.sklad_skola
         }));
 
-		const pohybyRes = await getPohyby(null, null, 'id, produkt, mnozstvi, celkem, cas, poznamka');
+		const pohybyRes = await getMovements(null, null, 'id, produkt, mnozstvi, celkem, cas, poznamka');
 		const pohyby = await pohybyRes.map(pohyb => ({
 			produkt: pohyb.produkt,
 			mnozstvi: pohyb.mnozstvi,
@@ -124,7 +123,7 @@ router.get('/finances/table', async (req, res) => {
         const produktyList = inventoryResult.map(item => item.produkt);
 
         // Získáme všechny "příjmy" (prodeje) - typ 'P'
-        let pohyby = await getPohyby(produkt, 'P');
+        let pohyby = await getMovements(produkt, 'P');
 
         // Jednoduché filtrování podle času (dnů) v JS pro flexibilitu, 
         // nebo bychom mohli upravit SQL query v db.js
@@ -213,5 +212,7 @@ router.post('/manage-items/transfer', async (req, res) => {
         res.status(400).send('Neplatné vstupy pro přemístění produktu');
     }
 });
+
+
 
 module.exports = router;

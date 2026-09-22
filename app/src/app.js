@@ -62,6 +62,7 @@ const orderRoutes = require('./routes/order');
 const adminRoutes = require('./routes/admin');
 const financeRoutes = require('./routes/finances');
 const apiRoutes = require('./routes/api');
+const toastyRoutes = require('./routes/toasty');
 
 // Use Routers
 app.use('/', indexRoutes);
@@ -70,6 +71,7 @@ app.use('/', orderRoutes);
 app.use('/', adminRoutes);
 app.use('/', financeRoutes);
 app.use('/', apiRoutes);
+app.use('/', toastyRoutes);
 
 app.listen(port, () => {
     console.log(`✅ Jaroska.store běží na: http://localhost:${port}/`);

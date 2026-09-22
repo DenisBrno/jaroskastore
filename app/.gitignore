@@ -1,2 +1,5 @@
 node_modules/
 src/.env
+.dockerignore
+Dockerfile
+docker-restore.txt
