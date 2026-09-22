@@ -3,6 +3,9 @@ const router = express.Router();
 const { getInventory, getUserCredit, updateUserCredit, createMovement, updateInventory} = require('../utils/db');
 
 router.get('/toasty/terminal', async (req, res) => {
+    if (!req.session.username || ![0, 5, 6].includes(req.session.userId)) {
+        return res.redirect('/login');
+    }
 
     try {
         const inventoryResult = await getInventory();
@@ -24,10 +27,9 @@ router.get('/toasty/terminal', async (req, res) => {
 });
 
 router.post('/bistro-payment', async (req, res) => {
-    if (!req.session.username || req.session.userId !== 0) {
+    if (!req.session.username || ![0, 5, 6].includes(req.session.userId)) {
         return res.redirect('/login');
     }
-
     let produkty = [];
 
     try {
