@@ -1,19 +1,11 @@
 const { Pool } = require('pg');
 require('dotenv').config({ path: './.env'});
 
-const userDbPool = new Pool({
-  user: process.env.DB_USER,
+const DB_Pool = new Pool({
+  user: 'jaroskastore_user',
   host: process.env.DB_HOST,
-  database: 'uzivatele',
+  database: process.env.DB_NAME,
   password: String(process.env.DB_PASS || ''),
-  port: process.env.DB_PORT,
-});
-
-const inventoryDbPool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: 'sklad',
-  password: process.env.DB_PASS,
   port: process.env.DB_PORT,
 });
 
@@ -26,7 +18,7 @@ const inventoryDbPool = new Pool({
 const verifyUser = async (login, password) => {
   const queryText = 'SELECT id, login FROM uzivatele_tb WHERE login = $1 AND password = $2';
   try {
-    const { rows } = await userDbPool.query(queryText, [login, password]);
+    const { rows } = await DB_Pool.query(queryText, [login, password]);
     return rows.length > 0 ? rows[0] : null;
   } catch (err) {
     console.error('Error during password verification:', err);
@@ -37,7 +29,7 @@ const verifyUser = async (login, password) => {
 const updateUserCredit = async (id, changeAmount) => {
   const queryText = 'UPDATE uzivatele_tb SET kredit = kredit + $1 WHERE id=$2';
   try {
-    const { rows } = await userDbPool.query(queryText, [changeAmount, id]);
+    const { rows } = await DB_Pool.query(queryText, [changeAmount, id]);
     return rows;
   } catch (err) {
     console.error('Error updating user credit:', err);
@@ -51,7 +43,7 @@ const updateUserCredit = async (id, changeAmount) => {
 const getOrders = async () => {
   const queryText = 'SELECT id, customer_name, product_name, quantity, created_at, status, ucebna, prestavka_start, prestavka_end, poznamka FROM objednavky_tb ORDER BY id DESC LIMIT 10';
   try {
-    const { rows } = await userDbPool.query(queryText);
+    const { rows } = await DB_Pool.query(queryText);
     return rows;
   } catch (err) {
     console.error('Error fetching orders:', err);
@@ -65,7 +57,7 @@ const getOrders = async () => {
 const createUser = async (login, password) => {
   const queryText = 'INSERT INTO uzivatele_tb (login, password, kredit) VALUES ($1, $2, 0)';
   try {
-    await userDbPool.query(queryText, [login, password]);
+    await DB_Pool.query(queryText, [login, password]);
     return true;
   } catch (err) {
     console.error('Error creating user:', err);
@@ -76,7 +68,7 @@ const createUser = async (login, password) => {
 const getOrderDetails = async (orderId) => {
   const queryText = 'SELECT id, customer_name, product_name, quantity, created_at, status, ucebna, prestavka_start, prestavka_end, poznamka, pohybId FROM objednavky_tb WHERE id=$1';
   try {
-    const { rows } = await userDbPool.query(queryText, [orderId]);
+    const { rows } = await DB_Pool.query(queryText, [orderId]);
     return rows;
   } catch (err) {
     console.error('Error fetching order details:', err);
@@ -87,7 +79,7 @@ const getOrderDetails = async (orderId) => {
 const getInventory = async () => {
   const queryText = 'SELECT id, produkt, cena, img,  sklad_doma, sklad_skola FROM sklad ORDER BY id ASC';
   try {
-    const { rows } = await inventoryDbPool.query(queryText);
+    const { rows } = await DB_Pool.query(queryText);
     return rows;
   } catch (err) {
     console.error('Error fetching inventory:', err);
@@ -98,7 +90,7 @@ const getInventory = async () => {
 const removeMovement = async (movementId) => {
   const queryText = 'DELETE FROM pohyby WHERE id=$1';
   try {
-    await inventoryDbPool.query(queryText, [movementId]);
+    await DB_Pool.query(queryText, [movementId]);
     return true;
   } catch (err) {
     console.error('Error removing movement from DB:', err);
@@ -109,7 +101,7 @@ const removeMovement = async (movementId) => {
 const createMovement = async (product, movementType, quantity, pricePerPiece, bonus, note) => {
   const queryText = 'INSERT INTO pohyby (produkt, typ_pohybu, mnozstvi, cena_za_kus, bonus, poznamka) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
   try {
-    const res = await inventoryDbPool.query(queryText, [product, movementType, quantity, pricePerPiece, bonus, note]);
+    const res = await DB_Pool.query(queryText, [product, movementType, quantity, pricePerPiece, bonus, note]);
     return res.rows[0];
   } catch (err) {
     console.error('Error creating movement in DB:', err);
@@ -120,7 +112,7 @@ const createMovement = async (product, movementType, quantity, pricePerPiece, bo
 const linkOrder = async (orderId, movementId) => {
   try {
     const queryText = 'UPDATE objednavky_tb SET pohybId = $1 WHERE id = $2';
-    await userDbPool.query(queryText, [movementId, orderId]);
+    await DB_Pool.query(queryText, [movementId, orderId]);
     return true;
   } catch (err) {
     console.error('Error linking order with financial movement:', err);
@@ -160,7 +152,7 @@ const toggleOrderStatus = async (orderId) => {
       await linkOrder(orderDetails[0].id, movement.id);
     }
     
-    await userDbPool.query(queryText, [orderId]);
+    await DB_Pool.query(queryText, [orderId]);
     return true;
   } catch (err) {
     console.error('Error toggling order status:', err);
@@ -182,7 +174,7 @@ const toggleOrderStatus = async (orderId) => {
 const addOrder = async (login, product, quantity, room, breakStart, breakEnd, note) => {
   const queryText = 'INSERT INTO objednavky_tb (customer_name, product_name, quantity, ucebna, prestavka_start, prestavka_end, poznamka) VALUES ($1, $2, $3, $4, $5, $6, $7)';
   try {
-    await userDbPool.query(queryText, [login, product, quantity, room, breakStart, breakEnd, note]);
+    await DB_Pool.query(queryText, [login, product, quantity, room, breakStart, breakEnd, note]);
 
     const auth = Buffer.from(`${process.env.NTFY_USER}:${process.env.NTFY_PASS}`).toString("base64");
 
@@ -231,7 +223,7 @@ const getMovements = async (product, type) => {
   queryText += ` ORDER BY cas DESC`;
 
   try {
-    const { rows } = await inventoryDbPool.query(queryText, queryParams);
+    const { rows } = await DB_Pool.query(queryText, queryParams);
     return rows;
   } catch (err) {
     console.error('Error fetching movements:', err);
@@ -259,7 +251,7 @@ const getMovementsSum = async (product, type) => {
     }
 
     try {
-        const { rows } = await inventoryDbPool.query(queryText, queryParams);
+        const { rows } = await DB_Pool.query(queryText, queryParams);
         return parseFloat(rows[0].celkovy_soucet) || 0;
     } catch (err) {
         console.error('Error calculating movements sum:', err);
@@ -270,7 +262,7 @@ const getMovementsSum = async (product, type) => {
 const createProduct = async (product, homeStock, schoolStock) => {
   const queryText = 'INSERT INTO sklad (produkt, sklad_doma, sklad_skola) VALUES ($1, $2, $3)';
   try {
-    await inventoryDbPool.query(queryText, [product, homeStock, schoolStock]);
+    await DB_Pool.query(queryText, [product, homeStock, schoolStock]);
     return true;
   } catch (err) {
     console.error('Error creating product:', err);
@@ -281,7 +273,7 @@ const createProduct = async (product, homeStock, schoolStock) => {
 const transferItem = async (product, quantity) => {
   const queryText = 'UPDATE sklad SET sklad_doma = sklad_doma - $1, sklad_skola = sklad_skola + $1 WHERE produkt = $2';
   try {
-    await inventoryDbPool.query(queryText, [quantity, product]);
+    await DB_Pool.query(queryText, [quantity, product]);
     return true;
   } catch (err) {
     console.error('Error transferring item:', err);
@@ -308,7 +300,7 @@ const updateInventory = async (product, homeDifference, schoolDifference) => {
     (schoolDifference !== '' && schoolDifference !== undefined) ? schoolDifference : 0
   ];
 
-  const client = await inventoryDbPool.connect();
+  const client = await DB_Pool.connect();
 
   try {
     const res = await client.query(query, values);
@@ -342,7 +334,7 @@ const getUsers = async (keyword) => {
   `;
 
   try {
-    const res = await userDbPool.query(query, [formattedKeyword]);
+    const res = await DB_Pool.query(query, [formattedKeyword]);
     return res.rows;
   } catch (err) {
     console.error('Search query for users failed:', err);
@@ -357,7 +349,7 @@ const getUserCredit = async (userId) => {
   WHERE id=$1;`;
 
   try {
-    const res = await userDbPool.query(query, [userId]);
+    const res = await DB_Pool.query(query, [userId]);
     return res.rows;
   } catch (err) {
     console.error('Fetching user credit failed:', err);
@@ -366,8 +358,8 @@ const getUserCredit = async (userId) => {
 };
 
 module.exports = {
-  userDbPool,
-  query: (text, params) => userDbPool.query(text, params),
+  DB_Pool,
+  query: (text, params) => DB_Pool.query(text, params),
   verifyUser,
   addOrder,
   getOrders,
