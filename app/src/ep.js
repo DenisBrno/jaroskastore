@@ -4,7 +4,7 @@ const fs = require('fs').promises;
 // Importy z vlastních modulů
 const { formatTime, odectiMinuty } = require('./utils/timetable');
 
-const EDUPAGE_URL = 'https://jaroska.edupage.org/webcal?pwd=6F62500CAA9A1E9B&type=plan&studentid=-2741';
+const EDUPAGE_URL = process.env.EDUPAGE_URL;
 
 const MAPA_UCEBEN = {
     "1D": "201", "2B": "309", "Ch1": "214", "M": "305", "4B": "401",

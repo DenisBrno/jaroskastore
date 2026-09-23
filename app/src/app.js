@@ -3,10 +3,12 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
-const { userDbPool } = require('./utils/db');
+const { DB_Pool } = require('./utils/db');
 
 const app = express();
 const port = 3000;
+
+
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
@@ -26,7 +28,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Session store configuration
 const store = new pgSession({
-    pool: userDbPool,
+    pool: DB_Pool,
     tableName: 'session'
 });
 
@@ -37,18 +39,17 @@ store.on('error', (err) => console.error('[STORE] Database Error:', err));
 app.use(session({
     store: store,
     name: 'session_id',
-    secret: 'session-secret-key-123', // Static simple key for debugging
+    secret: process.env.SESSION_SECRET, 
     resave: false,
     saveUninitialized: false,
     cookie: {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
         httpOnly: true,
-        secure: false, // Set to false since we are on HTTP/localhost
+        secure: false, 
         sameSite: 'lax'
     }
 }));
 
-// Debug middleware to see what's happening with every request
 app.use((req, res, next) => {
     console.log(`[DEBUG] ${req.method} ${req.url} - Session ID: ${req.sessionID} - User: ${req.session.username || 'guest'}`);
     res.locals.session = (req.session && req.session.username) ? req.session : null;
