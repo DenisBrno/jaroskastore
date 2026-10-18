@@ -1,0 +1,34 @@
+services:
+  app:
+    build:
+      context: .
+      target: builder
+    container_name: jaroskastore_app
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+    command: node src/app.js
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  db:
+      image: postgres:16-alpine
+      container_name: jaroskastore_db
+      environment:
+        POSTGRES_DB: jaroskastore
+        POSTGRES_USER: jaroskastore_user
+        POSTGRES_PASSWORD: GiAx04Djnd
+      ports:
+        - "5432:5432"
+      volumes:
+        - pgdata:/var/lib/postgresql/data
+        - ./init-db/postgres_users.sql:/docker-entrypoint-initdb.d/01-container_name.sql
+        - ./init-db/01-create-sessions.sql:/docker-entrypoint-initdb.d/01-container_name.sql
+        - ./init-db/backup.sql:/docker-entrypoint-initdb.d/01-container_name.sql
+
+
+volumes:
+  pgdata:

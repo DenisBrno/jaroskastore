@@ -77,7 +77,7 @@ const getOrderDetails = async (orderId) => {
 };
 
 const getInventory = async () => {
-  const queryText = 'SELECT id, produkt, cena, img,  sklad_doma, sklad_skola FROM sklad ORDER BY id ASC';
+  const queryText = 'SELECT id, produkt, cena, img,  sklad_doma, sklad_skola, vprodeji FROM sklad ORDER BY id ASC';
   try {
     const { rows } = await DB_Pool.query(queryText);
     return rows;

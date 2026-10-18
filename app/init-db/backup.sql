@@ -15,7 +15,7 @@ SET default_table_access_method = heap;
 
 
 --
--- Name: objednavky_tb; Type: TABLE; Schema: public; Owner: postgres
+-- Name: objednavky_tb; Type: TABLE; Schema: public; Owner: jaroskastore_user
 --
 
 CREATE TABLE public.objednavky_tb (
@@ -32,10 +32,10 @@ CREATE TABLE public.objednavky_tb (
 );
 
 
-ALTER TABLE public.objednavky_tb OWNER TO postgres;
+ALTER TABLE public.objednavky_tb OWNER TO jaroskastore_user;
 
 --
--- Name: objednavky_tb_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: objednavky_tb_id_seq; Type: SEQUENCE; Schema: public; Owner: jaroskastore_user
 --
 
 CREATE SEQUENCE public.objednavky_tb_id_seq
@@ -47,17 +47,17 @@ CREATE SEQUENCE public.objednavky_tb_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.objednavky_tb_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.objednavky_tb_id_seq OWNER TO jaroskastore_user;
 
 --
--- Name: objednavky_tb_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: objednavky_tb_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jaroskastore_user
 --
 
 ALTER SEQUENCE public.objednavky_tb_id_seq OWNED BY public.objednavky_tb.id;
 
 
 --
--- Name: session; Type: TABLE; Schema: public; Owner: postgres
+-- Name: session; Type: TABLE; Schema: public; Owner: jaroskastore_user
 --
 
 CREATE TABLE public.session (
@@ -67,10 +67,10 @@ CREATE TABLE public.session (
 );
 
 
-ALTER TABLE public.session OWNER TO postgres;
+ALTER TABLE public.session OWNER TO jaroskastore_user;
 
 --
--- Name: uzivatele_tb; Type: TABLE; Schema: public; Owner: postgres
+-- Name: uzivatele_tb; Type: TABLE; Schema: public; Owner: jaroskastore_user
 --
 
 CREATE TABLE public.uzivatele_tb (
@@ -81,10 +81,10 @@ CREATE TABLE public.uzivatele_tb (
 );
 
 
-ALTER TABLE public.uzivatele_tb OWNER TO postgres;
+ALTER TABLE public.uzivatele_tb OWNER TO jaroskastore_user;
 
 --
--- Name: uzivatele_tb_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: uzivatele_tb_id_seq; Type: SEQUENCE; Schema: public; Owner: jaroskastore_user
 --
 
 CREATE SEQUENCE public.uzivatele_tb_id_seq
@@ -96,31 +96,31 @@ CREATE SEQUENCE public.uzivatele_tb_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.uzivatele_tb_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.uzivatele_tb_id_seq OWNER TO jaroskastore_user;
 
 --
--- Name: uzivatele_tb_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: uzivatele_tb_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jaroskastore_user
 --
 
 ALTER SEQUENCE public.uzivatele_tb_id_seq OWNED BY public.uzivatele_tb.id;
 
 
 --
--- Name: objednavky_tb id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: objednavky_tb id; Type: DEFAULT; Schema: public; Owner: jaroskastore_user
 --
 
 ALTER TABLE ONLY public.objednavky_tb ALTER COLUMN id SET DEFAULT nextval('public.objednavky_tb_id_seq'::regclass);
 
 
 --
--- Name: uzivatele_tb id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: uzivatele_tb id; Type: DEFAULT; Schema: public; Owner: jaroskastore_user
 --
 
 ALTER TABLE ONLY public.uzivatele_tb ALTER COLUMN id SET DEFAULT nextval('public.uzivatele_tb_id_seq'::regclass);
 
 
 --
--- Data for Name: objednavky_tb; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: objednavky_tb; Type: TABLE DATA; Schema: public; Owner: jaroskastore_user
 --
 
 COPY public.objednavky_tb (id, customer_name, product_name, quantity, created_at, status, ucebna, prestavka_start, prestavka_end, poznamka) FROM stdin;
@@ -144,7 +144,7 @@ COPY public.objednavky_tb (id, customer_name, product_name, quantity, created_at
 \.
 
 --
--- Data for Name: uzivatele_tb; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: uzivatele_tb; Type: TABLE DATA; Schema: public; Owner: jaroskastore_user
 --
 
 COPY public.uzivatele_tb (id, login, password, kredit) FROM stdin;
@@ -153,21 +153,21 @@ COPY public.uzivatele_tb (id, login, password, kredit) FROM stdin;
 
 
 --
--- Name: objednavky_tb_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: objednavky_tb_id_seq; Type: SEQUENCE SET; Schema: public; Owner: jaroskastore_user
 --
 
 SELECT pg_catalog.setval('public.objednavky_tb_id_seq', 29, true);
 
 
 --
--- Name: uzivatele_tb_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: uzivatele_tb_id_seq; Type: SEQUENCE SET; Schema: public; Owner: jaroskastore_user
 --
 
 SELECT pg_catalog.setval('public.uzivatele_tb_id_seq', 4, true);
 
 
 --
--- Name: objednavky_tb objednavky_tb_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: objednavky_tb objednavky_tb_pkey; Type: CONSTRAINT; Schema: public; Owner: jaroskastore_user
 --
 
 ALTER TABLE ONLY public.objednavky_tb
@@ -175,7 +175,7 @@ ALTER TABLE ONLY public.objednavky_tb
 
 
 --
--- Name: session session_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: session session_pkey; Type: CONSTRAINT; Schema: public; Owner: jaroskastore_user
 --
 
 ALTER TABLE ONLY public.session
@@ -183,7 +183,7 @@ ALTER TABLE ONLY public.session
 
 
 --
--- Name: uzivatele_tb uzivatele_tb_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: uzivatele_tb uzivatele_tb_pkey; Type: CONSTRAINT; Schema: public; Owner: jaroskastore_user
 --
 
 ALTER TABLE ONLY public.uzivatele_tb
@@ -191,57 +191,57 @@ ALTER TABLE ONLY public.uzivatele_tb
 
 
 --
--- Name: IDX_session_expire; Type: INDEX; Schema: public; Owner: postgres
+-- Name: IDX_session_expire; Type: INDEX; Schema: public; Owner: jaroskastore_user
 --
 
 CREATE INDEX "IDX_session_expire" ON public.session USING btree (expire);
 
 
 --
--- Name: TABLE objednavky_tb; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE objednavky_tb; Type: ACL; Schema: public; Owner: jaroskastore_user
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.objednavky_tb TO jaroskastore_user;
 
 
 --
--- Name: SEQUENCE objednavky_tb_id_seq; Type: ACL; Schema: public; Owner: postgres
+-- Name: SEQUENCE objednavky_tb_id_seq; Type: ACL; Schema: public; Owner: jaroskastore_user
 --
 
 GRANT SELECT,USAGE ON SEQUENCE public.objednavky_tb_id_seq TO jaroskastore_user;
 
 
 --
--- Name: TABLE session; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE session; Type: ACL; Schema: public; Owner: jaroskastore_user
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.session TO jaroskastore_user;
 
 
 --
--- Name: TABLE uzivatele_tb; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE uzivatele_tb; Type: ACL; Schema: public; Owner: jaroskastore_user
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.uzivatele_tb TO jaroskastore_user;
 
 
 --
--- Name: SEQUENCE uzivatele_tb_id_seq; Type: ACL; Schema: public; Owner: postgres
+-- Name: SEQUENCE uzivatele_tb_id_seq; Type: ACL; Schema: public; Owner: jaroskastore_user
 --
 
 GRANT SELECT,USAGE ON SEQUENCE public.uzivatele_tb_id_seq TO jaroskastore_user;
 
 
 --
--- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: postgres
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: jaroskastore_user
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT SELECT,INSERT,DELETE,UPDATE ON TABLES TO jaroskastore_user;
+ALTER DEFAULT PRIVILEGES FOR ROLE jaroskastore_user IN SCHEMA public GRANT SELECT,INSERT,DELETE,UPDATE ON TABLES TO jaroskastore_user;
 
 
 
 --
--- Name: pohyby; Type: TABLE; Schema: public; Owner: postgres
+-- Name: pohyby; Type: TABLE; Schema: public; Owner: jaroskastore_user
 --
 
 CREATE TABLE public.pohyby (
@@ -253,15 +253,14 @@ CREATE TABLE public.pohyby (
     bonus numeric(10,2) DEFAULT 0,
     celkem numeric(12,2) GENERATED ALWAYS AS ((((mnozstvi)::numeric * cena_za_kus) + bonus)) STORED,
     poznamka text,
-    produkt text,
-    CONSTRAINT pohyby_typ_pohybu_check CHECK (((typ_pohybu)::text = ANY ((ARRAY['N'::character varying, 'P'::character varying])::text[])))
+    produkt text
 );
 
 
-ALTER TABLE public.pohyby OWNER TO postgres;
+ALTER TABLE public.pohyby OWNER TO jaroskastore_user;
 
 --
--- Name: pohyby_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: pohyby_id_seq; Type: SEQUENCE; Schema: public; Owner: jaroskastore_user
 --
 
 CREATE SEQUENCE public.pohyby_id_seq
@@ -273,17 +272,17 @@ CREATE SEQUENCE public.pohyby_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.pohyby_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.pohyby_id_seq OWNER TO jaroskastore_user;
 
 --
--- Name: pohyby_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: pohyby_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jaroskastore_user
 --
 
 ALTER SEQUENCE public.pohyby_id_seq OWNED BY public.pohyby.id;
 
 
 --
--- Name: sklad; Type: TABLE; Schema: public; Owner: postgres
+-- Name: sklad; Type: TABLE; Schema: public; Owner: jaroskastore_user
 --
 
 CREATE TABLE public.sklad (
@@ -296,10 +295,10 @@ CREATE TABLE public.sklad (
 );
 
 
-ALTER TABLE public.sklad OWNER TO postgres;
+ALTER TABLE public.sklad OWNER TO jaroskastore_user;
 
 --
--- Name: sklad_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: sklad_id_seq; Type: SEQUENCE; Schema: public; Owner: jaroskastore_user
 --
 
 CREATE SEQUENCE public.sklad_id_seq
@@ -311,31 +310,31 @@ CREATE SEQUENCE public.sklad_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.sklad_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.sklad_id_seq OWNER TO jaroskastore_user;
 
 --
--- Name: sklad_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: sklad_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jaroskastore_user
 --
 
 ALTER SEQUENCE public.sklad_id_seq OWNED BY public.sklad.id;
 
 
 --
--- Name: pohyby id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: pohyby id; Type: DEFAULT; Schema: public; Owner: jaroskastore_user
 --
 
 ALTER TABLE ONLY public.pohyby ALTER COLUMN id SET DEFAULT nextval('public.pohyby_id_seq'::regclass);
 
 
 --
--- Name: sklad id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: sklad id; Type: DEFAULT; Schema: public; Owner: jaroskastore_user
 --
 
 ALTER TABLE ONLY public.sklad ALTER COLUMN id SET DEFAULT nextval('public.sklad_id_seq'::regclass);
 
 
 --
--- Data for Name: pohyby; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: pohyby; Type: TABLE DATA; Schema: public; Owner: jaroskastore_user
 --
 
 COPY public.pohyby (id, cas, typ_pohybu, mnozstvi, cena_za_kus, bonus, poznamka, produkt) FROM stdin;
@@ -419,7 +418,7 @@ COPY public.pohyby (id, cas, typ_pohybu, mnozstvi, cena_za_kus, bonus, poznamka,
 
 
 --
--- Data for Name: sklad; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: sklad; Type: TABLE DATA; Schema: public; Owner: jaroskastore_user
 --
 
 COPY public.sklad (id, produkt, sklad_doma, sklad_skola, cena, img) FROM stdin;
@@ -444,21 +443,21 @@ COPY public.sklad (id, produkt, sklad_doma, sklad_skola, cena, img) FROM stdin;
 
 
 --
--- Name: pohyby_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: pohyby_id_seq; Type: SEQUENCE SET; Schema: public; Owner: jaroskastore_user
 --
 
 SELECT pg_catalog.setval('public.pohyby_id_seq', 92, true);
 
 
 --
--- Name: sklad_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: sklad_id_seq; Type: SEQUENCE SET; Schema: public; Owner: jaroskastore_user
 --
 
 SELECT pg_catalog.setval('public.sklad_id_seq', 17, true);
 
 
 --
--- Name: pohyby pohyby_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: pohyby pohyby_pkey; Type: CONSTRAINT; Schema: public; Owner: jaroskastore_user
 --
 
 ALTER TABLE ONLY public.pohyby
@@ -466,7 +465,7 @@ ALTER TABLE ONLY public.pohyby
 
 
 --
--- Name: sklad sklad_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: sklad sklad_pkey; Type: CONSTRAINT; Schema: public; Owner: jaroskastore_user
 --
 
 ALTER TABLE ONLY public.sklad
@@ -481,36 +480,35 @@ GRANT USAGE ON SCHEMA public TO jaroskastore_user;
 
 
 --
--- Name: TABLE pohyby; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE pohyby; Type: ACL; Schema: public; Owner: jaroskastore_user
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.pohyby TO jaroskastore_user;
 
 
 --
--- Name: SEQUENCE pohyby_id_seq; Type: ACL; Schema: public; Owner: postgres
+-- Name: SEQUENCE pohyby_id_seq; Type: ACL; Schema: public; Owner: jaroskastore_user
 --
 
 GRANT SELECT,USAGE ON SEQUENCE public.pohyby_id_seq TO jaroskastore_user;
 
 
 --
--- Name: TABLE sklad; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE sklad; Type: ACL; Schema: public; Owner: jaroskastore_user
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.sklad TO jaroskastore_user;
 
 
 --
--- Name: SEQUENCE sklad_id_seq; Type: ACL; Schema: public; Owner: postgres
+-- Name: SEQUENCE sklad_id_seq; Type: ACL; Schema: public; Owner: jaroskastore_user
 --
 
 GRANT SELECT,USAGE ON SEQUENCE public.sklad_id_seq TO jaroskastore_user;
 
 
 --
--- PostgreSQL database dump complete
+-- jaroskastore_userQL database dump complete
 --
 
-\unrestrict stQ2uFyshqV9MnSmHdDwNCYBUqdYuhxgFoNbHLq2zgY1j9MmtQtToLAqpDJ2V6q
 
