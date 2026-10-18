@@ -28,27 +28,32 @@
         </div>
 
         <div class="products-grid">
-            <% produkty.filter(p => p.vprodeji).forEach(p => { 
-                const isMonster = p.nazev.toLowerCase().includes('monster');
-                const isComingSoon = p.nazev.toLowerCase().includes('voda');
-                const isRedBull = p.nazev.toLowerCase().includes('redbull');
-                const isPepper = p.nazev.toLowerCase().includes('pepper');
-            %>
-                <div class="product-item">
-                    <!-- <% if (isMonster || isRedBull || isPepper) { %>
-                        // <div class="chlazeno-tag">chlazený</div>
-                    <% } %> -->
-                    <% if (isComingSoon) { %>
-                        <div class="chlazeno-tag">Coming soon...</div>
-                    <% } %>
-                    <img src="<%= p.img %>" alt="<%= p.nazev %>" class="product-image">
-                    <div class="product-name"><%= p.nazev %></div>
-                    <div class="product-price"><%= p.cena %> Kč</div>
-                    <div class="product-stock">Skladem: <%= p.skladem %> ks</div>
-                </div>
-            <% }); %>
+        <% 
+            const chlazeneKlicovaSlova = ['monster', 'voda', 'redbull', 'pepper', 'cola', 'cool'];
+        %>
+
+        <% produkty.filter(p => p.vprodeji).forEach(p => { 
+            const nazevLower = p.nazev.toLowerCase();
+            const isChlazene = chlazeneKlicovaSlova.some(keyword => nazevLower.includes(keyword));
+            const isComingSoon = nazevLower.includes('voda');
+        %>
+            <div class="product-item">
+            <% if (isChlazene) { %>
+                <div class="chlazeno-tag">chlazený</div>
+            <% } %>
+
+            <% if (isComingSoon) { %>
+                <div class="chlazeno-tag">Coming soon...</div>
+            <% } %>
+
+            <img src="/resources/<%= p.img %>" alt="<%= p.nazev %>" class="product-image">
+            <div class="product-name"><%= p.nazev %></div>
+            <div class="product-price"><%= p.cena %> Kč</div>
+            <div class="product-stock">Skladem: <%= p.skladem %> ks</div>
+            </div>
+        <% }); %>
         </div>
-        
+
         <div class="promo-card">
             <h2>💸 Množstevní sleva!</h2>
             <p>Při nákupu <strong>4 a více kusů</strong> (libovolná kombinace) získáš <strong>slevu 2 Kč na každou položku</strong>.</p>

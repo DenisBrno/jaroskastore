@@ -14,9 +14,11 @@ router.get('/order', async (req, res) => {
     
     try {
         const inventoryResult = await getInventory();
-        const inventory = inventoryResult.map(item => ({
-            nazev: item.produkt,
-            cena: item.cena,
+        const inventory = inventoryResult
+            .filter(item => item.vprodeji !== false)
+            .map(item => ({
+                nazev: item.produkt,
+                cena: item.cena,
         }));
 
         let userCredit = await getUserCredit(req.session.userId);

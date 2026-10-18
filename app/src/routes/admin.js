@@ -128,7 +128,6 @@ router.post('/admin/db-query', async (req, res) => {
         const db_res = await query(req.body.query);
         const tableHtml = generateTableHtml(db_res);
 
-        console.log(db_res);
         res.render('./db-query', { dbOutput: tableHtml });
     } catch (error) {
         const errorHtml = generateTableHtml(error.message);
