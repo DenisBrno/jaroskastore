@@ -74,6 +74,24 @@ app.use('/', financeRoutes);
 app.use('/', apiRoutes);
 app.use('/', toastyRoutes);
 
+
+app.get('/health', async (req, res) => {
+  try {
+    await db.query('SELECT 1');
+
+    res.json({
+      status: 'healthy',
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    res.status(503).json({
+      status: 'unhealthy',
+      error: err.message
+    });
+  }
+});
+
 app.listen(port, () => {
     console.log(`✅ Jaroska.store běží na: http://localhost:${port}/`);
 });

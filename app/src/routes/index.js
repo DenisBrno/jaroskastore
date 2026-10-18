@@ -29,10 +29,11 @@ router.get('/', async (req, res) => {
                 nazev: item.produkt,    
                 cena: item.cena, 
                 skladem: item.sklad_skola,
-                img: item.img
+                img: item.img,
+                vprodeji: item.vprodeji
             }));
         }); 
-
+        console.log(produkty);
         res.render('index', {
             lekce: lekce,
             produkty: produkty

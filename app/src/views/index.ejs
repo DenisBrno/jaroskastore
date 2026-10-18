@@ -28,7 +28,7 @@
         </div>
 
         <div class="products-grid">
-            <% produkty.forEach(p => { 
+            <% produkty.filter(p => p.vprodeji).forEach(p => { 
                 const isMonster = p.nazev.toLowerCase().includes('monster');
                 const isComingSoon = p.nazev.toLowerCase().includes('voda');
                 const isRedBull = p.nazev.toLowerCase().includes('redbull');
@@ -48,7 +48,7 @@
                 </div>
             <% }); %>
         </div>
-
+        
         <div class="promo-card">
             <h2>💸 Množstevní sleva!</h2>
             <p>Při nákupu <strong>4 a více kusů</strong> (libovolná kombinace) získáš <strong>slevu 2 Kč na každou položku</strong>.</p>
