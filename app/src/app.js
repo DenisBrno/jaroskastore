@@ -13,7 +13,7 @@ const port = 3000;
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use('/img', express.static(path.join(__dirname, 'img')));
+app.use('/resources', express.static(path.join(__dirname, '..', 'resources')));
 app.use('/style.css', (req, res, next) => {
     const fetchDest = req.headers['sec-fetch-dest'];
     if (fetchDest === 'document') {

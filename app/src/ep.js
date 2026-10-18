@@ -4,7 +4,7 @@ const fs = require('fs').promises;
 // Importy z vlastních modulů
 const { formatTime, odectiMinuty } = require('./utils/timetable');
 
-const EDUPAGE_URL = process.env.EDUPAGE_URL;
+const EDUPAGE_URL = "https://jaroska.edupage.org/webcal?pwd=6F62500CAA9A1E9B&type=plan&studentid=-2741";
 
 const MAPA_UCEBEN = {
     "1D": "201", "2B": "309", "Ch1": "214", "M": "305", "4B": "401",
@@ -27,6 +27,20 @@ function parseICalDate(dateStr) {
     return new Date(Date.UTC(rok, mesic, den, hod, min));
 }
 
+function prevodNaMinuty(cas) {
+    if (!cas) return 0;
+    const [h, m] = cas.split(':').map(Number);
+    return h * 60 + m;
+}
+
+// Kontrola, zda přestávka zasahuje do rozmezí 11:30 - 12:00
+function jeVRozmeziToustu(startCas, konecCas) {
+    const startM = prevodNaMinuty(startCas);
+    const konecM = prevodNaMinuty(konecCas);
+    // Rozmezí 11:30 (690 min) až 12:00 (720 min)
+    return (startM >= 690 && startM < 720) || (konecM > 690 && konecM <= 720) || (startM <= 690 && konecM >= 720);
+}
+
 function generujPrestavky(rozvrh) {
     const prestavky = {};
     for (let den in rozvrh) {
@@ -36,7 +50,12 @@ function generujPrestavky(rozvrh) {
             const startPrvni = lekce[0].hodina.split(' - ')[0];
             const startRanniPrestavky = odectiMinuty(startPrvni, 10);
             const cistaUcebnaRano = lekce[0].trida.split('->').pop().trim();
-            const formatovanaUcebnaRano = MAPA_UCEBEN[cistaUcebnaRano] ? `${cistaUcebnaRano} - ${MAPA_UCEBEN[cistaUcebnaRano]}` : cistaUcebnaRano;
+            
+            let formatovanaUcebnaRano = MAPA_UCEBEN[cistaUcebnaRano] ? `${cistaUcebnaRano} - ${MAPA_UCEBEN[cistaUcebnaRano]}` : cistaUcebnaRano;
+            
+            if (den !== "Po" && jeVRozmeziToustu(startRanniPrestavky, startPrvni)) {
+                formatovanaUcebnaRano = "TOUSTU V KLUBU";
+            }
 
             prestavky[den].push({
                 hodina: `${startRanniPrestavky} - ${startPrvni}`,
@@ -46,9 +65,16 @@ function generujPrestavky(rozvrh) {
             for (let i = 0; i < lekce.length - 1; i++) {
                 const konecAktualni = lekce[i].hodina.split(' - ')[1];
                 const startDalsi = lekce[i + 1].hodina.split(' - ')[0];
-                if (konecAktualni !== startDalsi) {
+                
+                if (konecAktualni !== startDalsi && prevodNaMinuty(konecAktualni) < prevodNaMinuty(startDalsi)) {
                     const cistaUcebna = lekce[i + 1].trida.split('->').pop().trim();
-                    const formatovanaUcebna = MAPA_UCEBEN[cistaUcebna] ? `${cistaUcebna} - ${MAPA_UCEBEN[cistaUcebna]}` : cistaUcebna;
+                    
+                    let formatovanaUcebna = MAPA_UCEBEN[cistaUcebna] ? `${cistaUcebna} - ${MAPA_UCEBEN[cistaUcebna]}` : cistaUcebna;
+                    
+                    if (den !== "Po" && jeVRozmeziToustu(konecAktualni, startDalsi)) {
+                        formatovanaUcebna = "TOUSTU V KLUBU";
+                    }
+
                     prestavky[den].push({
                         hodina: `${konecAktualni} - ${startDalsi}`,
                         ucebna: formatovanaUcebna
@@ -67,7 +93,6 @@ function zpracujData(icalRaw) {
     const dnes = new Date();
     let zakladniDatum = new Date(dnes);
     
-    // Pokud je pátek po 18:00, sobota (6) nebo neděle (0), stahujeme rozvrh na příští týden
     const denVTydu = dnes.getDay();
     const hodina = dnes.getHours();
     
@@ -145,7 +170,7 @@ async function aktualizujRozvrh() {
         const data = await stahniEdupage();
         const zpracovaneHodiny = zpracujData(data);
         const pouzePrestavky = generujPrestavky(zpracovaneHodiny);
-        await fs.writeFile('rozvrh.json', JSON.stringify(pouzePrestavky, null, 2), 'utf8');
+        await fs.writeFile('../rescources/rozvrh.json', JSON.stringify(pouzePrestavky, null, 2), 'utf8');
         console.log('✅ Rozvrh aktualizován.');
     } catch (err) {
         console.error('❌ Chyba:', err);

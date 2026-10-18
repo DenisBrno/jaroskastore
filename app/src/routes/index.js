@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
                 vprodeji: item.vprodeji
             }));
         }); 
-        console.log(produkty);
+        
         res.render('index', {
             lekce: lekce,
             produkty: produkty

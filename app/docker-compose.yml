@@ -10,6 +10,7 @@ services:
       - .env
     volumes:
       - ./src:/app/src
+      - ./resources:/app/resources
     command: node src/app.js
     extra_hosts:
       - "host.docker.internal:host-gateway"

@@ -1,0 +1,124 @@
+{
+  "Po": [
+    {
+      "hodina": "08:40 - 08:50",
+      "ucebna": "4Amf"
+    },
+    {
+      "hodina": "09:35 - 09:50",
+      "ucebna": "J3"
+    },
+    {
+      "hodina": "10:35 - 10:45",
+      "ucebna": "2D"
+    },
+    {
+      "hodina": "11:30 - 12:00",
+      "ucebna": "3Dm"
+    },
+    {
+      "hodina": "12:45 - 13:05",
+      "ucebna": "Tv1 - pouze po domluvě"
+    }
+  ],
+  "Út": [
+    {
+      "hodina": "07:45 - 07:55",
+      "ucebna": "3Ač"
+    },
+    {
+      "hodina": "08:40 - 08:50",
+      "ucebna": "F1 - 301"
+    },
+    {
+      "hodina": "09:35 - 09:50",
+      "ucebna": "3Csv"
+    },
+    {
+      "hodina": "10:35 - 10:45",
+      "ucebna": "2Az"
+    },
+    {
+      "hodina": "11:30 - 12:00",
+      "ucebna": "TOUSTU V KLUBU"
+    },
+    {
+      "hodina": "12:45 - 12:55",
+      "ucebna": "Ch1 - 214"
+    }
+  ],
+  "St": [
+    {
+      "hodina": "07:45 - 07:55",
+      "ucebna": "2D"
+    },
+    {
+      "hodina": "08:40 - 08:50",
+      "ucebna": "2C"
+    },
+    {
+      "hodina": "09:35 - 09:50",
+      "ucebna": "2D"
+    },
+    {
+      "hodina": "11:20 - 12:00",
+      "ucebna": "TOUSTU V KLUBU"
+    },
+    {
+      "hodina": "12:45 - 12:55",
+      "ucebna": "3Csv"
+    },
+    {
+      "hodina": "13:40 - 13:50",
+      "ucebna": "Bi1 - 401"
+    }
+  ],
+  "Čt": [
+    {
+      "hodina": "07:45 - 07:55",
+      "ucebna": "2Az"
+    },
+    {
+      "hodina": "08:40 - 08:50",
+      "ucebna": "D - 411"
+    },
+    {
+      "hodina": "09:35 - 09:50",
+      "ucebna": "3Csv"
+    },
+    {
+      "hodina": "10:35 - 10:45",
+      "ucebna": "Ch2"
+    },
+    {
+      "hodina": "12:15 - 13:05",
+      "ucebna": "F1 - 301"
+    }
+  ],
+  "Pá": [
+    {
+      "hodina": "07:45 - 07:55",
+      "ucebna": "Bi1 - 401"
+    },
+    {
+      "hodina": "08:40 - 08:50",
+      "ucebna": "1A"
+    },
+    {
+      "hodina": "09:35 - 09:50",
+      "ucebna": "3Csv"
+    },
+    {
+      "hodina": "10:35 - 10:45",
+      "ucebna": "J1 - 513"
+    },
+    {
+      "hodina": "11:30 - 12:00",
+      "ucebna": "TOUSTU V KLUBU"
+    },
+    {
+      "hodina": "12:45 - 13:05",
+      "ucebna": "3Dm"
+    }
+  ]
+}
