@@ -2,7 +2,7 @@ const https = require('https');
 const fs = require('fs').promises;
 
 // Importy z vlastních modulů
-const { formatTime, odectiMinuty } = require('./utils/timetable');
+const { formatTime, odectiMinuty, ROZVRH_PATH } = require('./utils/timetable');
 
 const EDUPAGE_URL = "https://jaroska.edupage.org/webcal?pwd=6F62500CAA9A1E9B&type=plan&studentid=-2741";
 
@@ -170,7 +170,7 @@ async function aktualizujRozvrh() {
         const data = await stahniEdupage();
         const zpracovaneHodiny = zpracujData(data);
         const pouzePrestavky = generujPrestavky(zpracovaneHodiny);
-        await fs.writeFile('../rescources/rozvrh.json', JSON.stringify(pouzePrestavky, null, 2), 'utf8');
+        await fs.writeFile(ROZVRH_PATH, JSON.stringify(pouzePrestavky, null, 2), 'utf8');
         console.log('✅ Rozvrh aktualizován.');
     } catch (err) {
         console.error('❌ Chyba:', err);

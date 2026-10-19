@@ -1,3 +1,11 @@
+const path = require('path');
+
+/**
+ * Cesta k vygenerovanému rozvrhu (DATA_DIR v Kubernetes = /data)
+ */
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', '..', 'resources');
+const ROZVRH_PATH = path.join(DATA_DIR, 'rozvrh.json');
+
 /**
  * Formátování času HH:mm
  */
@@ -57,6 +65,7 @@ function getNadchazejiciHodina(rozvrh) {
 }
 
 module.exports = {
+    ROZVRH_PATH,
     formatTime,
     odectiMinuty,
     getNadchazejiciHodina

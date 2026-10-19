@@ -1,0 +1,130 @@
+replicaCount: 1
+
+image:
+  repository: denisbalint/jaroskastore-app
+  tag: v4
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 128Mi
+  limits:
+    cpu: 1000m
+    memory: 256Mi
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+  runAsGroup: 1001
+  fsGroup: 1001
+  fsGroupChangePolicy: OnRootMismatch
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  privileged: false
+  capabilities:
+    drop:
+      - ALL
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# /health also checks the database, so liveness uses a plain TCP check
+# to avoid restart loops while PostgreSQL is unavailable.
+livenessProbe:
+  tcpSocket:
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+networkPolicy:
+  enabled: true
+  # Namespace of the ingress controller allowed to reach the app
+  ingressNamespace: ingress-nginx
+  # Additional egress rules, e.g. for an in-cluster ntfy server
+  extraEgress: []
+
+persistence:
+  size: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  # storageClass: ""
+
+ingress:
+  enabled: true
+  className: nginx
+
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+
+  host: jaroska.store
+
+  tls:
+    enabled: true
+    secretName: jaroskastore-tls
+
+database:
+  name: jaroskastore
+  username: jaroskastore_user
+
+edupage:
+  url: ""
+
+ntfy:
+  host: ""
+  user: ""
+  # Stored in the jaroskastore-app Secret. Pass it with --set ntfy.password=...
+  # instead of committing it; if left empty, the value already in the Secret is kept.
+  password: ""
+
+postgresql:
+  enabled: true
+
+  networkPolicy:
+    enabled: true
+    ingress:
+      allowSameNamespace: false
+      extraFrom:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: jaroskastore
+
+  architecture: standalone
+
+  auth:
+    database: jaroskastore
+    username: jaroskastore_user
+    existingSecret: jaroskastore-postgresql
+    existingSecretPostgresPasswordKey: postgres-password
+    existingSecretUserPasswordKey: user-password
+
+  standalone:
+    persistence:
+      enabled: true
+      size: 200Mi
+      # storageClass: ""
+
+    # Optional; otherwise HelmForge's resource preset is used.
+    # resources:
+    #   requests:
+    #     cpu: 250m
+    #     memory: 256Mi
+    #   limits:
+    #     cpu: 1000m
+    #     memory: 1Gi
