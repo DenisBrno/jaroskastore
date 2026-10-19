@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "test": "node --test test/",
+    "test:docker": "docker compose -f docker-compose.test.yml run --rm test; status=$?; docker compose -f docker-compose.test.yml down -v; exit $status"
+  },
   "dependencies": {
     "body-parser": "^2.3.0",
     "connect-pg-simple": "^10.0.0",
