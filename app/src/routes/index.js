@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs').promises;
 const path = require('path');
-const { getNadchazejiciHodina } = require('../utils/timetable');
+const { getNadchazejiciHodina, ROZVRH_PATH } = require('../utils/timetable');
 const { getInventory } = require('../utils/db');
 
 router.get('/', async (req, res) => {
 
     try {
-        const rozvrhPath = path.join(__dirname, '../rozvrh.json');
+        const rozvrhPath = ROZVRH_PATH;
 
         const [rozvrhContent] = await Promise.all([
             fs.readFile(rozvrhPath, 'utf8').catch(() => null)
@@ -45,7 +45,7 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/rozvrh', async (req, res) => {
-    const rozvrhPath = path.join(__dirname, '../rozvrh.json');
+    const rozvrhPath = ROZVRH_PATH;
 
     try {
         const rozvrhContent = await fs.readFile(rozvrhPath, 'utf8').catch(() => null);

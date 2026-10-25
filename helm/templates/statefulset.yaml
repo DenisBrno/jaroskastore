@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "jaroskastore.fullname" . }}
+  labels:
+    {{- include "jaroskastore.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "jaroskastore.fullname" . }}
+  replicas: {{ .Values.replicaCount }}
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "jaroskastore.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "jaroskastore.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+
+    spec:
+      automountServiceAccountToken: false
+
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+
+      containers:
+        - name: jaroskastore
+
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+
+          env:
+            - name: DB_HOST
+              value: "{{ .Release.Name }}-postgresql"
+
+            - name: DB_PORT
+              value: "5432"
+
+            - name: DB_NAME
+              value: {{ .Values.database.name | quote }}
+
+            - name: DB_USER
+              value: {{ .Values.database.username | quote }}
+
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: jaroskastore-postgresql
+                  key: user-password
+
+            - name: SESSION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jaroskastore-app
+                  key: session-secret
+
+            - name: EDUPAGE_URL
+              value: {{ .Values.edupage.url | quote }}
+
+            - name: NTFY_HOST
+              value: {{ .Values.ntfy.host | quote }}
+
+            - name: NTFY_USER
+              value: {{ .Values.ntfy.user | quote }}
+
+            - name: NTFY_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: jaroskastore-app
+                  key: ntfy-password
+
+            - name: DATA_DIR
+              value: /data
+
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 64Mi
+
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          app.kubernetes.io/name: {{ include "jaroskastore.name" . }}
+          app.kubernetes.io/instance: {{ .Release.Name }}
+      spec:
+        accessModes:
+          {{- toYaml .Values.persistence.accessModes | nindent 10 }}
+        {{- with .Values.persistence.storageClass }}
+        storageClassName: {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}
