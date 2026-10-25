@@ -4,6 +4,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const { getNadchazejiciHodina, ROZVRH_PATH } = require('../utils/timetable');
 const { getInventory } = require('../utils/db');
+const config = require('../config');
 
 router.get('/', async (req, res) => {
 
@@ -29,7 +30,7 @@ router.get('/', async (req, res) => {
                 nazev: item.produkt,    
                 cena: item.cena, 
                 skladem: item.sklad_skola,
-                img: item.img,
+                img: path.posix.join('/resources', String(item.img)),
                 vprodeji: item.vprodeji
             }));
         }); 

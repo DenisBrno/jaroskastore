@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const router = express.Router();
 const { getInventory, getMovementsSum, getMovements, createProduct, transferItem, createMovement, updateInventory, updateUserCredit } = require('../utils/db');
@@ -12,7 +13,7 @@ router.get('/payment', async (req, res) => {
             nazev: item.produkt,
             cena: item.cena,
             skladem: item.sklad_skola,
-            img: item.img
+            img: path.posix.join('/resources', String(item.img))
         }));
 
         res.render('payment', { produkty });
