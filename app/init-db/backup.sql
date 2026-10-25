@@ -28,7 +28,8 @@ CREATE TABLE public.objednavky_tb (
     ucebna character varying(20),
     prestavka_start time without time zone,
     prestavka_end time without time zone,
-    poznamka text
+    poznamka text,
+    pohybId integer
 );
 
 
@@ -291,7 +292,8 @@ CREATE TABLE public.sklad (
     sklad_doma integer DEFAULT 0,
     sklad_skola integer DEFAULT 0,
     cena integer,
-    img text
+    img text,
+    vprodeji boolean DEFAULT false
 );
 
 

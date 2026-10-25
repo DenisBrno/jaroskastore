@@ -1,0 +1,35 @@
+# Throwaway PostgreSQL initialised from init-db/ + test runner.
+#   npm run test:docker   (runs the tests, then removes the db container and volumes)
+services:
+  db:
+    # Same major version as the HelmForge postgresql chart in production
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: jaroskastore
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./init-db/postgres_users.sql:/docker-entrypoint-initdb.d/01-users.sql:ro,z
+      - ./init-db/backup.sql:/docker-entrypoint-initdb.d/02-schema.sql:ro,z
+    tmpfs:
+      - /var/lib/postgresql
+    healthcheck:
+      # TCP only comes up after the init scripts have finished
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-U", "postgres"]
+      interval: 2s
+      retries: 30
+
+  test:
+    image: node:26-alpine
+    working_dir: /app
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: jaroskastore
+      DB_PASS: GiAx04Djnd
+    volumes:
+      - ./:/app:z
+      - /app/node_modules
+    command: sh -c "npm ci --no-audit --no-fund && npm test"
+    depends_on:
+      db:
+        condition: service_healthy
