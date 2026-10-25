@@ -1,7 +1,14 @@
 {
   "scripts": {
     "test": "node --test test/",
-    "test:docker": "docker compose -f docker-compose.test.yml run --rm test; status=$?; docker compose -f docker-compose.test.yml down -v; exit $status"
+    "test:docker": "docker compose -f docker-compose.test.yml run --rm test; status=$?; docker compose -f docker-compose.test.yml down -v; exit $status",
+    "migrate:create": "db-migrate create",
+    "migrate:up": "db-migrate up",
+    "migrate:down": "db-migrate down",
+    "migrate:reset": "db-migrate reset",
+    "seed:create": "db-migrate seed:create",
+    "seed:up": "db-migrate up:seed",
+    "seed:down": "db-migrate down:seed"
   },
   "dependencies": {
     "body-parser": "^2.3.0",
@@ -11,6 +18,8 @@
     "ejs": "^5.0.2",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
-    "qs": "^6.16.0"
+    "qs": "^6.16.0",
+    "db-migrate": "^1.8.1",
+    "db-migrate-pg": "^1.7.1"
   }
 }

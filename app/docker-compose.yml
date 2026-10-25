@@ -27,8 +27,7 @@ services:
       volumes:
         - pgdata:/var/lib/postgresql/data
         - ./init-db/postgres_users.sql:/docker-entrypoint-initdb.d/01-container_name.sql
-        - ./init-db/01-create-sessions.sql:/docker-entrypoint-initdb.d/01-container_name.sql
-        - ./init-db/backup.sql:/docker-entrypoint-initdb.d/01-container_name.sql
+
 
 
 volumes:
