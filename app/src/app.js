@@ -4,6 +4,8 @@ const path = require('path');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const { DB_Pool } = require('./utils/db');
+const config = require('./config'); // nebo správná cesta ke config.js
+
 
 const app = express();
 const port = 3000;
@@ -11,9 +13,9 @@ const port = 3000;
 
 
 // Middleware
+app.use('/resources', express.static(config.DATA_DIR));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use('/resources', express.static(path.join(__dirname, '..', 'resources')));
 app.use('/style.css', (req, res, next) => {
     const fetchDest = req.headers['sec-fetch-dest'];
     if (fetchDest === 'document') {
