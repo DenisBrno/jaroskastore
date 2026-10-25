@@ -424,23 +424,23 @@ COPY public.pohyby (id, cas, typ_pohybu, mnozstvi, cena_za_kus, bonus, poznamka,
 --
 
 COPY public.sklad (id, produkt, sklad_doma, sklad_skola, cena, img) FROM stdin;
-9	Corny Salted Caramel	18	0	17	/img/corny.png
-17	Opavia oplatky	12	1	30	/img/opavia.png
-14	Kinder Bueno White	40	4	20	/img/bueno-white.png
-6	Perlivá voda	0	0	12	/img/voda.png
-16	Cool (různé příchutě)	16	1	20	/img/cool.png
-5	RedBull Classic	8	3	30	/img/redbull.png
-7	Alaska	22	2	6	/img/alaska.png
 1	Monster Ultra White	1	2	30	/img/Monster_UW.png
-10	Corny Banana	2	2	17	/img/corny.png
-3	Monster Ultra Strawberry Dreams	6	1	30	/img/Monster_USD.png
-13	Dr. Pepper	5	2	20	/img/drpepper.png
-4	Coca-Cola	8	4	30	/img/Cola.png
 2	Monster Mango Loco	9	1	30	/img/Monster_ML.png
+3	Monster Ultra Strawberry Dreams	6	1	30	/img/Monster_USD.png
+4	Coca-Cola 1.5L	8	4	30	/img/Cola.png
+5	RedBull Classic	8	3	30	/img/redbull.png
+6	Perlivá voda	0	0	12	/img/voda.png
+7	Alaska	22	2	6	/img/alaska.png
 8	Dupetky	1	2	20	/img/dupetky.png
+9	Corny Salted Caramel	18	0	17	/img/corny.png
+10	Corny Banana	2	2	17	/img/corny.png
 11	Corny White Choco	16	1	17	/img/corny.png
 12	Kinder Bueno	10	0	20	/img/bueno.png
+13	Dr. Pepper	5	2	20	/img/drpepper.png
+14	Kinder Bueno White	40	4	20	/img/bueno-white.png
 15	Pringles	3	0	60	/img/pringles.png
+16	Cool (různé příchutě)	16	1	20	/img/cool.png
+17	Opavia oplatky	12	1	30	/img/opavia.png
 \.
 
 
