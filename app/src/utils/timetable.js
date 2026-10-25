@@ -1,10 +1,11 @@
 const path = require('path');
 
+const config = require('../config')
+
 /**
  * Cesta k vygenerovanému rozvrhu (DATA_DIR v Kubernetes = /data)
  */
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', '..', 'resources');
-const ROZVRH_PATH = path.join(DATA_DIR, 'rozvrh.json');
+const ROZVRH_PATH = path.join(config.DATA_DIR, 'rozvrh.json');
 
 /**
  * Formátování času HH:mm
