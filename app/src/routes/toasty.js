@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { getInventory, getUserCredit, updateUserCredit, createMovement, updateInventory} = require('../utils/db');
+const path = require('path');
+
 
 router.get('/toasty/terminal', async (req, res) => {
     if (!req.session.username || ![0, 5, 6].includes(req.session.userId)) {
@@ -13,11 +15,12 @@ router.get('/toasty/terminal', async (req, res) => {
             nazev: item.produkt,
             cena: item.cena,
             skladem: item.sklad_skola,
-            img: item.img
+            img: path.posix.join('/resources', String(item.img))
         }));
 
         res.render('./toasty/terminal', {
-            produkty: inventory
+            produkty: inventory,
+            logoPath: path.posix.join('/resources', "/img/logo.png")
         }
         );
     } catch (error) {
