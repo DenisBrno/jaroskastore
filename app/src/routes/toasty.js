@@ -33,6 +33,7 @@ router.post('/bistro-payment', async (req, res) => {
     if (!req.session.username || ![0, 5, 6].includes(req.session.userId)) {
         return res.redirect('/login');
     }
+    
     let produkty = [];
 
     try {
@@ -44,12 +45,6 @@ router.post('/bistro-payment', async (req, res) => {
     } catch (error) {
         console.error('Error loading products:', error);
         return res.redirect('/toasty/terminal?error=loading_products');
-    }
-
-    try {
-        console.log(req.body)
-    } catch(err) {
-
     }
 
     try {
@@ -78,7 +73,7 @@ router.post('/bistro-payment', async (req, res) => {
                     slevaObchodPridelena = true;
                 }
 
-                orderPromises.push(createMovement(productName, 'PT', quantity, cenaZaKus, -slevaKZapisu, `${req.body.paymentMethod[1]}, v Bistru Napoleon`));
+                orderPromises.push(createMovement(productName, 'PT', quantity, cenaZaKus, -slevaKZapisu, `${req.body.paymentMethod[1]}, v Bistru Napoleon`, req.session.userId));
 				orderPromises.push(updateInventory(productName, 0, -quantity));
                 if (req.body.paymentMethod[1]=='credit'){
                     orderPromises.push(updateUserCredit(req.body.userId, -req.body.amount-req.body.bonus));

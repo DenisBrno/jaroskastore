@@ -98,10 +98,10 @@ const removeMovement = async (movementId) => {
   }
 };
 
-const createMovement = async (product, movementType, quantity, pricePerPiece, bonus, note) => {
-  const queryText = 'INSERT INTO pohyby (produkt, typ_pohybu, mnozstvi, cena_za_kus, bonus, poznamka) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
+const createMovement = async (product, movementType, quantity, pricePerPiece, bonus, note, author_id) => {
+  const queryText = 'INSERT INTO pohyby (produkt, typ_pohybu, mnozstvi, cena_za_kus, bonus, poznamka, author_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
   try {
-    const res = await DB_Pool.query(queryText, [product, movementType, quantity, pricePerPiece, bonus, note]);
+    const res = await DB_Pool.query(queryText, [product, movementType, quantity, pricePerPiece, bonus, note, author_id]);
     return res.rows[0];
   } catch (err) {
     console.error('Error creating movement in DB:', err);

@@ -6,14 +6,11 @@ const pgSession = require('connect-pg-simple')(session);
 const { DB_Pool } = require('./utils/db');
 const config = require('./config'); // nebo správná cesta ke config.js
 
-
 const app = express();
 const port = 3000;
 
-
-
 // Middleware
-app.use('/resources', express.static(config.DATA_DIR));
+app.use('/resources', express.static(config.DATA_DIR)); 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use('/style.css', (req, res, next) => {
