@@ -79,7 +79,7 @@ app.use('/', toastyRoutes);
 
 app.get('/health', async (req, res) => {
   try {
-    await db.query('SELECT 1');
+    await DB_Pool.query('SELECT 1');
 
     res.json({
       status: 'healthy',
