@@ -56,7 +56,7 @@ livenessProbe:
 networkPolicy:
   enabled: true
   # Namespace of the ingress controller allowed to reach the app
-  ingressNamespace: ingress-nginx
+  ingressNamespace: ingress
   # Additional egress rules, e.g. for an in-cluster ntfy server
   extraEgress: []
 
