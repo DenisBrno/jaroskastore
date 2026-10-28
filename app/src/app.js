@@ -14,13 +14,15 @@ const port = 3000;
 app.use('/resources', express.static(config.DATA_DIR)); 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use('/styles', (req, res, next) => {
-    const fetchDest = req.headers['sec-fetch-dest'];
-    if (fetchDest === 'document') {
+// Stylesheets and scripts can be loaded by pages but not opened directly
+const blockDirectNavigation = (req, res, next) => {
+    if (req.headers['sec-fetch-dest'] === 'document') {
         return res.status(403).send('Forbidden');
     }
     next();
-}, express.static(path.join(__dirname, 'styles')));
+};
+app.use('/styles', blockDirectNavigation, express.static(path.join(__dirname, 'styles')));
+app.use('/scripts', blockDirectNavigation, express.static(path.join(__dirname, 'scripts')));
 
 // View engine
 app.set('view engine', 'ejs');

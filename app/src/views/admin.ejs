@@ -78,83 +78,9 @@
             <section class="card-section">
                 <h3>Dobít kredit zákazníkovi</h3>
                 <form action="/admin/addCredit" method="POST" class="form form-narrow">
-                    <div class="form-group" id="user-selection-wrap">
-                        <label for="charge">Zákazník</label>
-                        <input 
-                            type="text" 
-                            id="searchInput" 
-                            placeholder="Search and select user..." 
-                            autocomplete="off"
-                        >
-                        <input type="hidden" id="selectedUserId" name="userId">
-
-                        <div class="dropdown-list" id="dropdownList"></div>
-                        <script>
-                            const searchInput = document.getElementById('searchInput');
-                            const dropdownList = document.getElementById('dropdownList');
-                            const selectedUserId = document.getElementById('selectedUserId');
-
-                            searchInput.addEventListener('input', (e) => {
-                                const searchTerm = e.target.value.toLowerCase();
-                                dropdownList.innerHTML = '';
-
-                                if (!searchTerm) {
-                                    dropdownList.classList.remove('show');
-                                    return;
-                                }
-
-                                if(searchTerm.length < 3) {
-                                    return;
-                                }
-
-                                let users = []; 
-
-                                function handleSearch(data) {
-                                    users = data; 
-                                    console.log("Data is finally loaded:", users);
-
-                                    if (users.length > 0) {
-                                    users.forEach(user => {
-                                        const item = document.createElement('div');
-                                        item.classList.add('dropdown-item');
-                                        item.setAttribute('id',`dropdown-item-${user.id}`);
-                                        item.textContent = user.id+' '+user.login+' '+user.kredit+' Kč';
-                                        
-                                        item.addEventListener('click', () => {
-                                            searchInput.value = user.login;        
-                                            selectedUserId.value = user.id;       
-                                            dropdownList.classList.remove('show');
-                                            console.log(`Selected User ID: ${user.id}`);
-                                            let items = [];
-                                            items = document.getElementsByClassName('dropdown-item');
-                                            for (let i = 0; i < items.length; i++) {
-                                                if(items[i].attributes.id.value.endsWith(user.id)){
-                                                    items[i].style.color='red';
-                                                } else {
-                                                    items[i].style.color='black';
-                                                }
-                                            }
-                                        });
-
-                                        dropdownList.appendChild(item);
-                                    });
-                                        dropdownList.classList.add('show');
-                                    } else {
-                                        // If no users match, show a "No results" message or hide it
-                                        dropdownList.classList.remove('show');
-                                    }
-                                    
-                                }
-
-                                // The fetch operation
-                                fetch(`/api/users?search=${encodeURIComponent(searchTerm)}`)
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        handleSearch(data); 
-                                    });
-                                });
-
-                        </script>
+                    <div class="form-group">
+                        <label for="customer-search-input">Zákazník</label>
+                        <%- include('partials/customer-search') %>
                     </div>
 
                     <div class="form-group">
