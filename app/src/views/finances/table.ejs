@@ -5,16 +5,16 @@
 </head>
 <body>
     <div class="container">
-        <%- include('../partials/auth_bar', { session: session }) %>
+        <%- include('../partials/top-bar', { session: session }) %>
         
-        <div class="rozvrh-header">
+        <div class="page-header">
             <h1>Podrobná tabulka prodejů</h1>
             <a href="/finances" class="btn-back">Zpět na finance</a>
         </div>
 
-        <div class="finance-section">
+        <div class="panel">
             <h2>Filtry</h2>
-            <form action="/finances/table" method="GET" class="stats-grid" style="align-items: flex-end;">
+            <form action="/finances/table" method="GET" class="filter-form form" style="align-items: flex-end;">
                 <div class="form-group" style="margin-bottom: 0;">
                     <label for="produkt">Produkt</label>
                     <select name="produkt" id="produkt" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
@@ -34,15 +34,15 @@
                     </select>
                 </div>
                 <div style="display: flex; gap: 10px;">
-                    <button type="submit" class="btn-auth btn-order" style="height: 42px; width: 100%;">Filtrovat</button>
-                    <a href="/finances/table" class="btn-auth" style="height: 42px; display: flex; align-items: center; justify-content: center; text-decoration: none;">Reset</a>
+                    <button type="submit" class="btn btn-primary" style="height: 42px; width: 100%;">Filtrovat</button>
+                    <a href="/finances/table" class="btn" style="height: 42px; display: flex; align-items: center; justify-content: center; text-decoration: none;">Reset</a>
                 </div>
             </form>
         </div>
 
-        <div class="finance-section">
+        <div class="panel">
             <h2>Seznam prodejů</h2>
-            <div class="table-wrapper">
+            <div class="table-wrapper table-wrapper-bordered">
                 <table>
                     <thead>
                         <tr>
@@ -76,18 +76,18 @@
             </div>
         </div>
 
-        <div class="stats-grid">
+        <div class="stat-grid">
             <div class="stat-card">
                 <h3>Celkem prodáno kusů</h3>
                 <div class="stat-value"><%= totalSold %> ks</div>
             </div>
-            <div class="stat-card profit">
+            <div class="stat-card stat-card-profit">
                 <h3>Celkový příjem z prodejů</h3>
                 <div class="stat-value"><%= totalProfit.toFixed(0) %> Kč</div>
             </div>
         </div>
 
-        <a href="/" class="auth-link">Zpět na hlavní stránku</a>
+        <a href="/" class="link-muted">Zpět na hlavní stránku</a>
     </div>
 </body>
 </html>

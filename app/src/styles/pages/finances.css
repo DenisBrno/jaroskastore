@@ -1,5 +1,5 @@
-/* Finance & Stats */
-.stats-grid {
+/* Stats */
+.stat-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
@@ -30,15 +30,14 @@
     color: #1e293b;
 }
 
-.stat-card.income .stat-value { color: #166534; }
-.stat-card.expenses .stat-value { color: #991b1b; }
-.stat-card.profit .stat-value { color: #004aad; }
+.stat-card-income .stat-value { color: #166534; }
+.stat-card-expenses .stat-value { color: #991b1b; }
+.stat-card-profit .stat-value { color: #004aad; }
 
-/* Form layout for management */
-.mgmt-grid {
+/* Sales table filter */
+.filter-form {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
     width: 100%;
 }
-

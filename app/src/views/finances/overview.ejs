@@ -5,30 +5,30 @@
 </head>
 <body>
     <div class="container">
-        <%- include('../partials/auth_bar', { session: session }) %>
+        <%- include('../partials/top-bar', { session: session }) %>
         
-        <div class="rozvrh-header">
+        <div class="page-header">
             <h1>Finanční přehled</h1>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-card income">
+        <div class="stat-grid">
+            <div class="stat-card stat-card-income">
                 <h3>Celkové příjmy</h3>
                 <div class="stat-value"><%= totalIncome %> Kč</div>
             </div>
-            <div class="stat-card expenses">
+            <div class="stat-card stat-card-expenses">
                 <h3>Celkové výdaje</h3>
                 <div class="stat-value"><%= totalExpenses %> Kč</div>
             </div>
-            <div class="stat-card profit">
+            <div class="stat-card stat-card-profit">
                 <h3>Zisk</h3>
                 <div class="stat-value"><%= (totalIncome - totalExpenses).toFixed(0) %> Kč</div>
             </div>
         </div>
 
-        <div class="finance-section">
+        <div class="panel">
             <h2>Historie pohybů</h2>
-            <div class="table-wrapper">
+            <div class="table-wrapper table-wrapper-bordered">
                 <table>
                     <thead>
                         <tr>
@@ -46,7 +46,7 @@
                             const aktualniDatum = new Date(pohyb.cas).toLocaleDateString('cs-CZ');
                             if (aktualniDatum !== posledniDatum) { 
                         %>
-                            <tr class="date-divider">
+                            <tr class="table-divider">
                                 <td colspan="5">
                                     <%= aktualniDatum %>
                                 </td>
@@ -69,10 +69,10 @@
         </div>
 
         <div style="display: flex; gap: 15px;">
-            <a href="/finances/table" class="btn-auth btn-order">Podrobná tabulka prodejů</a>
-            <a href="/manage-items" class="btn-auth btn-admin">Spravovat sklad</a>
+            <a href="/finances/table" class="btn btn-primary">Podrobná tabulka prodejů</a>
+            <a href="/manage-items" class="btn btn-warning">Spravovat sklad</a>
         </div>
-        <a href="/" class="btn-cancel">Zpět na hlavní stránku</a>
+        <a href="/" class="link-cancel">Zpět na hlavní stránku</a>
 
     </div>
 </body>

@@ -5,15 +5,15 @@
 </head>
 <body>
     <div class="container">
-        <%- include('../partials/auth_bar', { session: session }) %>
+        <%- include('../partials/top-bar', { session: session }) %>
         
-        <div class="rozvrh-header">
+        <div class="page-header">
             <h1>Správa skladu</h1>
         </div>
 
-        <div class="finance-section">
+        <div class="panel">
             <h2>Aktuální stav zásob</h2>
-            <div class="table-wrapper">
+            <div class="table-wrapper table-wrapper-bordered">
                 <table>
                     <thead>
                         <tr>
@@ -35,11 +35,11 @@
             </div>
         </div>
 
-        <div class="mgmt-grid">
-            <div class="finance-section">
+        <div class="form-grid">
+            <div class="panel">
                 <h2>Přemístit produkt</h2>
                 <p style="font-size: 0.9em; color: #64748b; margin-bottom: 20px;">Převod zásob z domácího skladu do školy.</p>
-                <form action="/manage-items/transfer" method="POST" class="auth-form" style="max-width: none;">
+                <form action="/manage-items/transfer" method="POST" class="form" style="max-width: none;">
                     <div class="form-group">
                         <label for="produkt">Produkt</label>
                         <select id="produkt" name="produkt" required style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0;">
@@ -53,14 +53,14 @@
                         <label for="mnozstvi">Množství (ks)</label>
                         <input type="number" id="mnozstvi" name="mnozstvi" required min="1">
                     </div>
-                    <button type="submit">Provést převod</button>
+                    <button type="submit" class="btn-submit">Provést převod</button>
                 </form>
             </div>
 
-            <div class="finance-section">
+            <div class="panel">
                 <h2>Nový produkt</h2>
                 <p style="font-size: 0.9em; color: #64748b; margin-bottom: 20px;">Přidání úplně nového druhu zboží do evidence.</p>
-                <form action="/manage-items/create" method="POST" class="auth-form" style="max-width: none;">
+                <form action="/manage-items/create" method="POST" class="form" style="max-width: none;">
                     <div class="form-group">
                         <label for="produkt">Název produktu</label>
                         <input type="text" id="produkt" name="produkt" required placeholder="např. Coca Cola">
@@ -73,11 +73,11 @@
                         <label for="sklad_skola">Počáteční stav škola</label>
                         <input type="number" id="sklad_skola" name="sklad_skola" required min="0" value="0">
                     </div>
-                    <button type="submit">Vytvořit produkt</button>
+                    <button type="submit" class="btn-submit">Vytvořit produkt</button>
                 </form>
             </div>
         </div>
-        <a href="/" class="auth-link">Zpět na hlavní stránku</a>
+        <a href="/" class="link-muted">Zpět na hlavní stránku</a>
     </div>
 </body>
 </html>

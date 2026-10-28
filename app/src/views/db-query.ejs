@@ -5,16 +5,16 @@
 </head>
 <body>
     <div class="container">
-        <%- include('partials/auth_bar', { session: session }) %>
+        <%- include('partials/top-bar', { session: session }) %>
         
-        <div class="admin-panel">
+        <div class="card">
             <h2>DB Query</h2>
-            <form action="/admin/db-query" method="post">
+            <form action="/admin/db-query" method="post" class="form">
                 <textarea name="query" id="query"></textarea>
                 <button type="submit" class="btn-submit">Odeslat</button>
             </form>
         </div>
-        <div class="db-output-container">
+        <div class="output-card">
             <h3>DB Output</h3>
             <%- dbOutput %>
         </div>

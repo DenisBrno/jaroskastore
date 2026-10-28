@@ -5,25 +5,25 @@
 </head>
 <body>
     <div class="container">
-        <%- include('partials/auth_bar', { session: session }) %>
+        <%- include('partials/top-bar', { session: session }) %>
 
         <% if (status === 'success') { %>
-            <div class="auth-form-container" style="text-align:center">
+            <div class="card" style="text-align:center">
                 <h2 style="color: #059669">Objednávka byla úspěšně odeslána! ✅</h2>
                 <p>Děkujeme za váš nákup. Brzy se vám ozvu.</p>
                 <a href="/" class="btn-submit" style="display:inline-block; text-decoration:none; margin-top:20px">Zpět na hlavní stránku</a>
             </div>
         <% } else { %>
-            <div class="auth-form-container">
-                <form action="/order" method="POST" class="order-form">
+            <div class="card">
+                <form action="/order" method="POST" class="form">
                     <h2>Nová objednávka</h2>
                     
                     <% if (error === 'db') { %>
-                        <div class="auth-error">Chyba při ukládání do databáze. Zkuste to prosím znovu.</div>
+                        <div class="form-error">Chyba při ukládání do databáze. Zkuste to prosím znovu.</div>
                     <% } else if (error === 'invalid') { %>
-                        <div class="auth-error">Neplatné údaje v objednávce.</div>
+                        <div class="form-error">Neplatné údaje v objednávce.</div>
                     <% } else if(error === 'insufficientCredit'){%>
-                        <div class="auth-error">Nedostatek kreditu. Podívej se na <a href="/rozvrh">rozvrh</a> a dobij si kredit.</div> 
+                        <div class="form-error">Nedostatek kreditu. Podívej se na <a href="/rozvrh">rozvrh</a> a dobij si kredit.</div> 
                     <% } %>
 
                     <div class="form-group">
@@ -61,7 +61,7 @@
                     </div>
 
                     <button type="submit" class="btn-submit">Odeslat objednávku</button>
-                    <a href="/" class="btn-cancel">Zrušit</a>
+                    <a href="/" class="link-cancel">Zrušit</a>
                 </form>
             </div>
         <% } %>

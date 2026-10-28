@@ -21,19 +21,18 @@
 </head>
 <body>
     <div class="container">
-        <%- include('partials/auth_bar', { session: session }) %>
+        <%- include('partials/top-bar', { session: session }) %>
 
-        <div class="auth-form-container" style="max-width: 600px;">
-            <div class="auth-form">
-                <form action="/payment" method="post" class="order-form">
+        <div class="card" style="max-width: 600px;">
+                <form action="/payment" method="post" class="form">
 
                     <h2>Generátor QR Platby</h2>
                     
-                    <div class="product-selection" style="margin-bottom: 25px;">
+                    <div class="product-picker" style="margin-bottom: 25px;">
                         <label style="display: block; margin-bottom: 10px; font-weight: 700; color: #1e293b;">Vyberte zakoupené položky:</label>
-                        <div class="product-list" style="max-height: 350px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px; background: #f8fafc;">
+                        <div class="product-picker-list" style="max-height: 350px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px; background: #f8fafc;">
                             <% produkty.forEach((product, index) => { %>
-                                <div class="product-item-row" style="display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e2e8f0; background: white; margin-bottom: 5px; border-radius: 8px;">
+                                <div class="product-picker-item" style="display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e2e8f0; background: white; margin-bottom: 5px; border-radius: 8px;">
                                     <div style="display: flex; align-items: center; gap: 12px;">
                                         <img src="<%= product.img %>" alt="<%= product.nazev %>" style="width: 40px; height: 40px; object-fit: contain;">
                                         <div>
@@ -155,8 +154,7 @@
                     </div>
                     <button type="submit" class="btn-submit">Zaplatit</button>
                 </form>
-                <a href="/" class="btn-cancel">Zpět na hlavní stránku</a>
-            </div>
+                <a href="/" class="link-cancel">Zpět na hlavní stránku</a>
         </div>
     </div>
 

@@ -5,29 +5,29 @@
 </head>
 <body>
     <div class="container">
-        <%- include('partials/auth_bar', { session: session }) %>
+        <%- include('partials/top-bar', { session: session }) %>
         
-        <div class="hero-section">
-            <div class="header-content">
+        <div class="hero">
+            <div class="hero-content">
                 <h1>Jaroška.store</h1>
-                <p class="subtitle">Levnější alternativa k automatu u jídelny.</p>
+                <p class="hero-subtitle">Levnější alternativa k automatu u jídelny.</p>
             </div>
             <div class="status-card">
                 <h3>Kde mě najdeš?</h3>
                 <% if (!lekce) { %>
-                    <div class="status-badge offline">Dnes už nejsem ve škole</div>
+                    <div class="status-card-state">Dnes už nejsem ve škole</div>
                 <% } else { %>
-                    <div class="status-badge online"><%= lekce.stav %></div>
-                    <div class="status-details">
-                        <span class="status-time"><%= lekce.hodina %></span>
-                        <span class="status-room">Učebna: <%= lekce.ucebna %></span>
+                    <div class="status-card-state"><%= lekce.stav %></div>
+                    <div class="status-card-details">
+                        <span class="status-card-time"><%= lekce.hodina %></span>
+                        <span class="status-card-room">Učebna: <%= lekce.ucebna %></span>
                     </div>
                 <% } %>
-                <a href="/rozvrh" class="btn-secondary">Zobrazit rozvrh na celý týden</a>
+                <a href="/rozvrh" class="btn-ghost">Zobrazit rozvrh na celý týden</a>
             </div>
         </div>
 
-        <div class="products-grid">
+        <div class="product-grid">
         <% 
             const chlazeneKlicovaSlova = ['monster', 'voda', 'redbull', 'pepper', 'cola', 'cool'];
         %>
@@ -37,13 +37,13 @@
             const isChlazene = chlazeneKlicovaSlova.some(keyword => nazevLower.includes(keyword));
             const isComingSoon = nazevLower.includes('voda');
         %>
-            <div class="product-item">
+            <div class="product-card">
             <% if (isChlazene) { %>
-                <div class="chlazeno-tag">chlazený</div>
+                <div class="product-tag">chlazený</div>
             <% } %>
 
             <% if (isComingSoon) { %>
-                <div class="chlazeno-tag">Coming soon...</div>
+                <div class="product-tag">Coming soon...</div>
             <% } %>
 
             <img src="<%= p.img %>" alt="<%= p.nazev %>" class="product-image">

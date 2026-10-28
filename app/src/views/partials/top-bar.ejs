@@ -1,0 +1,19 @@
+<div class="top-bar">
+    <% if (session && session.username) { %>
+        <div class="top-bar-user">
+            <span>Ahoj, <%= session.username %></span>
+            <% if (session.userId === 0) { %>
+                <a href="/admin" class="btn btn-warning">Admin</a>
+                <a href="/payment" class="btn btn-warning">Payment</a>
+                <a href="/finances" class="btn btn-warning">Finances</a>
+            <% } %>
+            <a href="/order" class="btn btn-primary">Objednat</a>
+            <form action="/logout" method="POST" style="margin:0">
+                <button type="submit" class="btn btn-danger">Odhlásit se</button>
+            </form>
+        </div>
+    <% } else { %>
+        <a href="/login" class="btn">Přihlásit se</a>
+        <a href="/register" class="btn">Registrace</a>
+    <% } %>
+</div>

@@ -21,15 +21,15 @@
 </head>
 <body>
     <div class="container">
-        <%- include('../partials/auth_bar', { session: session }) %>
+        <%- include('../partials/top-bar', { session: session }) %>
         <h1>Platební terminál Bistra Napoleon</h1>
-            <form class="terminal" method="post" action="/bistro-payment">
-                <div class="toast-form">
+            <form class="terminal-grid form" method="post" action="/bistro-payment">
+                <div class="card">
                         <h2>Bistro Napoleon</h2>
-                        <div class="toast-selection" style="margin-bottom: 25px;">
-                            <div class="image-container" style="height: 350px;">
+                        <div class="toast-panel" style="margin-bottom: 25px;">
+                            <div class="toast-display" style="height: 350px;">
                                 <img class="toast-image" src="<%= logoPath %>" alt="">
-                                <div class="toast-content" style="display: flex; align-items: center; gap: 8px;">
+                                <div class="toast-controls" style="display: flex; align-items: center; gap: 8px;">
                                     <button type="button" onclick="changeQty('toast', -1)" style="width: 28px; height: 28px; padding: 0; display: flex; align-items: center; justify-content: center; background: #e2e8f0; color: #475569; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">-</button>
                                     <input type="number" name="qty-1toast" id="toast" class="toast-qty" data-price="25" value="0" min="0"  readonly style="width: 60px; text-align: center; border: none; background: transparent; font-weight: 700; font-size: 1em; -appearance: textfield;">
                                     <button type="button" onclick="changeQty('toast', 1)" style="width: 28px; height: 28px; padding: 0; display: flex; align-items: center; justify-content: center; background: #004aad; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">+</button>
@@ -60,14 +60,13 @@
                             </div>
                         </div>
                 </div>
-                <div class="auth-form-container">
-                    <div class="auth-form">
+                <div class="card">
                             <h2>Jaroska.store</h2>
                             
-                            <div class="product-selection" style="margin-bottom: 25px;">
-                                <div class="product-list" style="max-height: 350px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px; background: #f8fafc;">
+                            <div class="product-picker" style="margin-bottom: 25px;">
+                                <div class="product-picker-list" style="max-height: 350px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px; background: #f8fafc;">
                                     <% produkty.forEach((product, index) => { %>
-                                        <div class="product-item-row" style="display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e2e8f0; background: white; margin-bottom: 5px; border-radius: 8px;">
+                                        <div class="product-picker-item" style="display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e2e8f0; background: white; margin-bottom: 5px; border-radius: 8px;">
                                             <div style="display: flex; align-items: center; gap: 12px;">
                                                 <img src="<%= product.img %>" alt="<%= product.nazev %>" style="width: 40px; height: 40px; object-fit: contain;">
                                                 <div>
@@ -187,12 +186,10 @@
 
                                 </script>
                             </div>
-
-                    </div>
                 </div>
-                <div class="payment">
+                <div class="terminal-actions">
                     <button type="submit" class="btn-submit">Zaplatit</button>
-                    <a href="/" class="btn-cancel">Zpět na hlavní stránku</a>
+                    <a href="/" class="link-cancel">Zpět na hlavní stránku</a>
                 </div>
  
             </form>

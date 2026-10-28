@@ -1,21 +1,12 @@
-/* Rozvrh Page */
-.rozvrh-container { width: 100%; }
-.rozvrh-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-}
+.schedule { width: 100%; }
 
-.rozvrh-header h1 { font-size: 2.5em; color: #004aad; margin: 0; }
-
-.rozvrh-grid {
+.schedule-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 24px;
 }
 
-.den-karta {
+.schedule-day {
     background: white;
     padding: 30px;
     border-radius: 20px;
@@ -23,12 +14,12 @@
     border: 2px solid transparent;
 }
 
-.den-karta.dnes {
+.schedule-day.is-today {
     border-color: #004aad;
     background: #f0f7ff;
 }
 
-.den-karta h2 {
+.schedule-day h2 {
     color: #004aad;
     margin: 0 0 20px 0;
     font-size: 1.5em;
@@ -37,7 +28,7 @@
     align-items: center;
 }
 
-.den-karta.dnes h2::after {
+.schedule-day.is-today h2::after {
     content: "DNES";
     font-size: 0.5em;
     background: #004aad;
@@ -46,9 +37,9 @@
     border-radius: 6px;
 }
 
-.lekce-list { display: flex; flex-direction: column; gap: 12px; }
+.lesson-list { display: flex; flex-direction: column; gap: 12px; }
 
-.lekce-item {
+.lesson {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -58,30 +49,15 @@
     transition: all 0.2s;
 }
 
-.lekce-item.highlight {
+.lesson.is-current {
     background: #004aad;
     color: white;
     transform: scale(1.05);
     box-shadow: 0 10px 15px -3px rgba(0, 74, 173, 0.3);
 }
 
-.lekce-item.highlight .cas { color: white; }
+.lesson-time { font-weight: 700; color: #475569; }
+.lesson-room { font-weight: 600; }
+.lesson.is-current .lesson-time { color: white; }
 
-.now-label {
-    font-size: 0.7em;
-    font-weight: 800;
-    background: #fbbf24;
-    color: #78350f;
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-left: 8px;
-}
-
-.lekce-item .cas { font-weight: 700; color: #475569; }
-.lekce-item .ucebna { font-weight: 600; }
-
-.volno { color: #94a3b8; font-style: italic; text-align: center; margin: 20px 0; }
-
-@media (max-width: 600px) {
-    .rozvrh-header { flex-direction: column; gap: 15px; text-align: center; }
-}
+.lesson-empty { color: #94a3b8; font-style: italic; text-align: center; margin: 20px 0; }
