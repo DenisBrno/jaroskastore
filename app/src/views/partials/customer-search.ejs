@@ -1,0 +1,7 @@
+<%# Customer search: picks a user via /api/users and submits its id as "userId" %>
+<div class="customer-search" data-customer-search>
+    <input type="text" id="customer-search-input" class="customer-search-input" placeholder="Vyhledat zákazníka (min. 3 znaky)..." autocomplete="off">
+    <input type="hidden" name="userId" class="customer-search-id">
+    <div class="customer-search-list"></div>
+</div>
+<script src="/scripts/customer-search.js" defer></script>

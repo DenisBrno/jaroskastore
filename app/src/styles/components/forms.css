@@ -68,3 +68,27 @@
     margin-bottom: 20px;
     text-align: center;
 }
+
+/* Customer search (partials/customer-search.ejs) */
+.customer-search-list {
+    display: none;
+    margin-top: 4px;
+    max-height: 220px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+
+.customer-search-list.is-open {
+    display: block;
+}
+
+.customer-search-item {
+    padding: 10px 12px;
+    cursor: pointer;
+}
+
+.customer-search-item:hover {
+    background: #f1f5f9;
+}
