@@ -113,6 +113,10 @@ const createUser = async (login, password) => {
     const res = await DB_Pool.query(queryText, [login, await hashPassword(password)]);
     return res.rowCount > 0;
   } catch (err) {
+    // Unique index on LOWER(login): someone created the same login at the same moment
+    if (err.code === '23505') {
+      return false;
+    }
     console.error('Error creating user:', err);
     throw err;
   }

@@ -43,6 +43,8 @@ describe('db.js against the migrated schema', () => {
     assert.match(rows[0].password, /^scrypt\$/);
     assert.equal(await db.verifyUser(LOGIN, 'wrong'), null);
     assert.equal(await db.createUser(LOGIN.toUpperCase(), 'other'), false);
+    // Also enforced by the database
+    await assert.rejects(db.query('INSERT INTO uzivatele_tb (login) VALUES ($1)', [LOGIN.toUpperCase()]), { code: '23505' });
   });
 
   test('setUserPassword + checkUserPassword', async () => {
