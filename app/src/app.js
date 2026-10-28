@@ -98,6 +98,7 @@ const adminRoutes = require('./routes/admin');
 const financeRoutes = require('./routes/finances');
 const apiRoutes = require('./routes/api');
 const toastyRoutes = require('./routes/toasty');
+const profileRoutes = require('./routes/profile');
 
 // Use Routers
 app.use('/', indexRoutes);
@@ -107,6 +108,7 @@ app.use('/', adminRoutes);
 app.use('/', financeRoutes);
 app.use('/', apiRoutes);
 app.use('/', toastyRoutes);
+app.use('/', profileRoutes);
 
 
 app.get('/health', async (req, res) => {

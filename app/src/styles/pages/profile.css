@@ -1,0 +1,22 @@
+/* Profile: account details as label / value rows */
+.profile-details {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 12px 24px;
+    margin: 0;
+}
+
+.profile-details dt {
+    color: #64748b;
+}
+
+.profile-details dd {
+    margin: 0;
+    font-weight: 600;
+    color: #1e293b;
+    overflow-wrap: anywhere;
+}
+
+.profile-details .is-negative {
+    color: #dc2626;
+}
