@@ -73,11 +73,14 @@ const getUserById = async (id) => {
   }
 };
 
+/**
+ * Adds (or with a negative amount removes) credit, returns false when the user does not exist
+ */
 const updateUserCredit = async (id, changeAmount) => {
-  const queryText = 'UPDATE uzivatele_tb SET kredit = kredit + $1 WHERE id=$2';
+  const queryText = 'UPDATE uzivatele_tb SET kredit = COALESCE(kredit, 0) + $1 WHERE id=$2';
   try {
-    const { rows } = await DB_Pool.query(queryText, [changeAmount, id]);
-    return rows;
+    const res = await DB_Pool.query(queryText, [changeAmount, id]);
+    return res.rowCount > 0;
   } catch (err) {
     console.error('Error updating user credit:', err);
     throw err;
@@ -344,11 +347,14 @@ const createProduct = async (product, homeStock, schoolStock) => {
   }
 };  
 
+/**
+ * Moves pieces from home to school stock, returns false when there are not enough at home
+ */
 const transferItem = async (product, quantity) => {
-  const queryText = 'UPDATE sklad SET sklad_doma = sklad_doma - $1, sklad_skola = sklad_skola + $1 WHERE produkt = $2';
+  const queryText = 'UPDATE sklad SET sklad_doma = sklad_doma - $1, sklad_skola = sklad_skola + $1 WHERE produkt = $2 AND sklad_doma >= $1';
   try {
-    await DB_Pool.query(queryText, [quantity, product]);
-    return true;
+    const res = await DB_Pool.query(queryText, [quantity, product]);
+    return res.rowCount > 0;
   } catch (err) {
     console.error('Error transferring item:', err);
     throw err;

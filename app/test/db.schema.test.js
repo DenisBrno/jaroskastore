@@ -59,7 +59,8 @@ describe('db.js against the migrated schema', () => {
   });
 
   test('updateUserCredit + getUserCredit', async () => {
-    await db.updateUserCredit(userId, 50);
+    assert.equal(await db.updateUserCredit(userId, 50), true);
+    assert.equal(await db.updateUserCredit(-12345, 50), false);
     const [row] = await db.getUserCredit(userId);
     assert.equal(row.kredit, 50);
   });
@@ -102,7 +103,9 @@ describe('db.js against the migrated schema', () => {
   });
 
   test('transferItem + updateInventory', async () => {
-    await db.transferItem(PRODUCT, 1);
+    assert.equal(await db.transferItem(PRODUCT, 1), true);
+    // Only 4 left at home
+    assert.equal(await db.transferItem(PRODUCT, 5), false);
     const res = await db.updateInventory(PRODUCT, 1, '');
     assert.equal(res.rowCount, 1);
 

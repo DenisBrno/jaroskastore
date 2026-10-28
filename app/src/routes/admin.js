@@ -59,19 +59,30 @@ router.post('/admin/toggle-order', requireAdmin, async (req, res) => {
 });
 
 
-router.post('/admin/addCredit',  requireAdmin, async (req, res) => {
-    const {userId, charge} = req.body;
-    try {
-        const result = await updateUserCredit(userId, charge);
-        console.log(userId, charge);
+// Largest credit change in one step, protects against typos
+const MAX_CREDIT_CHANGE = 10000;
 
-        // add result check
-        res.redirect('/admin');
+router.post('/admin/addCredit', requireAdmin, async (req, res) => {
+    const userId = parseInt(req.body.userId);
+    const charge = String(req.body.charge || '').trim();
+    const amount = Number(charge);
 
-    } catch (err) {
-        res.status(500).send('Chyba při dobíjení kreditu.');
+    if (Number.isNaN(userId)) {
+        return res.redirect('/admin?error=no_user');
     }
-
+    // Whole koruny, may be negative to correct a mistake
+    if (!/^-?\d+$/.test(charge) || amount === 0 || Math.abs(amount) > MAX_CREDIT_CHANGE) {
+        return res.redirect('/admin?error=invalid_charge');
+    }
+    try {
+        if (!(await updateUserCredit(userId, amount))) {
+            return res.redirect('/admin?error=no_user');
+        }
+        console.log(`[ADMIN] ${req.user.login} changed credit of user ${userId} by ${amount} Kč`);
+        res.redirect('/admin?status=credit_added');
+    } catch (err) {
+        res.redirect('/admin?error=credit_failed');
+    }
 });
 
 const escapeHtml = (value) => String(value)
