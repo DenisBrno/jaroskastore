@@ -1,10 +1,12 @@
+require('dotenv').config({ path: './.env' });
 const https = require('https');
 const fs = require('fs').promises;
 
 // Importy z vlastních modulů
 const { formatTime, odectiMinuty, ROZVRH_PATH } = require('./utils/timetable');
 
-const EDUPAGE_URL = "https://jaroska.edupage.org/webcal?pwd=6F62500CAA9A1E9B&type=plan&studentid=-2741";
+// Calendar URL with its access token, passed as an environment variable (Helm: edupage.url)
+const EDUPAGE_URL = process.env.EDUPAGE_URL;
 
 const MAPA_UCEBEN = {
     "1D": "201", "2B": "309", "Ch1": "214", "M": "305", "4B": "401",
@@ -175,6 +177,11 @@ async function aktualizujRozvrh() {
     } catch (err) {
         console.error('❌ Chyba:', err);
     }
+}
+
+if (!EDUPAGE_URL) {
+    console.error('❌ Chybí proměnná prostředí EDUPAGE_URL.');
+    process.exit(1);
 }
 
 aktualizujRozvrh();
