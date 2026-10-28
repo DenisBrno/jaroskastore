@@ -340,11 +340,30 @@ const getMovementsSum = async (product, type) => {
     }
 };
 
-const createProduct = async (product, homeStock, schoolStock) => {
-  const queryText = 'INSERT INTO sklad (produkt, sklad_doma, sklad_skola) VALUES ($1, $2, $3)';
+/**
+ * Tells why a new product can't be created: 'name_exists' when a product has the same
+ * name (case-insensitive), 'image_exists' when another product uses the same image; otherwise null
+ */
+const getProductClash = async (product, img) => {
+  const queryText = 'SELECT LOWER(produkt) = LOWER($1) AS same_name FROM sklad WHERE LOWER(produkt) = LOWER($1) OR img = $2';
+  const { rows } = await DB_Pool.query(queryText, [product, img]);
+  if (rows.length === 0) {
+    return null;
+  }
+  return rows.some(r => r.same_name) ? 'name_exists' : 'image_exists';
+};
+
+/**
+ * Creates a product with all its columns, returns false when its name or image is already used
+ */
+const createProduct = async ({ product, homeStock, schoolStock, price, img, forSale }) => {
+  const queryText = `
+    INSERT INTO sklad (produkt, sklad_doma, sklad_skola, cena, img, vprodeji)
+    SELECT $1::varchar, $2, $3, $4, $5::text, $6
+    WHERE NOT EXISTS (SELECT 1 FROM sklad WHERE LOWER(produkt) = LOWER($1) OR img = $5)`;
   try {
-    await DB_Pool.query(queryText, [product, homeStock, schoolStock]);
-    return true;
+    const res = await DB_Pool.query(queryText, [product, homeStock, schoolStock, price, img, forSale]);
+    return res.rowCount > 0;
   } catch (err) {
     console.error('Error creating product:', err);
     throw err;
@@ -477,6 +496,7 @@ module.exports = {
   getInventory,
   getProductsForSale,
   createProduct,
+  getProductClash,
   transferItem,
   createMovement, 
   updateInventory,

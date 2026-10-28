@@ -84,9 +84,19 @@ describe('db.js against the migrated schema', () => {
   });
 
   test('createProduct', async () => {
-    assert.equal(await db.createProduct(PRODUCT, 5, 2), true);
-    // createProduct doesn't set a price, toggleOrderStatus below needs one
-    await db.query('UPDATE sklad SET cena = 10 WHERE produkt = $1', [PRODUCT]);
+    const product = { product: PRODUCT, homeStock: 5, schoolStock: 2, price: 10, img: `/img/test_${suffix}.png`, forSale: false };
+    assert.equal(await db.getProductClash(PRODUCT, product.img), null);
+    assert.equal(await db.createProduct(product), true);
+
+    const [row] = (await db.getInventory()).filter(i => i.produkt === PRODUCT);
+    assert.equal(row.cena, 10);
+    assert.equal(row.img, product.img);
+    assert.equal(row.vprodeji, false);
+
+    // Same name (any case) or same image is refused
+    assert.equal(await db.getProductClash(PRODUCT.toUpperCase(), '/img/other.png'), 'name_exists');
+    assert.equal(await db.getProductClash('Other', product.img), 'image_exists');
+    assert.equal(await db.createProduct({ ...product, product: PRODUCT.toLowerCase(), img: '/img/other.png' }), false);
   });
 
   test('getProductsForSale only returns products with vprodeji = true', async () => {

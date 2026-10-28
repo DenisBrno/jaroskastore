@@ -11,6 +11,26 @@
             <h1>Správa skladu</h1>
         </div>
 
+        <% if (status === 'created') { %>
+            <div class="form-success">Produkt byl vytvořen.</div>
+        <% } else if (error === 'invalid_input') { %>
+            <div class="form-error">Vyplňte název, cenu (alespoň 1 Kč), oba stavy skladu (celá čísla od 0) a zda je produkt v prodeji.</div>
+        <% } else if (error === 'no_image') { %>
+            <div class="form-error">Nahrajte obrázek produktu.</div>
+        <% } else if (error === 'invalid_image') { %>
+            <div class="form-error">Obrázek musí být ve formátu PNG, JPEG nebo WebP.</div>
+        <% } else if (error === 'image_too_large') { %>
+            <div class="form-error">Obrázek je větší než 5 MB.</div>
+        <% } else if (error === 'invalid_name') { %>
+            <div class="form-error">Název produktu musí obsahovat alespoň jedno písmeno nebo číslici.</div>
+        <% } else if (error === 'name_exists') { %>
+            <div class="form-error">Produkt s tímto názvem už existuje.</div>
+        <% } else if (error === 'image_exists') { %>
+            <div class="form-error">Obrázek s tímto názvem už používá jiný produkt. Zvolte jiný název.</div>
+        <% } else if (error) { %>
+            <div class="form-error">Produkt se nepodařilo vytvořit. Zkuste to prosím znovu.</div>
+        <% } %>
+
         <div class="panel">
             <h2>Aktuální stav zásob</h2>
             <div class="table-wrapper table-wrapper-bordered">
@@ -61,19 +81,35 @@
             <div class="panel">
                 <h2>Nový produkt</h2>
                 <p class="panel-description">Přidání úplně nového druhu zboží do evidence.</p>
-                <form action="/manage-items/create" method="POST" class="form">
+                <form action="/manage-items/create" method="POST" enctype="multipart/form-data" class="form">
                     <%- include('../partials/csrf') %>
                     <div class="form-group">
-                        <label for="produkt">Název produktu</label>
-                        <input type="text" id="produkt" name="produkt" required placeholder="např. Coca Cola">
+                        <label for="new-produkt">Název produktu</label>
+                        <input type="text" id="new-produkt" name="produkt" maxlength="255" required placeholder="např. Coca Cola">
+                    </div>
+                    <div class="form-group">
+                        <label for="cena">Cena (Kč)</label>
+                        <input type="number" id="cena" name="cena" min="1" step="1" required>
                     </div>
                     <div class="form-group">
                         <label for="sklad_doma">Počáteční stav doma</label>
-                        <input type="number" id="sklad_doma" name="sklad_doma" required min="0" value="0">
+                        <input type="number" id="sklad_doma" name="sklad_doma" min="0" step="1" required>
                     </div>
                     <div class="form-group">
                         <label for="sklad_skola">Počáteční stav škola</label>
-                        <input type="number" id="sklad_skola" name="sklad_skola" required min="0" value="0">
+                        <input type="number" id="sklad_skola" name="sklad_skola" min="0" step="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vprodeji">V prodeji</label>
+                        <select id="vprodeji" name="vprodeji" required>
+                            <option value="" disabled selected>Vyberte</option>
+                            <option value="true">Ano (zobrazí se na hlavní stránce)</option>
+                            <option value="false">Ne</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="img">Obrázek (PNG, JPEG nebo WebP, max. 5 MB)</label>
+                        <input type="file" id="img" name="img" accept="image/png,image/jpeg,image/webp" required>
                     </div>
                     <button type="submit" class="btn-submit">Vytvořit produkt</button>
                 </form>

@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const fs = require('fs').promises;
+const path = require('path');
+const config = require('../config');
 const { requireAdmin } = require('../middleware/auth');
-const { toProductView } = require('../utils/products');
-const { getInventory, getProductsForSale, getMovementsSum, getMovements, createProduct, transferItem } = require('../utils/db');
+const { toProductView, productImageBaseName, detectImageExtension } = require('../utils/products');
+const { getInventory, getProductsForSale, getMovementsSum, getMovements, createProduct, getProductClash, transferItem } = require('../utils/db');
 const { recordShopPayment } = require('../utils/payment');
 
 router.get('/payment', requireAdmin, async (req, res) => {
@@ -88,7 +91,9 @@ router.get('/manage-items', requireAdmin, async (req, res) => {
         }));
 
         res.render('./finances/manage-items', { 
-            inventory 
+            inventory,
+            status: req.query.status,
+            error: req.query.error
         });
     } catch (error) {
         console.error('Error loading financial data:', error);
@@ -97,20 +102,68 @@ router.get('/manage-items', requireAdmin, async (req, res) => {
 });
 
 
-router.post('/manage-items/create', requireAdmin, async (req, res) => {
-    const { produkt, sklad_doma, sklad_skola } = req.body;
-    const numSklad_doma = parseInt(sklad_doma);
-    const numSklad_skola = parseInt(sklad_skola);
+// Whole number >= min from a form field, otherwise null
+const parseWholeNumber = (value, min) => {
+    const text = String(value ?? '').trim();
+    return /^\d+$/.test(text) && Number(text) >= min ? Number(text) : null;
+};
 
-    if (produkt && numSklad_doma >= 0 && numSklad_skola >= 0) {
-        const success = await createProduct(produkt, numSklad_doma, numSklad_skola);
-        if (success) {
-            res.redirect('/manage-items');
-        } else {
-            res.status(500).send('Chyba při vytváření produktu');
+// New product: every column is required, the image is saved as DATA_DIR/img/<product name>.<type>
+router.post('/manage-items/create', requireAdmin, async (req, res) => {
+    const fail = (error) => res.redirect(`/manage-items?error=${error}`);
+    if (req.uploadError) {
+        return fail(req.uploadError);
+    }
+
+    const product = String(req.body.produkt || '').trim();
+    const homeStock = parseWholeNumber(req.body.sklad_doma, 0);
+    const schoolStock = parseWholeNumber(req.body.sklad_skola, 0);
+    const price = parseWholeNumber(req.body.cena, 1);
+    const forSale = { true: true, false: false }[req.body.vprodeji];
+    const image = (req.files || []).find(f => f.fieldname === 'img');
+
+    if (!product || product.length > 255 || homeStock === null || schoolStock === null || price === null || forSale === undefined) {
+        return fail('invalid_input');
+    }
+    if (!image) {
+        return fail('no_image');
+    }
+    const extension = detectImageExtension(image.buffer);
+    if (!extension) {
+        return fail('invalid_image');
+    }
+    const baseName = productImageBaseName(product);
+    if (!baseName) {
+        return fail('invalid_name');
+    }
+
+    const fileName = `${baseName}${extension}`;
+    const img = `/img/${fileName}`;
+    const imageDir = path.join(config.DATA_DIR, 'img');
+    const imagePath = path.join(imageDir, fileName);
+
+    try {
+        const clash = await getProductClash(product, img);
+        if (clash) {
+            return fail(clash);
         }
-    } else {
-        res.status(400).send('Neplatné vstupy pro vytvoření produktu');
+
+        await fs.mkdir(imageDir, { recursive: true });
+        await fs.writeFile(imagePath, image.buffer);
+
+        const created = await createProduct({ product, homeStock, schoolStock, price, img, forSale });
+        if (!created) {
+            // Someone created the same product in the meantime
+            await fs.unlink(imagePath).catch(() => {});
+            return fail('name_exists');
+        }
+
+        console.log(`[ITEMS] ${req.user.login} created product "${product}" (${img})`);
+        res.redirect('/manage-items?status=created');
+    } catch (error) {
+        console.error('Error creating product:', error);
+        await fs.unlink(imagePath).catch(() => {});
+        fail('create_failed');
     }
 });
 
