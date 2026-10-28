@@ -24,6 +24,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px;
     padding: 10px;
     border-bottom: 1px solid #e2e8f0;
     background: white;
@@ -35,12 +36,14 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0; /* product name wraps instead of pushing the +/- buttons out */
 }
 
 .product-picker-image {
     width: 40px;
     height: 40px;
     object-fit: contain;
+    flex-shrink: 0;
 }
 
 .product-picker-name { font-weight: 600; font-size: 0.95em; }
@@ -51,6 +54,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-shrink: 0;
 }
 
 .qty-btn {
@@ -115,6 +119,7 @@
     padding: 10px;
     background: #fff;
     border-radius: 12px;
+    height: auto !important; /* the QR library sets an inline pixel height; keep it square when max-width shrinks it */
 }
 
 .qr-account { margin-top: 15px; font-size: 14px; color: #64748b; }

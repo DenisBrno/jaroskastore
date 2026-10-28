@@ -1,7 +1,7 @@
 /* Bistro terminal: two cards side by side, actions underneath */
 .terminal-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* Two equal columns that may shrink below their content */
     grid-template-rows: 1fr auto;   /* Top row expands, bottom row fits content */
     gap: 16px;                     /* Adjust spacing between boxes */
     min-height: 100vh;             /* Takes up full screen height */
@@ -41,4 +41,11 @@
     gap: 8px;
     flex: 1;              /* Automatically fills the remaining 50px height */
     overflow-y: auto;     /* Adds a scrollbar if the content exceeds the space */
+}
+
+@media (max-width: 850px) {
+    .terminal-grid {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 0;
+    }
 }

@@ -28,6 +28,11 @@ body {
     align-items: center;
     line-height: 1.5;
     overflow-x: auto;
+    overflow-wrap: break-word; /* long words/usernames wrap instead of widening the page */
+}
+
+img, canvas {
+    max-width: 100%;
 }
 
 pre {
@@ -48,6 +53,11 @@ pre {
     flex-direction: column;
     align-items: center; /* Zarovná děti na střed */
     gap: 40px;
+}
+
+/* Children are centered (shrink-to-fit), so cap them to the container width */
+.container > * {
+    max-width: 100%;
 }
 
 .page-header {

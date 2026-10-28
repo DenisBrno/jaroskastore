@@ -12,7 +12,13 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    overflow-x: scroll;
+    min-width: 0; /* let it shrink and scroll; otherwise it overflows off the left edge (justify-content: flex-end) */
+    overflow-x: auto;
     -ms-overflow-style: none;  /* Internet Explorer 10+ */
     scrollbar-width: none;  /* Firefox, Safari 18.2+, Chromium 121+ */
+}
+
+.top-bar-user > * {
+    flex-shrink: 0;
+    white-space: nowrap;
 }
