@@ -101,6 +101,20 @@ const getInventory = async () => {
   }
 };
 
+/**
+ * Products that are for sale (vprodeji = true): the only ones shown and accepted by orders and payments
+ */
+const getProductsForSale = async () => {
+  const queryText = 'SELECT id, produkt, cena, img, sklad_doma, sklad_skola, vprodeji FROM sklad WHERE vprodeji = true ORDER BY id ASC';
+  try {
+    const { rows } = await DB_Pool.query(queryText);
+    return rows;
+  } catch (err) {
+    console.error('Error fetching products for sale:', err);
+    throw err;
+  }
+};
+
 const removeMovement = async (movementId) => {
   const queryText = 'DELETE FROM pohyby WHERE id=$1';
   try {
@@ -403,6 +417,7 @@ module.exports = {
   toggleOrderStatus,
   getMovements,
   getInventory,
+  getProductsForSale,
   createProduct,
   transferItem,
   createMovement, 

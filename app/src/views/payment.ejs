@@ -19,6 +19,8 @@
                     <div class="form-error">Nepodařilo se načíst produkty. Zkuste to prosím znovu.</div>
                 <% } else if (error === 'processing') { %>
                     <div class="form-error">Chyba při zpracování platby. Zkuste to prosím znovu.</div>
+                <% } else if (error === 'not_for_sale') { %>
+                    <div class="form-error">Některý z vybraných produktů není v prodeji, platba nebyla provedena.</div>
                 <% } else if (error === 'empty') { %>
                     <div class="form-error">Nebyl vybrán žádný produkt.</div>
                 <% } else if (error === 'invalid') { %>

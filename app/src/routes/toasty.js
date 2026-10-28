@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const { requireTerminal } = require('../middleware/auth');
-const { getInventory } = require('../utils/db');
+const { getProductsForSale } = require('../utils/db');
 const { recordShopPayment } = require('../utils/payment');
 const path = require('path');
 
 
 router.get('/toasty/terminal', requireTerminal, async (req, res) => {
     try {
-        const inventoryResult = await getInventory();
+        const inventoryResult = await getProductsForSale();
         const inventory = inventoryResult.map(item => ({
             nazev: item.produkt,
             cena: item.cena,

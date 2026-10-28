@@ -1,10 +1,11 @@
-const { getInventory, updateUserCredit, chargeUserCredit, createMovement, updateInventory } = require('./db');
+const { getProductsForSale, updateUserCredit, chargeUserCredit, createMovement, updateInventory } = require('./db');
 
 const PAYMENT_METHODS = ['qr', 'cash', 'credit'];
 
 /**
  * Records a Jaroska.store sale submitted from a payment form (/payment, bistro terminal).
  *
+ * Every product must be for sale, otherwise the whole payment is rejected.
  * Expected body: qty-<product> fields, amount, sleva, paymentMethod and userId (for credit).
  * The customer pays amount - sleva. One movement is written per product and the difference
  * between the paid amount and the item prices goes to the first movement's bonus, so the
@@ -16,7 +17,7 @@ const PAYMENT_METHODS = ['qr', 'cash', 'credit'];
 const recordShopPayment = async (body, { movementType, note, authorId }) => {
     let produkty;
     try {
-        produkty = await getInventory();
+        produkty = await getProductsForSale();
     } catch (error) {
         console.error('Error loading products:', error);
         return 'loading_products';
@@ -29,7 +30,7 @@ const recordShopPayment = async (body, { movementType, note, authorId }) => {
             const productName = key.replace('qty-', '');
             const produktData = produkty.find(p => p.produkt === productName);
             if (!produktData) {
-                return 'invalid';
+                return 'not_for_sale';
             }
             polozky.push({ nazev: productName, mnozstvi: quantity, cena: Number(produktData.cena) });
         }

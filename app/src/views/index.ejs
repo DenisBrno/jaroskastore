@@ -32,7 +32,7 @@
             const chlazeneKlicovaSlova = ['monster', 'voda', 'redbull', 'pepper', 'cola', 'cool'];
         %>
 
-        <% produkty.filter(p => p.vprodeji).forEach(p => { 
+        <% produkty.forEach(p => { 
             const nazevLower = p.nazev.toLowerCase();
             const isChlazene = chlazeneKlicovaSlova.some(keyword => nazevLower.includes(keyword));
             const isComingSoon = nazevLower.includes('voda');

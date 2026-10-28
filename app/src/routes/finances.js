@@ -2,12 +2,12 @@ const path = require('path');
 const express = require('express');
 const router = express.Router();
 const { requireAdmin } = require('../middleware/auth');
-const { getInventory, getMovementsSum, getMovements, createProduct, transferItem } = require('../utils/db');
+const { getInventory, getProductsForSale, getMovementsSum, getMovements, createProduct, transferItem } = require('../utils/db');
 const { recordShopPayment } = require('../utils/payment');
 
 router.get('/payment', requireAdmin, async (req, res) => {
     try {
-        const inventoryResult = await getInventory();
+        const inventoryResult = await getProductsForSale();
         const produkty = inventoryResult.map(item => ({
             nazev: item.produkt,
             cena: item.cena,
