@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { verifyUser, createUser } = require('../utils/db');
+const { verifyUser } = require('../utils/db');
 
 router.get('/login', (req, res) => {
     const error = req.query.error;
@@ -42,15 +42,7 @@ router.get('/register', (req, res) => {
     res.render('register');
 });
 
-router.post('/register', async (req, res) => {
-    const { username, password } = req.body;
-    const success = await createUser(username, password);
-    if (success) {
-        res.redirect('/login');
-    } else {
-        res.redirect('/register?error=failed');
-    }
-});
+// Accounts are created by an admin (/admin/create-user), there is no public registration
 
 router.post('/logout', (req, res) => {
     console.log('[AUTH] Logout requested');
