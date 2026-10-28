@@ -3,7 +3,7 @@ const { getUserById } = require('../utils/db');
 /**
  * Access control
  *
- *   public        /, /rozvrh, /login, /register, /health
+ *   public        /, /rozvrh, /login (rate limited, middleware/rate-limit.js), /register, /health
  *   requireLogin  /order, /account/password
  *   terminal      /toasty/terminal, /bistro-payment, /api/users (admin too)
  *   admin         /admin/*, /payment, /finances/*, /manage-items/*

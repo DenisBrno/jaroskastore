@@ -11,15 +11,17 @@
                 
                 <% if (error === 'invalid') { %>
                     <div class="form-error">Neplatné jméno nebo heslo.</div>
+                <% } else if (error === 'too_many') { %>
+                    <div class="form-error">Příliš mnoho neúspěšných pokusů. Zkuste to znovu za 15 minut.</div>
                 <% } %>
 
                 <div class="form-group">
                     <label for="username">Uživatelské jméno</label>
-                    <input type="text" id="username" name="username" required>
+                    <input type="text" id="username" name="username" autocomplete="username" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Heslo</label>
-                    <input type="password" id="password" name="password" required>
+                    <input type="password" id="password" name="password" autocomplete="current-password" required>
                 </div>
                 <button type="submit" class="btn-submit">Přihlásit se</button>
             </form>

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { verifyUser, checkUserPassword, setUserPassword } = require('../utils/db');
 const { requireLogin } = require('../middleware/auth');
+const { loginLimiters } = require('../middleware/rate-limit');
 const { isValidNewPassword } = require('../utils/password');
 
 router.get('/login', (req, res) => {
@@ -9,7 +10,7 @@ router.get('/login', (req, res) => {
     res.render('login', { error });
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimiters, async (req, res) => {
     const { username, password } = req.body;
     console.log(`[AUTH] Login attempt for: ${username}`);
     
@@ -35,6 +36,7 @@ router.post('/login', async (req, res) => {
         });
     } else {
         console.log(`[AUTH] Login failed: Invalid credentials`);
+        res.locals.loginFailed = true;
         res.redirect('/login?error=invalid');
     }
 });
