@@ -11,6 +11,7 @@
 
         <div class="card card-narrow">
             <form action="/payment" method="post" class="form">
+                <%- include('partials/csrf') %>
                 <h2>Generátor QR Platby</h2>
 
                 <%- include('partials/payment-messages') %>

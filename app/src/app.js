@@ -6,6 +6,7 @@ const pgSession = require('connect-pg-simple')(session);
 const { DB_Pool } = require('./utils/db');
 const config = require('./config');
 const { loadUser } = require('./middleware/auth');
+const { csrfProtection } = require('./middleware/csrf');
 const { migrateToLatest } = require('./utils/migrate');
 const { MIN_PASSWORD_LENGTH } = require('./utils/password');
 
@@ -80,6 +81,9 @@ app.use(session({
 
 // Logged-in user and role for routes (req.user) and views (user, hasRole)
 app.use(loadUser);
+
+// Every POST needs the form's CSRF token
+app.use(csrfProtection);
 
 app.use((req, res, next) => {
     console.log(`[DEBUG] ${req.method} ${req.url} - User: ${req.user ? req.user.login : 'guest'}`);

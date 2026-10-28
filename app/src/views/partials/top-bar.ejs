@@ -13,6 +13,7 @@
             <a href="/order" class="btn btn-primary">Objednat</a>
             <a href="/account/password" class="btn">Změna hesla</a>
             <form action="/logout" method="POST" class="form-inline">
+                <%- include('csrf') %>
                 <button type="submit" class="btn btn-danger">Odhlásit se</button>
             </form>
         </div>

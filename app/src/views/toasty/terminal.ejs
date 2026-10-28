@@ -14,6 +14,7 @@
         <%- include('../partials/payment-messages') %>
 
         <form class="terminal-grid form" method="post" action="/bistro-payment">
+            <%- include('../partials/csrf') %>
             <%# Toast card is only a QR calculator, none of its fields are submitted %>
             <div class="card">
                 <h2>Bistro Napoleon</h2>

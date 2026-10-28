@@ -16,6 +16,7 @@
         <% } else { %>
             <div class="card">
                 <form action="/order" method="POST" class="form">
+                    <%- include('partials/csrf') %>
                     <h2>Nová objednávka</h2>
                     
                     <% if (error === 'db') { %>

@@ -7,6 +7,7 @@
     <div class="container">
         <div class="card">
             <form action="/login" method="POST" class="form">
+                <%- include('partials/csrf') %>
                 <h2>Přihlášení</h2>
                 
                 <% if (error === 'invalid') { %>
