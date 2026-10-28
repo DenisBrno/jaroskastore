@@ -1,19 +1,13 @@
-const path = require('path');
 const express = require('express');
 const router = express.Router();
 const { requireAdmin } = require('../middleware/auth');
+const { toProductView } = require('../utils/products');
 const { getInventory, getProductsForSale, getMovementsSum, getMovements, createProduct, transferItem } = require('../utils/db');
 const { recordShopPayment } = require('../utils/payment');
 
 router.get('/payment', requireAdmin, async (req, res) => {
     try {
-        const inventoryResult = await getProductsForSale();
-        const produkty = inventoryResult.map(item => ({
-            nazev: item.produkt,
-            cena: item.cena,
-            skladem: item.sklad_skola,
-            img: path.posix.join('/resources', String(item.img))
-        }));
+        const produkty = (await getProductsForSale()).map(toProductView);
 
         res.render('payment', { produkty, status: req.query.status, error: req.query.error });
     } catch (error) {

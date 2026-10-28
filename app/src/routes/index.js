@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const fs = require('fs').promises;
-const path = require('path');
 const { getNadchazejiciHodina, ROZVRH_PATH } = require('../utils/timetable');
 const { getProductsForSale } = require('../utils/db');
+const { toProductView } = require('../utils/products');
 
 router.get('/', async (req, res) => {
 
@@ -20,12 +20,7 @@ router.get('/', async (req, res) => {
             }
         }
 
-        const produkty = (await getProductsForSale()).map(item => ({
-            nazev: item.produkt,
-            cena: item.cena,
-            skladem: item.sklad_skola,
-            img: path.posix.join('/resources', String(item.img))
-        }));
+        const produkty = (await getProductsForSale()).map(toProductView);
         
         res.render('index', {
             lekce: lekce,
