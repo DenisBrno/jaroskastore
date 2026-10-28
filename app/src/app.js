@@ -1,5 +1,4 @@
 const express = require('express');
-const cookieParser = require('cookie-parser');
 const path = require('path');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
@@ -13,7 +12,6 @@ const port = 3000;
 // Middleware
 app.use('/resources', express.static(config.DATA_DIR)); 
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 // Stylesheets and scripts can be loaded by pages but not opened directly
 const blockDirectNavigation = (req, res, next) => {
     if (req.headers['sec-fetch-dest'] === 'document') {
