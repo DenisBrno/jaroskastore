@@ -26,6 +26,20 @@ const verifyUser = async (login, password) => {
   }
 };
 
+/**
+ * Returns the user's id, login and role, or null when the user does not exist
+ */
+const getUserById = async (id) => {
+  const queryText = 'SELECT id, login, role FROM uzivatele_tb WHERE id = $1';
+  try {
+    const { rows } = await DB_Pool.query(queryText, [id]);
+    return rows[0] || null;
+  } catch (err) {
+    console.error('Error fetching user:', err);
+    throw err;
+  }
+};
+
 const updateUserCredit = async (id, changeAmount) => {
   const queryText = 'UPDATE uzivatele_tb SET kredit = kredit + $1 WHERE id=$2';
   try {
@@ -382,6 +396,7 @@ module.exports = {
   DB_Pool,
   query: (text, params) => DB_Pool.query(text, params),
   verifyUser,
+  getUserById,
   addOrder,
   getOrders,
   createUser,

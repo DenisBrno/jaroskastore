@@ -5,6 +5,7 @@ const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const { DB_Pool } = require('./utils/db');
 const config = require('./config'); // nebo správná cesta ke config.js
+const { loadUser } = require('./middleware/auth');
 
 const app = express();
 const port = 3000;
@@ -49,9 +50,11 @@ app.use(session({
     }
 }));
 
+// Logged-in user and role for routes (req.user) and views (user, hasRole)
+app.use(loadUser);
+
 app.use((req, res, next) => {
-    console.log(`[DEBUG] ${req.method} ${req.url} - Session ID: ${req.sessionID} - User: ${req.session.username || 'guest'}`);
-    res.locals.session = (req.session && req.session.username) ? req.session : null;
+    console.log(`[DEBUG] ${req.method} ${req.url} - User: ${req.user ? req.user.login : 'guest'}`);
     next();
 });
 

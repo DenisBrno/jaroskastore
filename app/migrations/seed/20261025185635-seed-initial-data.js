@@ -13,8 +13,8 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db) {
   const sql = `
     -- 1. uzivatele_tb
-    INSERT INTO uzivatele_tb (id, login, password, kredit) VALUES
-    (0, 'Denis', '12', 100)
+    INSERT INTO uzivatele_tb (id, login, password, kredit, role) VALUES
+    (0, 'Denis', '12', 100, 'admin')
     ON CONFLICT (id) DO NOTHING;
 
     -- 2. sklad

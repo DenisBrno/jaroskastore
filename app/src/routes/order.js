@@ -1,14 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const { requireLogin } = require('../middleware/auth');
 const fs = require('fs').promises;
 const path = require('path');
 const { getInventory, addOrder , getUserCredit, updateUserCredit} = require('../utils/db');
 
-router.get('/order', async (req, res) => {
-    if (!req.session.username) {
-        return res.redirect('/login');
-    }
-
+router.get('/order', requireLogin, async (req, res) => {
     const status = req.query.status;
     const error = req.query.error;
     
@@ -21,7 +18,7 @@ router.get('/order', async (req, res) => {
                 cena: item.cena,
         }));
 
-        let userCredit = await getUserCredit(req.session.userId);
+        let userCredit = await getUserCredit(req.user.id);
         userCredit = userCredit[0].kredit;
 
         res.render('order', {
@@ -35,11 +32,7 @@ router.get('/order', async (req, res) => {
     }
 });
 
-router.post('/order', async (req, res) => {
-    if (!req.session.username) {
-        return res.redirect('/login');
-    }
-
+router.post('/order', requireLogin, async (req, res) => {
     const { produkt, pocet, ucebna, zacatek_prestavky, konec_prestavky, poznamka } = req.body;
     const numPocet = parseInt(pocet);
 
@@ -54,7 +47,7 @@ router.post('/order', async (req, res) => {
 
         if (produktData && numPocet > 0) {
 
-            let userCredit = await getUserCredit(req.session.userId);
+            let userCredit = await getUserCredit(req.user.id);
             userCredit = userCredit[0].kredit;
 
             if(userCredit-(produktData.cena*numPocet) < 0){
@@ -62,8 +55,8 @@ router.post('/order', async (req, res) => {
                 return -1;
             }
 
-            const successOrder = await addOrder(req.session.username, produkt, numPocet, ucebna, zacatek_prestavky, konec_prestavky, poznamka);
-            const successFunds = await updateUserCredit(req.session.userId, -(produktData.cena*numPocet));
+            const successOrder = await addOrder(req.user.login, produkt, numPocet, ucebna, zacatek_prestavky, konec_prestavky, poznamka);
+            const successFunds = await updateUserCredit(req.user.id, -(produktData.cena*numPocet));
             
             if (!successOrder || !successFunds || !successTransfer) {
                 res.redirect('/order?error=db');
