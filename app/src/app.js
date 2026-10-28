@@ -50,7 +50,7 @@ app.use(session({
 }));
 
 app.use((req, res, next) => {
-    console.log(`[DEBUG] ${req.method} ${req.url} - Session ID: ${req.sessionID} - User: ${req.session.username || 'guest'}`);
+    console.log(`[DEBUG] ${req.method} ${req.url} - User: ${req.session.username || 'guest'}`);
     res.locals.session = (req.session && req.session.username) ? req.session : null;
     next();
 });
