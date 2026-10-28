@@ -1,7 +1,8 @@
 const path = require('path');
 const express = require('express');
 const router = express.Router();
-const { getInventory, getMovementsSum, getMovements, createProduct, transferItem, createMovement, updateInventory, updateUserCredit } = require('../utils/db');
+const { getInventory, getMovementsSum, getMovements, createProduct, transferItem } = require('../utils/db');
+const { recordShopPayment } = require('../utils/payment');
 
 router.get('/payment', async (req, res) => {
     if (!req.session.username || req.session.userId !== 0) {
@@ -16,10 +17,10 @@ router.get('/payment', async (req, res) => {
             img: path.posix.join('/resources', String(item.img))
         }));
 
-        res.render('payment', { produkty });
+        res.render('payment', { produkty, status: req.query.status, error: req.query.error });
     } catch (error) {
         console.error('Error loading products for payment:', error);
-        res.render('payment', { produkty: [] });
+        res.render('payment', { produkty: [], status: req.query.status, error: 'loading_products' });
     }
 });
 
@@ -29,51 +30,12 @@ router.post('/payment', async (req, res) => {
         return res.redirect('/login');
     }
 
-    let produkty = [];
+    const result = await recordShopPayment(req.body, {
+        movementType: 'P',
+        authorId: req.session.userId,
+    });
 
-    try {
-        const inventoryResult = await getInventory();
-        produkty = inventoryResult.map(item => ({
-            nazev: item.produkt,
-            cena: item.cena,
-        }));
-    } catch (error) {
-        console.error('Error loading products:', error);
-        return res.redirect('/payment?error=loading_products');
-    }
-
-    try {
-        const orderPromises = [];
-        const celkovaSleva = parseInt(req.body.sleva) || 0;
-        let slevaPridelena = false;
-        
-        for (const [key, value] of Object.entries(req.body)) {
-            const quantity = parseInt(value);
-            
-            if (key.startsWith('qty-') && quantity > 0) {
-                const productName = key.replace('qty-', '');
-                const produktData = produkty.find(p => p.nazev === productName);
-                const cenaZaKus = produktData ? produktData.cena : 0;
-
-                let slevaKZapisu = 0;
-                if (!slevaPridelena) {
-                    slevaKZapisu = celkovaSleva;
-                    slevaPridelena = true;
-                }
-
-                orderPromises.push(createMovement(productName, 'P', quantity, cenaZaKus, -slevaKZapisu, `${req.body.paymentMethod}, userId:${req.body.userId}`));
-				orderPromises.push(updateInventory(productName, 0, -quantity));
-                orderPromises.push(updateUserCredit(req.body.userId, -req.body.amount-req.body.bonus));
-            }
-        }
-
-        await Promise.all(orderPromises);
-        res.redirect('/payment?status=success');
-
-    } catch (error) {
-        console.error('Error processing payment:', error);
-        res.redirect('/payment?error=processing');
-    }
+    res.redirect(result === 'success' ? '/payment?status=success' : `/payment?error=${result}`);
 });
 
 router.get('/finances', async (req, res) => {
