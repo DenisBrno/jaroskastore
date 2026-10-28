@@ -5,14 +5,14 @@
 </head>
 <body>
     <div class="container">
-        <%- include('partials/auth_bar', { session: session }) %>
+        <%- include('partials/top-bar', { session: session }) %>
 
-        <div class="rozvrh-container">
-            <header class="rozvrh-header">
+        <div class="schedule">
+            <header class="page-header">
                 <h1>Týdenní rozvrh</h1>
                 <a href="/" class="btn-back">← Zpět k produktům</a>
             </header>
-            <div class="rozvrh-grid">
+            <div class="schedule-grid">
                 <% 
                 const dnyNázvy = {
                     "Po": "Pondělí",
@@ -29,9 +29,9 @@
                     const lekceDne = rozvrh[zkratka] || [];
                     const jeDnes = zkratka === dnesZkratka;
                 %>
-                    <div class="den-karta <%= jeDnes ? 'dnes' : '' %>">
+                    <div class="schedule-day <%= jeDnes ? 'is-today' : '' %>">
                         <h2><%= nazev %></h2>
-                        <div class="lekce-list">
+                        <div class="lesson-list">
                             <% if (lekceDne.length > 0) { %>
                                 <% lekceDne.forEach(l => { 
                                     const jeAktualni = aktualniLekce && 
@@ -39,13 +39,13 @@
                                                      l.hodina === aktualniLekce.hodina && 
                                                      l.ucebna === aktualniLekce.ucebna;
                                 %>
-                                    <div class="lekce-item <%= jeAktualni ? 'highlight' : '' %>">
-                                        <span class="cas"><%= l.hodina %></span>
-                                        <span class="ucebna"><%= l.ucebna %></span>
+                                    <div class="lesson <%= jeAktualni ? 'is-current' : '' %>">
+                                        <span class="lesson-time"><%= l.hodina %></span>
+                                        <span class="lesson-room"><%= l.ucebna %></span>
                                     </div>
                                 <% }); %>
                             <% } else { %>
-                                <p class="volno">V tento den nejsem ve škole.</p>
+                                <p class="lesson-empty">V tento den nejsem ve škole.</p>
                             <% } %>
                         </div>
                     </div>

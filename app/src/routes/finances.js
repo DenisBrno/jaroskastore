@@ -164,7 +164,7 @@ router.get('/manage-items', async (req, res) => {
             schoolQuantity: item.sklad_skola
         }));
 
-        res.render('./finances/manageItems', { 
+        res.render('./finances/manage-items', { 
             inventory 
         });
     } catch (error) {

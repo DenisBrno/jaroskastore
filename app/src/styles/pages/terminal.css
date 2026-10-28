@@ -1,0 +1,51 @@
+/* Bistro terminal: two cards side by side, actions underneath */
+.terminal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* Two equal columns that may shrink below their content */
+    grid-template-rows: 1fr auto;   /* Top row expands, bottom row fits content */
+    gap: 16px;                     /* Adjust spacing between boxes */
+    min-height: 100vh;             /* Takes up full screen height */
+    padding: 16px;
+    width: 100%;
+}
+
+.terminal-actions {
+    grid-column: 1 / -1;           /* Spans across both columns */
+    min-height: 60px;              /* Set your desired thickness */
+}
+
+/* Toast logo + quantity controls */
+.toast-panel {
+    margin-bottom: 25px;
+}
+
+.toast-display {
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevents child overflow */
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.toast-image {
+    width: 100%;
+    height: 300px;        /* Fixed 300px out of the 350px container */
+    object-fit: contain;  /* Use 'contain' for logos so it doesn't crop edges, or 'cover' to fill */
+    flex-shrink: 0;       /* Prevents the image from shrinking */
+}
+
+.toast-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;              /* Automatically fills the remaining 50px height */
+    overflow-y: auto;     /* Adds a scrollbar if the content exceeds the space */
+}
+
+@media (max-width: 850px) {
+    .terminal-grid {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 0;
+    }
+}

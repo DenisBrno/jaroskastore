@@ -2,161 +2,144 @@
 <html lang="cs">
 <head>
     <%- include('partials/head', { title: 'QR Platba' }) %>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.1/qrcode.min.js"></script>
-    <style>
-        #qr-wrap {
-            margin-top: 25px;
-            display: flex;
-            justify-content: center;
-            min-height: 250px;
-        }
-        canvas {
-            border: 1px solid #e2e8f0;
-            padding: 10px;
-            background: #fff;
-            border-radius: 12px;
-        }
-        .footer-account { margin-top: 15px; font-size: 14px; color: #64748b; }
-    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.1/qrcode.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <%- include('partials/auth_bar', { session: session }) %>
+        <%- include('partials/top-bar', { session: session }) %>
 
-        <div class="auth-form-container" style="max-width: 600px;">
-            <div class="auth-form">
-                <form action="/payment" method="post" class="order-form">
+        <div class="card card-narrow">
+            <form action="/payment" method="post" class="form">
 
-                    <h2>Generátor QR Platby</h2>
-                    
-                    <div class="product-selection" style="margin-bottom: 25px;">
-                        <label style="display: block; margin-bottom: 10px; font-weight: 700; color: #1e293b;">Vyberte zakoupené položky:</label>
-                        <div class="product-list" style="max-height: 350px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px; background: #f8fafc;">
-                            <% produkty.forEach((product, index) => { %>
-                                <div class="product-item-row" style="display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e2e8f0; background: white; margin-bottom: 5px; border-radius: 8px;">
-                                    <div style="display: flex; align-items: center; gap: 12px;">
-                                        <img src="<%= product.img %>" alt="<%= product.nazev %>" style="width: 40px; height: 40px; object-fit: contain;">
-                                        <div>
-                                            <div style="font-weight: 600; font-size: 0.95em;"><%= product.nazev %></div>
-                                            <div style="font-size: 0.85em; color: #64748b;"><%= product.cena %> Kč | Skladem: <%= product.skladem %></div>
-                                        </div>
-                                    </div>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <button type="button" onclick="changeQty('<%= product.nazev %>', -1)" style="width: 28px; height: 28px; padding: 0; display: flex; align-items: center; justify-content: center; background: #e2e8f0; color: #475569; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">-</button>
-                                        <input type="number" name="qty-<%= product.nazev %>" id="qty-<%= product.nazev %>" class="product-qty" data-price="<%= product.cena %>" value="0" min="0"  readonly style="width: 60px; text-align: center; border: none; background: transparent; font-weight: 700; font-size: 1em; -appearance: textfield;">
-                                        <button type="button" onclick="changeQty('<%= product.nazev %>', 1)" style="width: 28px; height: 28px; padding: 0; display: flex; align-items: center; justify-content: center; background: #004aad; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">+</button>
+                <h2>Generátor QR Platby</h2>
+                
+                <div class="product-picker">
+                    <label class="product-picker-label">Vyberte zakoupené položky:</label>
+                    <div class="product-picker-list">
+                        <% produkty.forEach((product, index) => { %>
+                            <div class="product-picker-item">
+                                <div class="product-picker-info">
+                                    <img src="<%= product.img %>" alt="<%= product.nazev %>" class="product-picker-image">
+                                    <div>
+                                        <div class="product-picker-name"><%= product.nazev %></div>
+                                        <div class="product-picker-meta"><%= product.cena %> Kč | Skladem: <%= product.skladem %></div>
                                     </div>
                                 </div>
-                            <% }) %>
-                        </div>
+                                <div class="qty-control">
+                                    <button type="button" onclick="changeQty('<%= product.nazev %>', -1)" class="qty-btn qty-btn-minus">-</button>
+                                    <input type="number" name="qty-<%= product.nazev %>" id="qty-<%= product.nazev %>" class="product-qty qty-input" data-price="<%= product.cena %>" value="0" min="0" readonly>
+                                    <button type="button" onclick="changeQty('<%= product.nazev %>', 1)" class="qty-btn qty-btn-plus">+</button>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                </div>
+
+
+                <div class="form-group amount-box">
+                    <label for="amount">Celková částka k zaplacení</label>
+                    <input type="number" id="amount" name="amount" value="0" step="1" oninput="updateQR()">
+                    <label for="bonus">Bonus</label>
+                    <input type="number" id="bonus" name="bonus" value="0" step="1">
+                </div>
+                
+                    <label for="paymentMethod">Payment method</label>
+                    <select name="paymentMethod" id="payment-method"  onclick="updatePayment(this.value)">
+                        <option value="qr">QR</option>
+                        <option value="cash">Cash</option>
+                        <option value="credit">Credit</option>
+                    </select>
+                <div class="qr-section" id="qr-section-wrap">
+                    <button type="button" class="btn-submit" onclick="updateQR()">Obnovit QR kód</button>
+
+                    <div class="qr-wrap">
+                        <canvas class="qr-canvas" id="canvas"></canvas>
                     </div>
 
-
-                    <div class="form-group" style="background: #f0f7ff; padding: 15px; border-radius: 12px; border: 1px solid #004aad;">
-                        <label for="amount" style="color: #004aad;">Celková částka k zaplacení</label>
-                        <input type="number" id="amount" name="amount" value="0" step="1" oninput="updateQR()" style="font-size: 1.5em; font-weight: 800; color: #004aad; border-color: #004aad;">
-                        <label for="bonus" style="color: #004aad;">Bonus</label>
-                        <input type="number" id="bonus" name="bonus" value="0" step="1"  style="font-size: 1.5em; font-weight: 800; color: #004aad; border-color: #004aad;">
+                    <div class="qr-account">
+                        Účet: <b>CZ9120100000002103161375</b>
                     </div>
-                    
-                        <label for="paymentMethod">Payment method</label>
-                        <select name="paymentMethod" id="payment-method"  onclick="updatePayment(this.value)">
-                            <option value="qr">QR</option>
-                            <option value="cash">Cash</option>
-                            <option value="credit">Credit</option>
-                        </select>
-                    <div id="qr-section-wrap">
-                        <button type="button" class="btn-submit" onclick="updateQR()" style="margin-top: 20px;">Obnovit QR kód</button>
+                </div>
+                <div id="credit-section-wrap" hidden>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Search and select user..." 
+                        autocomplete="off"
+                    >
+                    <input type="hidden" id="selectedUserId" name="userId">
 
-                        <div id="qr-wrap">
-                            <canvas id="canvas"></canvas>
-                        </div>
-    
-                        <div class="footer-account">
-                            Účet: <b>CZ9120100000002103161375</b>
-                        </div>
-                    </div>
-                    <div id="credit-section-wrap" style="display: none;">
-                        <input 
-                            type="text" 
-                            id="searchInput" 
-                            placeholder="Search and select user..." 
-                            autocomplete="off"
-                        >
-                        <input type="hidden" id="selectedUserId" name="userId">
+                    <div class="dropdown-list" id="dropdownList"></div>
+                    <script>
+                        const searchInput = document.getElementById('searchInput');
+                        const dropdownList = document.getElementById('dropdownList');
+                        const selectedUserId = document.getElementById('selectedUserId');
 
-                        <div class="dropdown-list" id="dropdownList"></div>
-                        <script>
-                            const searchInput = document.getElementById('searchInput');
-                            const dropdownList = document.getElementById('dropdownList');
-                            const selectedUserId = document.getElementById('selectedUserId');
+                        searchInput.addEventListener('input', (e) => {
+                            const searchTerm = e.target.value.toLowerCase();
+                            dropdownList.innerHTML = '';
 
-                            searchInput.addEventListener('input', (e) => {
-                                const searchTerm = e.target.value.toLowerCase();
-                                dropdownList.innerHTML = '';
+                            if (!searchTerm) {
+                                dropdownList.classList.remove('show');
+                                return;
+                            }
 
-                                if (!searchTerm) {
-                                    dropdownList.classList.remove('show');
-                                    return;
-                                }
+                            if(searchTerm.length < 3) {
+                                return;
+                            }
 
-                                if(searchTerm.length < 3) {
-                                    return;
-                                }
+                            let users = []; 
 
-                                let users = []; 
+                            function handleSearch(data) {
+                                users = data; 
+                                console.log("Data is finally loaded:", users);
 
-                                function handleSearch(data) {
-                                    users = data; 
-                                    console.log("Data is finally loaded:", users);
-
-                                    if (users.length > 0) {
-                                    users.forEach(user => {
-                                        const item = document.createElement('div');
-                                        item.classList.add('dropdown-item');
-                                        item.setAttribute('id',`dropdown-item-${user.id}`);
-                                        item.textContent = user.id+' '+user.login+' '+user.kredit+' Kč';
-                                        
-                                        item.addEventListener('click', () => {
-                                            searchInput.value = user.login;        
-                                            selectedUserId.value = user.id;       
-                                            dropdownList.classList.remove('show');
-                                            console.log(`Selected User ID: ${user.id}`);
-                                            let items = [];
-                                            items = document.getElementsByClassName('dropdown-item');
-                                            for (let i = 0; i < items.length; i++) {
-                                                if(items[i].attributes.id.value.endsWith(user.id)){
-                                                    items[i].style.color='red';
-                                                } else {
-                                                    items[i].style.color='black';
-                                                }
-                                            }
-                                        });
-
-                                        dropdownList.appendChild(item);
-                                    });
-                                        dropdownList.classList.add('show');
-                                    } else {
-                                        // If no users match, show a "No results" message or hide it
-                                        dropdownList.classList.remove('show');
-                                    }
+                                if (users.length > 0) {
+                                users.forEach(user => {
+                                    const item = document.createElement('div');
+                                    item.classList.add('dropdown-item');
+                                    item.setAttribute('id',`dropdown-item-${user.id}`);
+                                    item.textContent = user.id+' '+user.login+' '+user.kredit+' Kč';
                                     
-                                }
-
-                                // The fetch operation
-                                fetch(`/api/users?search=${encodeURIComponent(searchTerm)}`)
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        handleSearch(data); 
+                                    item.addEventListener('click', () => {
+                                        searchInput.value = user.login;        
+                                        selectedUserId.value = user.id;       
+                                        dropdownList.classList.remove('show');
+                                        console.log(`Selected User ID: ${user.id}`);
+                                        let items = [];
+                                        items = document.getElementsByClassName('dropdown-item');
+                                        for (let i = 0; i < items.length; i++) {
+                                            if(items[i].attributes.id.value.endsWith(user.id)){
+                                                items[i].style.color='red';
+                                            } else {
+                                                items[i].style.color='black';
+                                            }
+                                        }
                                     });
-                                });
 
-                        </script>
-                    </div>
-                    <button type="submit" class="btn-submit">Zaplatit</button>
-                </form>
-                <a href="/" class="btn-cancel">Zpět na hlavní stránku</a>
-            </div>
+                                    dropdownList.appendChild(item);
+                                });
+                                    dropdownList.classList.add('show');
+                                } else {
+                                    // If no users match, show a "No results" message or hide it
+                                    dropdownList.classList.remove('show');
+                                }
+                                
+                            }
+
+                            // The fetch operation
+                            fetch(`/api/users?search=${encodeURIComponent(searchTerm)}`)
+                                .then(res => res.json())
+                                .then(data => {
+                                    handleSearch(data); 
+                                });
+                            });
+
+                    </script>
+                </div>
+                <button type="submit" class="btn-submit">Zaplatit</button>
+            </form>
+            <a href="/" class="link-cancel">Zpět na hlavní stránku</a>
         </div>
     </div>
 

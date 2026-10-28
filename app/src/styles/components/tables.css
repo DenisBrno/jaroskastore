@@ -1,0 +1,60 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px; /* Důležité: Tabulka se nebude smršťovat, ale raději se začne scrollovat */
+    background: white;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Every table sits in a wrapper so it scrolls instead of stretching the page */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto; /* Tohle zapne vodorovné posouvání */
+}
+
+.table-wrapper-raised {
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Jemný stín, aby tabulka vynikla */
+}
+
+.table-wrapper-bordered {
+    max-height: 600px;
+    overflow-y: auto;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.table-wrapper-bordered thead th {
+    position: sticky;
+    top: 0;
+    background: #f8fafc;
+    z-index: 10;
+}
+
+.table-divider {
+    background-color: #f1f5f9 !important;
+    font-weight: 700;
+    text-align: center;
+    color: #475569;
+}
+
+.table-divider td {
+    padding: 10px;
+}
+
+.table-empty {
+    text-align: center;
+    padding: 40px;
+    color: #64748b;
+}
+
+.table-note {
+    font-size: 0.85em;
+    color: #64748b;
+}

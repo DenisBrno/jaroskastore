@@ -1,0 +1,69 @@
+/* Main white content card */
+.card {
+    width: 100%;
+    background: white;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+.card-narrow {
+    max-width: 600px;
+}
+
+.card-section {
+    margin-bottom: 40px;
+}
+
+.card-section h3 {
+    color: #1e293b;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 10px;
+}
+
+.card-section table {
+    min-width: 600px;
+    margin-bottom: 20px;
+}
+
+/* Smaller card with an underlined title, used for stacked page sections */
+.panel {
+    width: 100%;
+    background: white;
+    padding: 30px;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+.panel h2 {
+    color: #004aad;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 10px;
+}
+
+.panel-description {
+    font-size: 0.9em;
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+/* Raw output (DB console) */
+.output-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-top: 16px;
+    width: 100%;
+    overflow-x: auto; /* query result tables are not wrapped */
+}
+
+@media (max-width: 600px) {
+    .card { padding: 25px; border-radius: 20px; }
+    .panel { padding: 20px; border-radius: 20px; }
+}

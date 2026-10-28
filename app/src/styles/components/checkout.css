@@ -1,0 +1,125 @@
+/* Product picker, amount box and QR code (shared by /payment and the bistro terminal) */
+
+/* Product picker */
+.product-picker {
+    margin-bottom: 25px;
+}
+
+.form .product-picker-label {
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.product-picker-list {
+    max-height: 350px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px;
+    background: #f8fafc;
+}
+
+.product-picker-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #e2e8f0;
+    background: white;
+    margin-bottom: 5px;
+    border-radius: 8px;
+}
+
+.product-picker-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0; /* product name wraps instead of pushing the +/- buttons out */
+}
+
+.product-picker-image {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.product-picker-name { font-weight: 600; font-size: 0.95em; }
+.product-picker-meta { font-size: 0.85em; color: #64748b; }
+
+/* Quantity +/- control */
+.qty-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.qty-btn {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.qty-btn-minus { background: #e2e8f0; color: #475569; }
+.qty-btn-plus { background: #004aad; color: white; }
+
+.form .qty-input {
+    width: 60px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-weight: 700;
+    font-size: 1em;
+}
+
+/* Highlighted total amount */
+.amount-box {
+    background: #f0f7ff;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #004aad;
+}
+
+.form .amount-box label {
+    color: #004aad;
+}
+
+.form .amount-box input {
+    font-size: 1.5em;
+    font-weight: 800;
+    color: #004aad;
+    border-color: #004aad;
+}
+
+/* QR payment */
+.qr-section .btn-submit {
+    margin-top: 20px;
+}
+
+.qr-wrap {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    min-height: 250px;
+}
+
+.qr-canvas {
+    border: 1px solid #e2e8f0;
+    padding: 10px;
+    background: #fff;
+    border-radius: 12px;
+    height: auto !important; /* the QR library sets an inline pixel height; keep it square when max-width shrinks it */
+}
+
+.qr-account { margin-top: 15px; font-size: 14px; color: #64748b; }

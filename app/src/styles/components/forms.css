@@ -1,0 +1,60 @@
+.form h2 {
+    color: #004aad;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form .form-group {
+    margin-bottom: 20px;
+}
+
+.form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.9em;
+    margin-top: 8px;
+}
+
+.form input,
+.form select,
+.form textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    font-size: 1em;
+    background: #f8fafc;
+}
+
+.form textarea {
+    height: 7em;
+}
+
+.form-narrow {
+    max-width: 500px;
+}
+
+/* Single-button form placed inline (logout, toggle) */
+.form-inline {
+    margin: 0;
+}
+
+/* Several forms side by side */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
+    gap: 30px;
+    width: 100%;
+}
+
+.form-error {
+    color: #ef4444;
+    background: #fef2f2;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.85em;
+    margin-bottom: 20px;
+    text-align: center;
+}

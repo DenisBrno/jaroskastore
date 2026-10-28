@@ -1,0 +1,75 @@
+/*
+ * Stylesheet layout
+ *   base.css          reset, page layout, shared typography
+ *   components/*.css  reusable building blocks (buttons, cards, forms, tables, top bar)
+ *   pages/*.css       styles used by a single page or feature
+ *
+ * Naming convention
+ *   - English, kebab-case class names
+ *   - component root:  .card, .btn, .lesson
+ *   - child element:   .card-section, .lesson-time   (prefixed with the root name)
+ *   - variant:         .btn-primary, .stat-card-income
+ *   - state:           .is-today, .is-current       (toggled from templates/JS)
+ *   - IDs are only used as JavaScript hooks, never for styling
+ */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #f8fafc;
+    color: #1e293b;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.5;
+    overflow-x: auto;
+    overflow-wrap: break-word; /* long words/usernames wrap instead of widening the page */
+}
+
+img, canvas {
+    max-width: 100%;
+}
+
+pre {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    font-family: monospace;
+}
+
+/* Page layout */
+.container {
+    max-width: 1100px;
+    width: 100%;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Zarovná děti na střed */
+    gap: 40px;
+}
+
+/* Children are centered (shrink-to-fit), so cap them to the container width */
+.container > * {
+    max-width: 100%;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.page-header h1 { font-size: 2.5em; color: #004aad; margin: 0; }
+
+@media (max-width: 600px) {
+    .container { padding: 20px 15px; gap: 25px; }
+    .page-header { flex-direction: column; gap: 15px; text-align: center; }
+}

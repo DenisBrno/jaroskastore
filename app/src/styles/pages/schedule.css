@@ -1,0 +1,63 @@
+.schedule { width: 100%; }
+
+.schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: 24px;
+}
+
+.schedule-day {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    border: 2px solid transparent;
+}
+
+.schedule-day.is-today {
+    border-color: #004aad;
+    background: #f0f7ff;
+}
+
+.schedule-day h2 {
+    color: #004aad;
+    margin: 0 0 20px 0;
+    font-size: 1.5em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.schedule-day.is-today h2::after {
+    content: "DNES";
+    font-size: 0.5em;
+    background: #004aad;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.lesson-list { display: flex; flex-direction: column; gap: 12px; }
+
+.lesson {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+
+.lesson.is-current {
+    background: #004aad;
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 74, 173, 0.3);
+}
+
+.lesson-time { font-weight: 700; color: #475569; }
+.lesson-room { font-weight: 600; }
+.lesson.is-current .lesson-time { color: white; }
+
+.lesson-empty { color: #94a3b8; font-style: italic; text-align: center; margin: 20px 0; }

@@ -5,14 +5,14 @@
 </head>
 <body>
     <div class="container">
-        <%- include('partials/auth_bar', { session: session }) %>
+        <%- include('partials/top-bar', { session: session }) %>
 
-        <div class="admin-panel">
+        <div class="card">
             <h2>Admin Panel</h2>
             
-            <section class="admin-section">
+            <section class="card-section">
                 <h3>Posledních 10 objednávek</h3>
-                <div class="table-container">
+                <div class="table-wrapper table-wrapper-raised">
                     <table>
                         <thead>
                             <tr>
@@ -41,12 +41,12 @@
                                         <td><%= o.poznamka %></td>
                                         <td>
                                             <div class="status-cell">
-                                                <span class="status-badge-admin <%= o.status ? 'status-completed' : 'status-pending' %>">
+                                                <span class="badge <%= o.status ? 'badge-completed' : 'badge-pending' %>">
                                                     <%= o.status ? 'Vyřízeno' : 'Čeká' %>
                                                 </span>
-                                                <form action="/admin/toggle-order" method="POST" style="margin:0">
+                                                <form action="/admin/toggle-order" method="POST" class="form-inline">
                                                     <input type="hidden" name="orderId" value="<%= o.id %>">
-                                                    <button type="submit" class="btn-toggle" title="Změnit stav">🔄</button>
+                                                    <button type="submit" class="btn-icon" title="Změnit stav">🔄</button>
                                                 </form>
                                             </div>
                                         </td>
@@ -60,9 +60,9 @@
                 </div>
             </section>
 
-            <section class="admin-section">
+            <section class="card-section">
                 <h3>Vytvořit účet pro zákazníka</h3>
-                <form action="/admin/create-user" method="POST" class="admin-form">
+                <form action="/admin/create-user" method="POST" class="form form-narrow">
                     <div class="form-group">
                         <label for="new_username">Uživatelské jméno</label>
                         <input type="text" id="new_username" name="username" required>
@@ -75,10 +75,10 @@
                 </form>
             </section>
 
-            <section class="admin-section">
+            <section class="card-section">
                 <h3>Dobít kredit zákazníkovi</h3>
-                <form action="/admin/addCredit" method="POST" class="admin-form">
-                    <div id="user-selection-wrap">
+                <form action="/admin/addCredit" method="POST" class="form form-narrow">
+                    <div class="form-group" id="user-selection-wrap">
                         <label for="charge">Zákazník</label>
                         <input 
                             type="text" 
@@ -165,7 +165,7 @@
                 </form>
             </section>
             
-            <a href="/" class="btn-cancel">Zpět na hlavní stránku</a>
+            <a href="/" class="link-cancel">Zpět na hlavní stránku</a>
         </div>
     </div>
 </body>
