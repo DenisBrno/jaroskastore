@@ -7,6 +7,7 @@ const { DB_Pool } = require('./utils/db');
 const config = require('./config');
 const { loadUser } = require('./middleware/auth');
 const { csrfProtection } = require('./middleware/csrf');
+const { multipartForms } = require('./middleware/upload');
 const { migrateToLatest } = require('./utils/migrate');
 const { MIN_PASSWORD_LENGTH } = require('./utils/password');
 
@@ -81,6 +82,9 @@ app.use(session({
 
 // Logged-in user and role for routes (req.user) and views (user, hasRole)
 app.use(loadUser);
+
+// File upload forms, parsed here so that the CSRF check can read their token
+app.use(multipartForms);
 
 // Every POST needs the form's CSRF token
 app.use(csrfProtection);
