@@ -1,24 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const { requireTerminal } = require('../middleware/auth');
+const { toProductView } = require('../utils/products');
 const { getProductsForSale } = require('../utils/db');
 const { recordShopPayment } = require('../utils/payment');
-const path = require('path');
 
 
 router.get('/toasty/terminal', requireTerminal, async (req, res) => {
     try {
-        const inventoryResult = await getProductsForSale();
-        const inventory = inventoryResult.map(item => ({
-            nazev: item.produkt,
-            cena: item.cena,
-            skladem: item.sklad_skola,
-            img: path.posix.join('/resources', String(item.img))
-        }));
+        const inventory = (await getProductsForSale()).map(toProductView);
 
         res.render('./toasty/terminal', {
             produkty: inventory,
-            logoPath: path.posix.join('/resources', "/img/logo.png"),
+            logoPath: '/resources/img/logo.png',
             status: req.query.status,
             error: req.query.error
         }

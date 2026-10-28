@@ -1,0 +1,18 @@
+<%# Result of a payment form (?status= / ?error= set by utils/payment.js) %>
+<% if (status === 'success') { %>
+    <div class="form-success">Platba byla úspěšně zaznamenána. ✅</div>
+<% } else if (error === 'loading_products') { %>
+    <div class="form-error">Nepodařilo se načíst produkty. Zkuste to prosím znovu.</div>
+<% } else if (error === 'processing') { %>
+    <div class="form-error">Chyba při zpracování platby. Zkuste to prosím znovu.</div>
+<% } else if (error === 'not_for_sale') { %>
+    <div class="form-error">Některý z vybraných produktů není v prodeji, platba nebyla provedena.</div>
+<% } else if (error === 'empty') { %>
+    <div class="form-error">Nebyl vybrán žádný produkt z Jaroska.store.</div>
+<% } else if (error === 'invalid') { %>
+    <div class="form-error">Neplatné údaje platby (sleva nesmí být vyšší než částka).</div>
+<% } else if (error === 'no_user') { %>
+    <div class="form-error">Při platbě kreditem vyberte zákazníka.</div>
+<% } else if (error === 'negative_credit') { %>
+    <div class="form-error">Zákazník má záporný kredit, platba kreditem není možná.</div>
+<% } %>

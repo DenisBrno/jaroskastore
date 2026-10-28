@@ -11,15 +11,13 @@
     "seed:down": "db-migrate down:seed"
   },
   "dependencies": {
-    "body-parser": "^2.3.0",
     "connect-pg-simple": "^10.0.0",
-    "cookie-parser": "^1.4.7",
+    "db-migrate": "^1.8.1",
+    "db-migrate-pg": "^1.7.1",
     "dotenv": "^17.4.2",
     "ejs": "^5.0.2",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
-    "qs": "^6.16.0",
-    "db-migrate": "^1.8.1",
-    "db-migrate-pg": "^1.7.1"
+    "pg": "^8.23.1"
   }
 }

@@ -1,0 +1,24 @@
+<%# Product quantity picker, submits qty-<product name>; params: produkty, label (optional) %>
+<div class="product-picker">
+    <% if (locals.label) { %>
+        <label class="product-picker-label"><%= label %></label>
+    <% } %>
+    <div class="product-picker-list">
+        <% produkty.forEach(product => { %>
+            <div class="product-picker-item">
+                <div class="product-picker-info">
+                    <img src="<%= product.img %>" alt="<%= product.nazev %>" class="product-picker-image">
+                    <div>
+                        <div class="product-picker-name"><%= product.nazev %></div>
+                        <div class="product-picker-meta"><%= product.cena %> Kč | Skladem: <%= product.skladem %></div>
+                    </div>
+                </div>
+                <div class="qty-control">
+                    <button type="button" class="qty-btn qty-btn-minus" data-qty-step="-1">-</button>
+                    <input type="number" name="qty-<%= product.nazev %>" class="product-qty qty-input" data-price="<%= product.cena %>" value="0" min="0" readonly>
+                    <button type="button" class="qty-btn qty-btn-plus" data-qty-step="1">+</button>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</div>

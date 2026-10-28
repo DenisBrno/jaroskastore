@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { requireAdmin } = require('../middleware/auth');
-const { getOrders, createUser, toggleOrderStatus, updateUserCredit, getOrderDetails, query } = require('../utils/db');
+const { getOrders, createUser, toggleOrderStatus, updateUserCredit, query } = require('../utils/db');
 
 router.get('/admin', requireAdmin, async (req, res) => {
     try {
@@ -58,7 +58,7 @@ const escapeHtml = (value) => String(value)
 function generateTableHtml(resOrError) {
   // 1. Handle error strings
   if (typeof resOrError === 'string') {
-    return `<div class="error-text">Chyba: ${escapeHtml(resOrError)}</div>`;
+    return `<div class="form-error">Chyba: ${escapeHtml(resOrError)}</div>`;
   }
 
   const db_res = resOrError;
@@ -74,11 +74,11 @@ function generateTableHtml(resOrError) {
         const displayVal = val === null ? 'null' : typeof val === 'object' ? JSON.stringify(val) : val;
         return `<td>${escapeHtml(displayVal)}</td>`;
       }).join('');
-      return `<tr><td class="index-col">${idx}</td>${cells}</tr>`;
+      return `<tr><td>${idx}</td>${cells}</tr>`;
     }).join('');
 
     return `
-      <table class="console-table">
+      <table>
         <thead>
           <tr><th>#</th>${headerRow}</tr>
         </thead>
@@ -95,7 +95,7 @@ function generateTableHtml(resOrError) {
     if (db_res.rowCount !== null && db_res.rowCount !== undefined) {
       msg += `, ovlivněno řádků: ${db_res.rowCount}`;
     }
-    return `<div class="success-text">${msg}</div>`;
+    return `<div class="form-success">${msg}</div>`;
   }
 
   return `<p>Žádná data.</p>`;
@@ -108,7 +108,6 @@ router.get('/admin/db-query', requireAdmin, async (req, res) => {
 });
 
 router.post('/admin/db-query', requireAdmin, async (req, res) => {
-    console.log(req.body);
     try {
         const db_res = await query(req.body.query);
         const tableHtml = generateTableHtml(db_res);

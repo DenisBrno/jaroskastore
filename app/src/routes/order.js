@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { requireLogin } = require('../middleware/auth');
-const fs = require('fs').promises;
-const path = require('path');
 const { getProductsForSale, addOrder, getUserCredit, updateUserCredit, chargeUserCredit } = require('../utils/db');
 
 router.get('/order', requireLogin, async (req, res) => {

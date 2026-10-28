@@ -1,10 +1,9 @@
 const express = require('express');
-const cookieParser = require('cookie-parser');
 const path = require('path');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const { DB_Pool } = require('./utils/db');
-const config = require('./config'); // nebo správná cesta ke config.js
+const config = require('./config');
 const { loadUser } = require('./middleware/auth');
 
 const app = express();
@@ -13,7 +12,6 @@ const port = 3000;
 // Middleware
 app.use('/resources', express.static(config.DATA_DIR)); 
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 // Stylesheets and scripts can be loaded by pages but not opened directly
 const blockDirectNavigation = (req, res, next) => {
     if (req.headers['sec-fetch-dest'] === 'document') {
@@ -26,6 +24,7 @@ app.use('/scripts', blockDirectNavigation, express.static(path.join(__dirname, '
 
 // View engine
 app.set('view engine', 'ejs');
+app.locals.iban = config.IBAN;
 app.set('views', path.join(__dirname, 'views'));
 
 // Session store configuration

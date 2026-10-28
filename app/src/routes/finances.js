@@ -1,19 +1,13 @@
-const path = require('path');
 const express = require('express');
 const router = express.Router();
 const { requireAdmin } = require('../middleware/auth');
+const { toProductView } = require('../utils/products');
 const { getInventory, getProductsForSale, getMovementsSum, getMovements, createProduct, transferItem } = require('../utils/db');
 const { recordShopPayment } = require('../utils/payment');
 
 router.get('/payment', requireAdmin, async (req, res) => {
     try {
-        const inventoryResult = await getProductsForSale();
-        const produkty = inventoryResult.map(item => ({
-            nazev: item.produkt,
-            cena: item.cena,
-            skladem: item.sklad_skola,
-            img: path.posix.join('/resources', String(item.img))
-        }));
+        const produkty = (await getProductsForSale()).map(toProductView);
 
         res.render('payment', { produkty, status: req.query.status, error: req.query.error });
     } catch (error) {
@@ -34,30 +28,14 @@ router.post('/payment', requireAdmin, async (req, res) => {
 
 router.get('/finances', requireAdmin, async (req, res) => {
     try {
-		const totalExpenses = await getMovementsSum(null, 'N');
-    	const totalIncome = await getMovementsSum(null, 'P');
+        const totalExpenses = await getMovementsSum(null, 'N');
+        const totalIncome = await getMovementsSum(null, 'P');
+        const pohyby = await getMovements();
 
-        const inventoryResult = await getInventory();
-        const inventory = inventoryResult.map(item => ({
-            name: item.produkt,
-            homeQuantity: item.sklad_doma,
-            schoolQuantity: item.sklad_skola
-        }));
-
-		const pohybyRes = await getMovements(null, null, 'id, produkt, mnozstvi, celkem, cas, poznamka');
-		const pohyby = await pohybyRes.map(pohyb => ({
-			produkt: pohyb.produkt,
-			mnozstvi: pohyb.mnozstvi,
-			celkem:  pohyb.celkem,
-			cas: pohyb.cas,
-			poznamka: pohyb.poznamka
-		}));
-		
-        res.render('./finances/overview', { 
-            totalIncome, 
-            totalExpenses, 
-            inventory, 
-			pohyby
+        res.render('./finances/overview', {
+            totalIncome,
+            totalExpenses,
+            pohyby
         });
     } catch (error) {
         console.error('Error loading financial data:', error);
