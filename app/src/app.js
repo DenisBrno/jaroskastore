@@ -17,7 +17,7 @@ app.use(cookieParser());
 // Stylesheets and scripts can be loaded by pages but not opened directly
 const blockDirectNavigation = (req, res, next) => {
     if (req.headers['sec-fetch-dest'] === 'document') {
-        return res.status(403).send('Forbidden');
+        return res.status(403).send('Přístup odepřen');
     }
     next();
 };

@@ -58,7 +58,7 @@ const escapeHtml = (value) => String(value)
 function generateTableHtml(resOrError) {
   // 1. Handle error strings
   if (typeof resOrError === 'string') {
-    return `<div class="error-text">Error: ${escapeHtml(resOrError)}</div>`;
+    return `<div class="error-text">Chyba: ${escapeHtml(resOrError)}</div>`;
   }
 
   const db_res = resOrError;
@@ -80,7 +80,7 @@ function generateTableHtml(resOrError) {
     return `
       <table class="console-table">
         <thead>
-          <tr><th>(index)</th>${headerRow}</tr>
+          <tr><th>#</th>${headerRow}</tr>
         </thead>
         <tbody>
           ${dataRows}
@@ -91,19 +91,19 @@ function generateTableHtml(resOrError) {
 
   // 3. Handle DDL / DML commands with no data rows (ALTER, INSERT, UPDATE, DELETE, etc.)
   if (db_res && db_res.command) {
-    let msg = `Query executed successfully. (${escapeHtml(db_res.command)})`;
+    let msg = `Dotaz proveden (${escapeHtml(db_res.command)})`;
     if (db_res.rowCount !== null && db_res.rowCount !== undefined) {
-      msg += ` - ${db_res.rowCount} row(s) affected.`;
+      msg += `, ovlivněno řádků: ${db_res.rowCount}`;
     }
     return `<div class="success-text">${msg}</div>`;
   }
 
-  return `<p>No data found.</p>`;
+  return `<p>Žádná data.</p>`;
 }
 
 router.get('/admin/db-query', requireAdmin, async (req, res) => {
     res.render('./db-query', {
-        dbOutput: '<p>No query executed yet.</p>'
+        dbOutput: '<p>Zatím nebyl proveden žádný dotaz.</p>'
     });
 });
 

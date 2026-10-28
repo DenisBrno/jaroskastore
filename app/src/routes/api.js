@@ -16,7 +16,7 @@ router.get('/api/users', requireTerminal, async (req, res) => {
             users
         )
     } catch (err) {
-        res.status(500).send('Chyba při načítání objednávek');
+        res.status(500).json({ error: 'Chyba při načítání uživatelů' });
     }
 });
 

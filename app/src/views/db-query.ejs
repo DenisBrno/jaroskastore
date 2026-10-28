@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-    <%- include('partials/head', { title: 'Admin Panel' }) %>
+    <%- include('partials/head', { title: 'Databázová konzole' }) %>
 </head>
 <body>
     <div class="container">
         <%- include('partials/top-bar') %>
         
         <div class="card">
-            <h2>DB Query</h2>
+            <h2>Databázový dotaz</h2>
             <form action="/admin/db-query" method="post" class="form">
                 <textarea name="query" id="query"></textarea>
                 <button type="submit" class="btn-submit">Odeslat</button>
             </form>
         </div>
         <div class="output-card">
-            <h3>DB Output</h3>
+            <h3>Výsledek</h3>
             <%- dbOutput %>
         </div>
     </div>

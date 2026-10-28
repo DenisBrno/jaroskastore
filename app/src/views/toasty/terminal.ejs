@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-    <%- include('../partials/head', { title: 'Bistro Napoleon Terminal' }) %>
+    <%- include('../partials/head', { title: 'Terminál Bistra Napoleon' }) %>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.1/qrcode.min.js"></script>
 </head>
 <body>
@@ -44,10 +44,10 @@
                         <input type="number" id="amount-toast" value="0" step="1" oninput="updateToastQR()">
                     </div>
 
-                    <label for="payment-method-toast">Payment method</label>
+                    <label for="payment-method-toast">Způsob platby</label>
                     <select id="payment-method-toast" onchange="updatePaymentToast(this.value)">
                         <option value="qr">QR</option>
-                        <option value="cash">Cash</option>
+                        <option value="cash">Hotově</option>
                     </select>
                     <div class="qr-section" id="qr-section-wrap-toast">
                         <button type="button" class="btn-submit" onclick="updateToastQR()">Obnovit QR kód</button>
@@ -94,11 +94,11 @@
                     <input type="number" id="sleva" name="sleva" value="0" min="0" step="1" oninput="updateQR()">
                 </div>
                 
-                <label for="payment-method">Payment method</label>
+                <label for="payment-method">Způsob platby</label>
                 <select name="paymentMethod" id="payment-method" onchange="updatePayment(this.value)">
                     <option value="qr">QR</option>
-                    <option value="cash">Cash</option>
-                    <option value="credit">Credit</option>
+                    <option value="cash">Hotově</option>
+                    <option value="credit">Kredit</option>
                 </select>
                 <div class="qr-section" id="qr-section-wrap">
                     <button type="button" class="btn-submit" onclick="updateQR()">Obnovit QR kód</button>

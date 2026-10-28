@@ -1,6 +1,7 @@
 const { getProductsForSale, updateUserCredit, chargeUserCredit, createMovement, updateInventory } = require('./db');
 
-const PAYMENT_METHODS = ['qr', 'cash', 'credit'];
+// Payment method -> label written to the movement note
+const PAYMENT_METHODS = { qr: 'QR', cash: 'hotově', credit: 'kredit' };
 
 /**
  * Records a Jaroska.store sale submitted from a payment form (/payment, bistro terminal).
@@ -46,7 +47,7 @@ const recordShopPayment = async (body, { movementType, note, authorId }) => {
     const kZaplaceni = castka - sleva;
     const paymentMethod = body.paymentMethod;
 
-    if (kZaplaceni < 0 || !PAYMENT_METHODS.includes(paymentMethod)) {
+    if (kZaplaceni < 0 || !Object.hasOwn(PAYMENT_METHODS, paymentMethod)) {
         return 'invalid';
     }
 
@@ -66,7 +67,7 @@ const recordShopPayment = async (body, { movementType, note, authorId }) => {
         }
 
         const rozdil = kZaplaceni - cenaPolozek;
-        const poznamka = [paymentMethod, paymentMethod === 'credit' && `userId:${userId}`, note].filter(Boolean).join(', ');
+        const poznamka = [PAYMENT_METHODS[paymentMethod], paymentMethod === 'credit' && `userId:${userId}`, note].filter(Boolean).join(', ');
 
         await Promise.all(polozky.flatMap((p, i) => [
             createMovement(p.nazev, movementType, p.mnozstvi, p.cena, i === 0 ? rozdil : 0, poznamka, authorId),
