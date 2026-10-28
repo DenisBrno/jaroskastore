@@ -1,14 +1,37 @@
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
+const helmet = require('helmet');
 const pgSession = require('connect-pg-simple')(session);
 const { DB_Pool } = require('./utils/db');
 const config = require('./config');
 const { loadUser } = require('./middleware/auth');
+const { csrfProtection } = require('./middleware/csrf');
 const { migrateToLatest } = require('./utils/migrate');
+const { MIN_PASSWORD_LENGTH } = require('./utils/password');
 
 const app = express();
 const port = 3000;
+
+// In production the app runs behind the ingress (one proxy), which terminates TLS:
+// trust its X-Forwarded-* headers for the client IP and https
+if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+}
+
+// Security headers. Scripts may only come from this app and cdnjs (QR library, pinned with SRI),
+// inline scripts and event handlers are blocked.
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            'script-src': ["'self'", 'https://cdnjs.cloudflare.com'],
+            'frame-ancestors': ["'none'"],
+            // Production is https only, locally the app runs over plain http
+            'upgrade-insecure-requests': process.env.NODE_ENV === 'production' ? [] : null,
+        },
+    },
+    strictTransportSecurity: { maxAge: 180 * 24 * 60 * 60, includeSubDomains: false },
+}));
 
 // Middleware
 app.use('/resources', express.static(config.DATA_DIR)); 
@@ -26,6 +49,7 @@ app.use('/scripts', blockDirectNavigation, express.static(path.join(__dirname, '
 // View engine
 app.set('view engine', 'ejs');
 app.locals.iban = config.IBAN;
+app.locals.minPasswordLength = MIN_PASSWORD_LENGTH;
 app.set('views', path.join(__dirname, 'views'));
 
 // Session store configuration
@@ -44,16 +68,22 @@ app.use(session({
     secret: process.env.SESSION_SECRET, 
     resave: false,
     saveUninitialized: false,
+    // Every request renews the expiry, so a login ends after 7 days without activity
+    rolling: true,
     cookie: {
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         httpOnly: true,
-        secure: false, 
+        // Secure (https only) whenever the request came over https
+        secure: 'auto',
         sameSite: 'lax'
     }
 }));
 
 // Logged-in user and role for routes (req.user) and views (user, hasRole)
 app.use(loadUser);
+
+// Every POST needs the form's CSRF token
+app.use(csrfProtection);
 
 app.use((req, res, next) => {
     console.log(`[DEBUG] ${req.method} ${req.url} - User: ${req.user ? req.user.login : 'guest'}`);
@@ -89,9 +119,10 @@ app.get('/health', async (req, res) => {
       timestamp: new Date().toISOString()
     });
   } catch (err) {
+    // Details only in the log, the endpoint is public
+    console.error('[HEALTH] Database check failed:', err.message);
     res.status(503).json({
-      status: 'unhealthy',
-      error: err.message
+      status: 'unhealthy'
     });
   }
 });

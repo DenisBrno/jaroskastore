@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <%- include('partials/head', { title: 'QR Platba' }) %>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.1/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.1/qrcode.min.js" integrity="sha512-PEhlWBZBrQL7flpJPY8lXx8tIN7HWX912GzGhFTDqA3iWFrakVH3lVHomCoU9BhfKzgxfEk6EG2C3xej+9srOQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/scripts/checkout.js" defer></script>
 </head>
 <body>
@@ -11,6 +11,7 @@
 
         <div class="card card-narrow">
             <form action="/payment" method="post" class="form">
+                <%- include('partials/csrf') %>
                 <h2>Generátor QR Platby</h2>
 
                 <%- include('partials/payment-messages') %>

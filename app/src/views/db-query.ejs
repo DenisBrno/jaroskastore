@@ -10,6 +10,7 @@
         <div class="card">
             <h2>Databázový dotaz</h2>
             <form action="/admin/db-query" method="post" class="form">
+                <%- include('partials/csrf') %>
                 <textarea name="query" id="query"></textarea>
                 <button type="submit" class="btn-submit">Odeslat</button>
             </form>

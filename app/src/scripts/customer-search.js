@@ -1,5 +1,7 @@
 // Customer search used by views/partials/customer-search.ejs
-document.querySelectorAll('[data-customer-search]').forEach((root) => {
+// The partial can be included several times, so each search box is set up only once
+document.querySelectorAll('[data-customer-search]:not([data-ready])').forEach((root) => {
+    root.dataset.ready = '';
     const input = root.querySelector('.customer-search-input');
     const selectedId = root.querySelector('.customer-search-id');
     const list = root.querySelector('.customer-search-list');

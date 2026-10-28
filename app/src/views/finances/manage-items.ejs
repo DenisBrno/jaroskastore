@@ -40,6 +40,7 @@
                 <h2>Přemístit produkt</h2>
                 <p class="panel-description">Převod zásob z domácího skladu do školy.</p>
                 <form action="/manage-items/transfer" method="POST" class="form">
+                    <%- include('../partials/csrf') %>
                     <div class="form-group">
                         <label for="produkt">Produkt</label>
                         <select id="produkt" name="produkt" required>
@@ -61,6 +62,7 @@
                 <h2>Nový produkt</h2>
                 <p class="panel-description">Přidání úplně nového druhu zboží do evidence.</p>
                 <form action="/manage-items/create" method="POST" class="form">
+                    <%- include('../partials/csrf') %>
                     <div class="form-group">
                         <label for="produkt">Název produktu</label>
                         <input type="text" id="produkt" name="produkt" required placeholder="např. Coca Cola">

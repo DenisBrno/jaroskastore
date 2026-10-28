@@ -1,13 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const { requireAdmin } = require('../middleware/auth');
-const { getOrders, createUser, toggleOrderStatus, updateUserCredit, query } = require('../utils/db');
+const { getOrders, createUser, setUserPassword, toggleOrderStatus, updateUserCredit, query } = require('../utils/db');
+const { isValidNewPassword } = require('../utils/password');
 
 router.get('/admin', requireAdmin, async (req, res) => {
     try {
         const objednavky = await getOrders();
         res.render('admin', {
-            objednavky: objednavky
+            objednavky: objednavky,
+            status: req.query.status,
+            error: req.query.error
         });
     } catch (err) {
         res.status(500).send('Chyba při načítání objednávek');
@@ -15,13 +18,37 @@ router.get('/admin', requireAdmin, async (req, res) => {
 });
 
 router.post('/admin/create-user', requireAdmin, async (req, res) => {
-    const { username, password } = req.body;
-    const success = await createUser(username, password);
+    const username = String(req.body.username || '').trim();
+    const { password } = req.body;
 
-    if (success) {
-        res.redirect('/admin?status=user_created');
-    } else {
+    if (!username || !isValidNewPassword(password)) {
+        return res.redirect('/admin?error=invalid_password');
+    }
+    try {
+        const success = await createUser(username, password);
+        res.redirect(success ? '/admin?status=user_created' : '/admin?error=user_exists');
+    } catch (err) {
         res.redirect('/admin?error=create_failed');
+    }
+});
+
+// Sets a new password for any user and logs them out on all devices
+router.post('/admin/set-password', requireAdmin, async (req, res) => {
+    const userId = parseInt(req.body.userId);
+    const { password } = req.body;
+
+    if (Number.isNaN(userId)) {
+        return res.redirect('/admin?error=no_user');
+    }
+    if (!isValidNewPassword(password)) {
+        return res.redirect('/admin?error=invalid_password');
+    }
+    try {
+        const success = await setUserPassword(userId, password);
+        res.redirect(success ? '/admin?status=password_set' : '/admin?error=no_user');
+    } catch (err) {
+        console.error('Setting the password failed:', err);
+        res.redirect('/admin?error=password_failed');
     }
 });
 
@@ -32,19 +59,30 @@ router.post('/admin/toggle-order', requireAdmin, async (req, res) => {
 });
 
 
-router.post('/admin/addCredit',  requireAdmin, async (req, res) => {
-    const {userId, charge} = req.body;
-    try {
-        const result = await updateUserCredit(userId, charge);
-        console.log(userId, charge);
+// Largest credit change in one step, protects against typos
+const MAX_CREDIT_CHANGE = 10000;
 
-        // add result check
-        res.redirect('/admin');
+router.post('/admin/addCredit', requireAdmin, async (req, res) => {
+    const userId = parseInt(req.body.userId);
+    const charge = String(req.body.charge || '').trim();
+    const amount = Number(charge);
 
-    } catch (err) {
-        res.status(500).send('Chyba při dobíjení kreditu.');
+    if (Number.isNaN(userId)) {
+        return res.redirect('/admin?error=no_user');
     }
-
+    // Whole koruny, may be negative to correct a mistake
+    if (!/^-?\d+$/.test(charge) || amount === 0 || Math.abs(amount) > MAX_CREDIT_CHANGE) {
+        return res.redirect('/admin?error=invalid_charge');
+    }
+    try {
+        if (!(await updateUserCredit(userId, amount))) {
+            return res.redirect('/admin?error=no_user');
+        }
+        console.log(`[ADMIN] ${req.user.login} changed credit of user ${userId} by ${amount} Kč`);
+        res.redirect('/admin?status=credit_added');
+    } catch (err) {
+        res.redirect('/admin?error=credit_failed');
+    }
 });
 
 const escapeHtml = (value) => String(value)

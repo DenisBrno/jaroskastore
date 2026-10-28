@@ -1,5 +1,8 @@
 # Throwaway PostgreSQL with the schema from migrations/ + test runner.
 #   npm run test:docker   (runs the tests, then removes the db container and volumes)
+# Own project name: sharing the dev project would replace and then remove the dev db container
+name: jaroskastore-test
+
 services:
   db:
     # Same major version as the HelmForge postgresql chart in production

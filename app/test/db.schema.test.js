@@ -38,6 +38,22 @@ describe('db.js against the migrated schema', () => {
     userId = user.id;
   });
 
+  test('passwords are stored hashed, duplicate logins are refused', async () => {
+    const { rows } = await db.query('SELECT password FROM uzivatele_tb WHERE id = $1', [userId]);
+    assert.match(rows[0].password, /^scrypt\$/);
+    assert.equal(await db.verifyUser(LOGIN, 'wrong'), null);
+    assert.equal(await db.createUser(LOGIN.toUpperCase(), 'other'), false);
+    // Also enforced by the database
+    await assert.rejects(db.query('INSERT INTO uzivatele_tb (login) VALUES ($1)', [LOGIN.toUpperCase()]), { code: '23505' });
+  });
+
+  test('setUserPassword + checkUserPassword', async () => {
+    assert.equal(await db.setUserPassword(userId, 'new-secret'), true);
+    assert.equal(await db.checkUserPassword(userId, 'secret'), false);
+    assert.equal(await db.checkUserPassword(userId, 'new-secret'), true);
+    assert.equal(await db.setUserPassword(-12345, 'x'), false);
+  });
+
   test('getUsers finds the user', async () => {
     const users = await db.getUsers(LOGIN);
     assert.deepEqual(Object.keys(users[0]).sort(), ['id', 'kredit', 'login']);
@@ -45,7 +61,8 @@ describe('db.js against the migrated schema', () => {
   });
 
   test('updateUserCredit + getUserCredit', async () => {
-    await db.updateUserCredit(userId, 50);
+    assert.equal(await db.updateUserCredit(userId, 50), true);
+    assert.equal(await db.updateUserCredit(-12345, 50), false);
     const [row] = await db.getUserCredit(userId);
     assert.equal(row.kredit, 50);
   });
@@ -88,7 +105,9 @@ describe('db.js against the migrated schema', () => {
   });
 
   test('transferItem + updateInventory', async () => {
-    await db.transferItem(PRODUCT, 1);
+    assert.equal(await db.transferItem(PRODUCT, 1), true);
+    // Only 4 left at home
+    assert.equal(await db.transferItem(PRODUCT, 5), false);
     const res = await db.updateInventory(PRODUCT, 1, '');
     assert.equal(res.rowCount, 1);
 

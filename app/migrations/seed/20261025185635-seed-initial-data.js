@@ -12,9 +12,9 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db) {
   const sql = `
-    -- 1. uzivatele_tb
+    -- 1. uzivatele_tb (dev login Denis / 12, the password is stored as a scrypt hash)
     INSERT INTO uzivatele_tb (id, login, password, kredit, role) VALUES
-    (0, 'Denis', '12', 100, 'admin')
+    (0, 'Denis', 'scrypt$16384$8$1$LIBJtAMTDjX56fO6fXi8eQ==$8cPxpqQ22hySiych9L/IOq+9ldfWmhhMN0oWOmM0oSX3KC4cUFBZ7skOvxlEcxnKhUkPQLyLxhwVgVvVTmsVpQ==', 100, 'admin')
     ON CONFLICT (id) DO NOTHING;
 
     -- 2. sklad

@@ -102,7 +102,7 @@ router.post('/manage-items/create', requireAdmin, async (req, res) => {
     const numSklad_doma = parseInt(sklad_doma);
     const numSklad_skola = parseInt(sklad_skola);
 
-    if (produkt && !isNaN(numSklad_doma) && !isNaN(numSklad_skola)) {
+    if (produkt && numSklad_doma >= 0 && numSklad_skola >= 0) {
         const success = await createProduct(produkt, numSklad_doma, numSklad_skola);
         if (success) {
             res.redirect('/manage-items');
@@ -117,12 +117,12 @@ router.post('/manage-items/create', requireAdmin, async (req, res) => {
 router.post('/manage-items/transfer', requireAdmin, async (req, res) => {
     const { produkt, mnozstvi } = req.body;
     const numQuantity = parseInt(mnozstvi);
-    if (produkt && !isNaN(numQuantity)) {
+    if (produkt && numQuantity > 0) {
         const success = await transferItem(produkt, numQuantity);
         if (success) {
             res.redirect('/manage-items');
         } else {
-            res.status(500).send('Chyba při přemístění produktu');
+            res.status(400).send('Doma není dost kusů tohoto produktu');
         }
     } else {
         res.status(400).send('Neplatné vstupy pro přemístění produktu');
