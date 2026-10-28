@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <%- include('partials/head', { title: title }) %>
+</head>
+<body>
+    <div class="container">
+        <%- include('partials/top-bar') %>
+
+        <div class="card card-narrow">
+            <div class="form">
+                <h2><%= title %></h2>
+                <p class="panel-description"><%= message %></p>
+                <a href="/" class="link-cancel">Zpět na hlavní stránku</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

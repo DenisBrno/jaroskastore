@@ -1,15 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const { requireTerminal } = require('../middleware/auth');
 const { getInventory } = require('../utils/db');
 const { recordShopPayment } = require('../utils/payment');
 const path = require('path');
 
 
-router.get('/toasty/terminal', async (req, res) => {
-    if (!req.session.username || ![0, 5, 6].includes(req.session.userId)) {
-        return res.redirect('/login');
-    }
-
+router.get('/toasty/terminal', requireTerminal, async (req, res) => {
     try {
         const inventoryResult = await getInventory();
         const inventory = inventoryResult.map(item => ({
@@ -32,16 +29,12 @@ router.get('/toasty/terminal', async (req, res) => {
     }
 });
 
-router.post('/bistro-payment', async (req, res) => {
-    if (!req.session.username || ![0, 5, 6].includes(req.session.userId)) {
-        return res.redirect('/login');
-    }
-
+router.post('/bistro-payment', requireTerminal, async (req, res) => {
     // Only the Jaroska.store part of the form is submitted, the toast part is just a QR calculator
     const result = await recordShopPayment(req.body, {
         movementType: 'PT',
         note: 'v Bistru Napoleon',
-        authorId: req.session.userId,
+        authorId: req.user.id,
     });
 
     res.redirect(result === 'success' ? '/toasty/terminal?status=success' : `/toasty/terminal?error=${result}`);

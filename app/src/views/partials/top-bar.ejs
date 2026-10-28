@@ -1,11 +1,14 @@
 <div class="top-bar">
-    <% if (session && session.username) { %>
+    <% if (user) { %>
         <div class="top-bar-user">
-            <span>Ahoj, <%= session.username %></span>
-            <% if (session.userId === 0) { %>
+            <span>Ahoj, <%= user.login %></span>
+            <% if (hasRole('admin')) { %>
                 <a href="/admin" class="btn btn-warning">Admin</a>
                 <a href="/payment" class="btn btn-warning">Payment</a>
                 <a href="/finances" class="btn btn-warning">Finances</a>
+            <% } %>
+            <% if (hasRole('admin', 'terminal')) { %>
+                <a href="/toasty/terminal" class="btn btn-warning">Terminál</a>
             <% } %>
             <a href="/order" class="btn btn-primary">Objednat</a>
             <form action="/logout" method="POST" class="form-inline">

@@ -15,13 +15,12 @@ router.post('/login', async (req, res) => {
     if (user) {
         console.log(`[AUTH] User verified: ${user.login} (ID: ${user.id})`);
         
-        // New session id on login (prevents session fixation)
+        // New session id on login (prevents session fixation); the role is loaded from the DB per request
         req.session.regenerate((err) => {
             if (err) {
                 console.error('[AUTH] Session regenerate error:', err);
                 return res.redirect('/login?error=session_save_failed');
             }
-            req.session.username = user.login;
             req.session.userId = user.id;
             req.session.save((err) => {
                 if (err) {

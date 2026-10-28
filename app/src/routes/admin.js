@@ -1,12 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const { requireAdmin } = require('../middleware/auth');
 const { getOrders, createUser, toggleOrderStatus, updateUserCredit, getOrderDetails, query } = require('../utils/db');
 
-router.get('/admin', async (req, res) => {
-    if (!req.session.username || req.session.userId !== 0) {
-        return res.redirect('/');
-    }
-
+router.get('/admin', requireAdmin, async (req, res) => {
     try {
         const objednavky = await getOrders();
         res.render('admin', {
@@ -17,11 +14,7 @@ router.get('/admin', async (req, res) => {
     }
 });
 
-router.post('/admin/create-user', async (req, res) => {
-    if (!req.session.username || req.session.userId !== 0) {
-        return res.status(403).send('Forbidden');
-    }
-
+router.post('/admin/create-user', requireAdmin, async (req, res) => {
     const { username, password } = req.body;
     const success = await createUser(username, password);
 
@@ -32,22 +25,14 @@ router.post('/admin/create-user', async (req, res) => {
     }
 });
 
-router.post('/admin/toggle-order', async (req, res) => {
-    if (!req.session.username || req.session.userId !== 0) {
-        return res.status(403).send('Forbidden');
-    }
-
+router.post('/admin/toggle-order', requireAdmin, async (req, res) => {
     const { orderId } = req.body;
     await toggleOrderStatus(orderId);
     res.redirect('/admin');
 });
 
 
-router.post('/admin/addCredit',  async (req, res) => {
-    if (!req.session.username || req.session.userId !== 0) {
-        return res.status(403).send('Forbidden');
-    }
-
+router.post('/admin/addCredit',  requireAdmin, async (req, res) => {
     const {userId, charge} = req.body;
     try {
         const result = await updateUserCredit(userId, charge);
@@ -108,21 +93,13 @@ function generateTableHtml(resOrError) {
   return `<p>No data found.</p>`;
 }
 
-router.get('/admin/db-query', async (req, res) => {
-    if (!req.session.username || req.session.userId !== 0) {
-        return res.redirect('/');
-    }
-
+router.get('/admin/db-query', requireAdmin, async (req, res) => {
     res.render('./db-query', {
         dbOutput: '<p>No query executed yet.</p>'
     });
 });
 
-router.post('/admin/db-query', async (req, res) => {
-    if (!req.session.username || req.session.userId !== 0) {
-        return res.status(403).send('Forbidden');
-    }
-
+router.post('/admin/db-query', requireAdmin, async (req, res) => {
     console.log(req.body);
     try {
         const db_res = await query(req.body.query);

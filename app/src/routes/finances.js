@@ -1,13 +1,11 @@
 const path = require('path');
 const express = require('express');
 const router = express.Router();
+const { requireAdmin } = require('../middleware/auth');
 const { getInventory, getMovementsSum, getMovements, createProduct, transferItem } = require('../utils/db');
 const { recordShopPayment } = require('../utils/payment');
 
-router.get('/payment', async (req, res) => {
-    if (!req.session.username || req.session.userId !== 0) {
-        return res.redirect('/login');
-    }
+router.get('/payment', requireAdmin, async (req, res) => {
     try {
         const inventoryResult = await getInventory();
         const produkty = inventoryResult.map(item => ({
@@ -25,23 +23,16 @@ router.get('/payment', async (req, res) => {
 });
 
 
-router.post('/payment', async (req, res) => {
-    if (!req.session.username || req.session.userId !== 0) {
-        return res.redirect('/login');
-    }
-
+router.post('/payment', requireAdmin, async (req, res) => {
     const result = await recordShopPayment(req.body, {
         movementType: 'P',
-        authorId: req.session.userId,
+        authorId: req.user.id,
     });
 
     res.redirect(result === 'success' ? '/payment?status=success' : `/payment?error=${result}`);
 });
 
-router.get('/finances', async (req, res) => {
-    if (!req.session.username || req.session.userId !== 0) {
-        return res.redirect('/login');
-    }
+router.get('/finances', requireAdmin, async (req, res) => {
     try {
 		const totalExpenses = await getMovementsSum(null, 'N');
     	const totalIncome = await getMovementsSum(null, 'P');
@@ -74,11 +65,7 @@ router.get('/finances', async (req, res) => {
     }
 });
 
-router.get('/finances/table', async (req, res) => {
-    if (!req.session.username || req.session.userId !== 0) {
-        return res.redirect('/login');
-    }
-
+router.get('/finances/table', requireAdmin, async (req, res) => {
     const { produkt, dny } = req.query;
     
     try {
@@ -100,7 +87,6 @@ router.get('/finances/table', async (req, res) => {
         const totalProfit = pohyby.reduce((sum, p) => sum + parseFloat(p.celkem), 0);
 
         res.render('./finances/table', { 
-            session: req.session,
             pohyby,
             produktyList,
             selectedProdukt: produkt || '',
@@ -114,10 +100,7 @@ router.get('/finances/table', async (req, res) => {
     }
 });
 
-router.get('/manage-items', async (req, res) => {
-    if (!req.session.username || req.session.userId !== 0) {
-        return res.redirect('/login');
-    }
+router.get('/manage-items', requireAdmin, async (req, res) => {
     try {
         const inventoryResult = await getInventory();
         const inventory = inventoryResult.map(item => ({
@@ -136,11 +119,7 @@ router.get('/manage-items', async (req, res) => {
 });
 
 
-router.post('/manage-items/create', async (req, res) => {
-    if (!req.session.username || req.session.userId !== 0) { 
-        return res.redirect('/login');
-    }
-
+router.post('/manage-items/create', requireAdmin, async (req, res) => {
     const { produkt, sklad_doma, sklad_skola } = req.body;
     const numSklad_doma = parseInt(sklad_doma);
     const numSklad_skola = parseInt(sklad_skola);
@@ -157,11 +136,7 @@ router.post('/manage-items/create', async (req, res) => {
     }
 });
 
-router.post('/manage-items/transfer', async (req, res) => {
-    if (!req.session.username || req.session.userId !== 0) {
-        return res.redirect('/login');
-    }
-
+router.post('/manage-items/transfer', requireAdmin, async (req, res) => {
     const { produkt, mnozstvi } = req.body;
     const numQuantity = parseInt(mnozstvi);
     if (produkt && !isNaN(numQuantity)) {
