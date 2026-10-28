@@ -20,7 +20,9 @@ router.get('/toasty/terminal', async (req, res) => {
 
         res.render('./toasty/terminal', {
             produkty: inventory,
-            logoPath: path.posix.join('/resources', "/img/logo.png")
+            logoPath: path.posix.join('/resources', "/img/logo.png"),
+            status: req.query.status,
+            error: req.query.error
         }
         );
     } catch (error) {
