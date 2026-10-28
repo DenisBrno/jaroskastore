@@ -15,10 +15,8 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.addColumn('pohyby', 'author_id', {
-    type: 'int',
-    defaultValue: -1
-  });
+  // IF NOT EXISTS: safe on databases that got the column before migrations were tracked
+  return db.runSql('ALTER TABLE pohyby ADD COLUMN IF NOT EXISTS author_id INTEGER DEFAULT -1');
 };
 
 exports.down = function(db) {
