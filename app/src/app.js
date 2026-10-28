@@ -3,7 +3,7 @@ const path = require('path');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const { DB_Pool } = require('./utils/db');
-const config = require('./config'); // nebo správná cesta ke config.js
+const config = require('./config');
 const { loadUser } = require('./middleware/auth');
 
 const app = express();

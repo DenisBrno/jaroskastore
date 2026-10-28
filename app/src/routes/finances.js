@@ -34,30 +34,14 @@ router.post('/payment', requireAdmin, async (req, res) => {
 
 router.get('/finances', requireAdmin, async (req, res) => {
     try {
-		const totalExpenses = await getMovementsSum(null, 'N');
-    	const totalIncome = await getMovementsSum(null, 'P');
+        const totalExpenses = await getMovementsSum(null, 'N');
+        const totalIncome = await getMovementsSum(null, 'P');
+        const pohyby = await getMovements();
 
-        const inventoryResult = await getInventory();
-        const inventory = inventoryResult.map(item => ({
-            name: item.produkt,
-            homeQuantity: item.sklad_doma,
-            schoolQuantity: item.sklad_skola
-        }));
-
-		const pohybyRes = await getMovements(null, null, 'id, produkt, mnozstvi, celkem, cas, poznamka');
-		const pohyby = await pohybyRes.map(pohyb => ({
-			produkt: pohyb.produkt,
-			mnozstvi: pohyb.mnozstvi,
-			celkem:  pohyb.celkem,
-			cas: pohyb.cas,
-			poznamka: pohyb.poznamka
-		}));
-		
-        res.render('./finances/overview', { 
-            totalIncome, 
-            totalExpenses, 
-            inventory, 
-			pohyby
+        res.render('./finances/overview', {
+            totalIncome,
+            totalExpenses,
+            pohyby
         });
     } catch (error) {
         console.error('Error loading financial data:', error);

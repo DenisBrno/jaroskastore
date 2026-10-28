@@ -4,16 +4,11 @@ const fs = require('fs').promises;
 const path = require('path');
 const { getNadchazejiciHodina, ROZVRH_PATH } = require('../utils/timetable');
 const { getProductsForSale } = require('../utils/db');
-const config = require('../config');
 
 router.get('/', async (req, res) => {
 
     try {
-        const rozvrhPath = ROZVRH_PATH;
-
-        const [rozvrhContent] = await Promise.all([
-            fs.readFile(rozvrhPath, 'utf8').catch(() => null)
-        ]);
+        const rozvrhContent = await fs.readFile(ROZVRH_PATH, 'utf8').catch(() => null);
 
         let lekce = null;
         if (rozvrhContent) {
@@ -43,10 +38,8 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/rozvrh', async (req, res) => {
-    const rozvrhPath = ROZVRH_PATH;
-
     try {
-        const rozvrhContent = await fs.readFile(rozvrhPath, 'utf8').catch(() => null);
+        const rozvrhContent = await fs.readFile(ROZVRH_PATH, 'utf8').catch(() => null);
         if (!rozvrhContent) {
             return res.status(404).send('Rozvrh nenalezen.');
         }
@@ -60,17 +53,6 @@ router.get('/rozvrh', async (req, res) => {
         });
     } catch (err) {
         res.status(500).send('Chyba při načítání rozvrhu');
-    }
-});
-
-router.get('/posters', async (req, res) => {
-    try {
-        const dataPath = path.join(__dirname, '../data.json');
-        const dataContent = await fs.readFile(dataPath, 'utf8');
-        const produkty = JSON.parse(dataContent);
-        res.render('posters', { produkty: produkty });
-    } catch (err) {
-        res.status(500).send('Chyba při načítání plakátů');
     }
 });
 
