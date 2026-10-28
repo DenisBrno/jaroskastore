@@ -3,17 +3,15 @@ const router = express.Router();
 const { requireLogin } = require('../middleware/auth');
 const fs = require('fs').promises;
 const path = require('path');
-const { getInventory, addOrder , getUserCredit, updateUserCredit} = require('../utils/db');
+const { getProductsForSale, addOrder , getUserCredit, updateUserCredit} = require('../utils/db');
 
 router.get('/order', requireLogin, async (req, res) => {
     const status = req.query.status;
     const error = req.query.error;
     
     try {
-        const inventoryResult = await getInventory();
-        const inventory = inventoryResult
-            .filter(item => item.vprodeji !== false)
-            .map(item => ({
+        const inventoryResult = await getProductsForSale();
+        const inventory = inventoryResult.map(item => ({
                 nazev: item.produkt,
                 cena: item.cena,
         }));
@@ -37,7 +35,7 @@ router.post('/order', requireLogin, async (req, res) => {
     const numPocet = parseInt(pocet);
 
     try {
-        const inventoryResult = await getInventory();
+        const inventoryResult = await getProductsForSale();
         const inventory = inventoryResult.map(item => ({
             nazev: item.produkt,
             cena: item.cena,
@@ -45,7 +43,11 @@ router.post('/order', requireLogin, async (req, res) => {
 
         const produktData = inventory.find(p => p.nazev === produkt);
 
-        if (produktData && numPocet > 0) {
+        if (!produktData) {
+            return res.redirect('/order?error=not_for_sale');
+        }
+
+        if (numPocet > 0) {
 
             let userCredit = await getUserCredit(req.user.id);
             userCredit = userCredit[0].kredit;

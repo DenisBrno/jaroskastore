@@ -20,6 +20,8 @@
                     
                     <% if (error === 'db') { %>
                         <div class="form-error">Chyba při ukládání do databáze. Zkuste to prosím znovu.</div>
+                    <% } else if (error === 'not_for_sale') { %>
+                        <div class="form-error">Tento produkt není v prodeji.</div>
                     <% } else if (error === 'invalid') { %>
                         <div class="form-error">Neplatné údaje v objednávce.</div>
                     <% } else if(error === 'insufficientCredit'){%>

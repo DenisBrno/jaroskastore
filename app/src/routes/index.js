@@ -3,7 +3,7 @@ const router = express.Router();
 const fs = require('fs').promises;
 const path = require('path');
 const { getNadchazejiciHodina, ROZVRH_PATH } = require('../utils/timetable');
-const { getInventory } = require('../utils/db');
+const { getProductsForSale } = require('../utils/db');
 const config = require('../config');
 
 router.get('/', async (req, res) => {
@@ -25,15 +25,12 @@ router.get('/', async (req, res) => {
             }
         }
 
-        const produkty = await getInventory().then(inventory => {
-            return inventory.map(item => ({
-                nazev: item.produkt,    
-                cena: item.cena, 
-                skladem: item.sklad_skola,
-                img: path.posix.join('/resources', String(item.img)),
-                vprodeji: item.vprodeji
-            }));
-        }); 
+        const produkty = (await getProductsForSale()).map(item => ({
+            nazev: item.produkt,
+            cena: item.cena,
+            skladem: item.sklad_skola,
+            img: path.posix.join('/resources', String(item.img))
+        }));
         
         res.render('index', {
             lekce: lekce,
