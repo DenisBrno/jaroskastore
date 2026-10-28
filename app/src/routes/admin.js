@@ -47,10 +47,18 @@ router.post('/admin/addCredit',  requireAdmin, async (req, res) => {
 
 });
 
+const escapeHtml = (value) => String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+// Everything coming from the database or the query is escaped, the result is rendered unescaped
 function generateTableHtml(resOrError) {
   // 1. Handle error strings
   if (typeof resOrError === 'string') {
-    return `<div class="error-text">Error: ${resOrError}</div>`;
+    return `<div class="error-text">Error: ${escapeHtml(resOrError)}</div>`;
   }
 
   const db_res = resOrError;
@@ -59,12 +67,12 @@ function generateTableHtml(resOrError) {
   if (db_res && db_res.rows && db_res.rows.length > 0) {
     const headers = Object.keys(db_res.rows[0]);
     
-    const headerRow = headers.map(h => `<th>${h}</th>`).join('');
+    const headerRow = headers.map(h => `<th>${escapeHtml(h)}</th>`).join('');
     const dataRows = db_res.rows.map((row, idx) => {
       const cells = headers.map(h => {
         const val = row[h];
         const displayVal = val === null ? 'null' : typeof val === 'object' ? JSON.stringify(val) : val;
-        return `<td>${displayVal}</td>`;
+        return `<td>${escapeHtml(displayVal)}</td>`;
       }).join('');
       return `<tr><td class="index-col">${idx}</td>${cells}</tr>`;
     }).join('');
@@ -83,7 +91,7 @@ function generateTableHtml(resOrError) {
 
   // 3. Handle DDL / DML commands with no data rows (ALTER, INSERT, UPDATE, DELETE, etc.)
   if (db_res && db_res.command) {
-    let msg = `Query executed successfully. (${db_res.command})`;
+    let msg = `Query executed successfully. (${escapeHtml(db_res.command)})`;
     if (db_res.rowCount !== null && db_res.rowCount !== undefined) {
       msg += ` - ${db_res.rowCount} row(s) affected.`;
     }
