@@ -47,3 +47,14 @@ th, td {
 .table-divider td {
     padding: 10px;
 }
+
+.table-empty {
+    text-align: center;
+    padding: 40px;
+    color: #64748b;
+}
+
+.table-note {
+    font-size: 0.85em;
+    color: #64748b;
+}

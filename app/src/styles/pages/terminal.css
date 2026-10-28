@@ -15,6 +15,10 @@
 }
 
 /* Toast logo + quantity controls */
+.toast-panel {
+    margin-bottom: 25px;
+}
+
 .toast-display {
     height: 350px;
     display: flex;

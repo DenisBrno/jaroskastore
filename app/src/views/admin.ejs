@@ -44,7 +44,7 @@
                                                 <span class="badge <%= o.status ? 'badge-completed' : 'badge-pending' %>">
                                                     <%= o.status ? 'Vyřízeno' : 'Čeká' %>
                                                 </span>
-                                                <form action="/admin/toggle-order" method="POST" style="margin:0">
+                                                <form action="/admin/toggle-order" method="POST" class="form-inline">
                                                     <input type="hidden" name="orderId" value="<%= o.id %>">
                                                     <button type="submit" class="btn-icon" title="Změnit stav">🔄</button>
                                                 </form>

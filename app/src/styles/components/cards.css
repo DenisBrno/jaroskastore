@@ -7,6 +7,10 @@
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
 }
 
+.card-narrow {
+    max-width: 600px;
+}
+
 .card-section {
     margin-bottom: 40px;
 }
@@ -40,6 +44,12 @@
     font-size: 1.5em;
     border-bottom: 2px solid #f1f5f9;
     padding-bottom: 10px;
+}
+
+.panel-description {
+    font-size: 0.9em;
+    color: #64748b;
+    margin-bottom: 20px;
 }
 
 /* Raw output (DB console) */

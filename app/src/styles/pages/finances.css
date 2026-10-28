@@ -34,10 +34,41 @@
 .stat-card-expenses .stat-value { color: #991b1b; }
 .stat-card-profit .stat-value { color: #004aad; }
 
+.action-row {
+    display: flex;
+    gap: 15px;
+}
+
 /* Sales table filter */
 .filter-form {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
+    width: 100%;
+    align-items: flex-end;
+}
+
+.filter-form .form-group {
+    margin-bottom: 0;
+}
+
+.filter-form .form-group select {
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-actions .btn {
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-actions .btn-primary {
     width: 100%;
 }

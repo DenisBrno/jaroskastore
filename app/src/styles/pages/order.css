@@ -1,0 +1,14 @@
+/* Order confirmation */
+.order-success {
+    text-align: center;
+}
+
+.order-success h2 {
+    color: #059669;
+}
+
+.order-success .btn-submit {
+    display: inline-block;
+    text-decoration: none;
+    margin-top: 20px;
+}

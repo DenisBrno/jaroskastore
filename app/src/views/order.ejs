@@ -8,10 +8,10 @@
         <%- include('partials/top-bar', { session: session }) %>
 
         <% if (status === 'success') { %>
-            <div class="card" style="text-align:center">
-                <h2 style="color: #059669">Objednávka byla úspěšně odeslána! ✅</h2>
+            <div class="card order-success">
+                <h2>Objednávka byla úspěšně odeslána! ✅</h2>
                 <p>Děkujeme za váš nákup. Brzy se vám ozvu.</p>
-                <a href="/" class="btn-submit" style="display:inline-block; text-decoration:none; margin-top:20px">Zpět na hlavní stránku</a>
+                <a href="/" class="btn-submit">Zpět na hlavní stránku</a>
             </div>
         <% } else { %>
             <div class="card">
