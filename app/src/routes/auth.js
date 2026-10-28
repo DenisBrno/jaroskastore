@@ -15,16 +15,22 @@ router.post('/login', async (req, res) => {
     if (user) {
         console.log(`[AUTH] User verified: ${user.login} (ID: ${user.id})`);
         
-        req.session.username = user.login;
-        req.session.userId = user.id;
-        
-        req.session.save((err) => {
+        // New session id on login (prevents session fixation)
+        req.session.regenerate((err) => {
             if (err) {
-                console.error('[AUTH] Session save error:', err);
+                console.error('[AUTH] Session regenerate error:', err);
                 return res.redirect('/login?error=session_save_failed');
             }
-            console.log(`[AUTH] Session saved successfully to DB. Redirecting...`);
-            res.redirect('/');
+            req.session.username = user.login;
+            req.session.userId = user.id;
+            req.session.save((err) => {
+                if (err) {
+                    console.error('[AUTH] Session save error:', err);
+                    return res.redirect('/login?error=session_save_failed');
+                }
+                console.log(`[AUTH] Session saved successfully to DB. Redirecting...`);
+                res.redirect('/');
+            });
         });
     } else {
         console.log(`[AUTH] Login failed: Invalid credentials`);
