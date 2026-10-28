@@ -2,7 +2,8 @@
 <html lang="cs">
 <head>
     <%- include('partials/head', { title: 'QR Platba' }) %>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.1/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.1/qrcode.min.js"></script>
+    <script src="/scripts/checkout.js" defer></script>
 </head>
 <body>
     <div class="container">
@@ -10,148 +11,16 @@
 
         <div class="card card-narrow">
             <form action="/payment" method="post" class="form">
-
                 <h2>Generátor QR Platby</h2>
 
-                <% if (status === 'success') { %>
-                    <div class="form-success">Platba byla úspěšně zaznamenána. ✅</div>
-                <% } else if (error === 'loading_products') { %>
-                    <div class="form-error">Nepodařilo se načíst produkty. Zkuste to prosím znovu.</div>
-                <% } else if (error === 'processing') { %>
-                    <div class="form-error">Chyba při zpracování platby. Zkuste to prosím znovu.</div>
-                <% } else if (error === 'not_for_sale') { %>
-                    <div class="form-error">Některý z vybraných produktů není v prodeji, platba nebyla provedena.</div>
-                <% } else if (error === 'empty') { %>
-                    <div class="form-error">Nebyl vybrán žádný produkt.</div>
-                <% } else if (error === 'invalid') { %>
-                    <div class="form-error">Neplatné údaje platby (sleva nesmí být vyšší než částka).</div>
-                <% } else if (error === 'no_user') { %>
-                    <div class="form-error">Při platbě kreditem vyberte zákazníka.</div>
-                <% } else if (error === 'negative_credit') { %>
-                    <div class="form-error">Zákazník má záporný kredit, platba kreditem není možná.</div>
-                <% } %>
-                
-                <div class="product-picker">
-                    <label class="product-picker-label">Vyberte zakoupené položky:</label>
-                    <div class="product-picker-list">
-                        <% produkty.forEach((product, index) => { %>
-                            <div class="product-picker-item">
-                                <div class="product-picker-info">
-                                    <img src="<%= product.img %>" alt="<%= product.nazev %>" class="product-picker-image">
-                                    <div>
-                                        <div class="product-picker-name"><%= product.nazev %></div>
-                                        <div class="product-picker-meta"><%= product.cena %> Kč | Skladem: <%= product.skladem %></div>
-                                    </div>
-                                </div>
-                                <div class="qty-control">
-                                    <button type="button" onclick="changeQty('<%= product.nazev %>', -1)" class="qty-btn qty-btn-minus">-</button>
-                                    <input type="number" name="qty-<%= product.nazev %>" id="qty-<%= product.nazev %>" class="product-qty qty-input" data-price="<%= product.cena %>" value="0" min="0" readonly>
-                                    <button type="button" onclick="changeQty('<%= product.nazev %>', 1)" class="qty-btn qty-btn-plus">+</button>
-                                </div>
-                            </div>
-                        <% }) %>
-                    </div>
-                </div>
+                <%- include('partials/payment-messages') %>
+                <%- include('partials/product-picker', { label: 'Vyberte zakoupené položky:' }) %>
+                <%- include('partials/shop-payment') %>
 
-
-                <div class="form-group amount-box">
-                    <label for="amount">Celková částka k zaplacení</label>
-                    <input type="number" id="amount" name="amount" value="0" step="1" oninput="updateQR()">
-                    <label for="sleva">Sleva</label>
-                    <input type="number" id="sleva" name="sleva" value="0" min="0" step="1" oninput="updateQR()">
-                </div>
-
-                <label for="payment-method">Způsob platby</label>
-                <select name="paymentMethod" id="payment-method" onchange="updatePayment(this.value)">
-                    <option value="qr">QR</option>
-                    <option value="cash">Hotově</option>
-                    <option value="credit">Kredit</option>
-                </select>
-                <div class="qr-section" id="qr-section-wrap">
-                    <button type="button" class="btn-submit" onclick="updateQR()">Obnovit QR kód</button>
-
-                    <div class="qr-wrap">
-                        <canvas class="qr-canvas" id="canvas"></canvas>
-                    </div>
-
-                    <div class="qr-account">
-                        Účet: <b>CZ9120100000002103161375</b>
-                    </div>
-                </div>
-                <div id="credit-section-wrap" hidden>
-                    <%- include('partials/customer-search') %>
-                </div>
                 <button type="submit" class="btn-submit">Zaplatit</button>
             </form>
             <a href="/" class="link-cancel">Zpět na hlavní stránku</a>
         </div>
     </div>
-
-    <script>
-        const MY_IBAN = 'CZ9120100000002103161375';
-
-        function changeQty(index, delta, max) {
-            const input = document.getElementById(`qty-${index}`);
-            let val = parseInt(input.value) + delta;
-            if (val < 0) val = 0;
-            if (max !== undefined && val > max) val = max;
-            input.value = val;
-            calculateTotal();
-        }
-
-        function calculateTotal() {
-            let total = 0;
-            document.querySelectorAll('.product-qty').forEach(input => {
-                const qty = parseInt(input.value);
-                const price = parseInt(input.dataset.price);
-                total += qty * price;
-            });
-            document.getElementById('amount').value = total;
-            updateQR();
-        }
-
-        function createSpayd(amount) {
-            const formattedAmount = parseFloat(amount).toFixed(2);
-            return `SPD*1.0*ACC:${MY_IBAN}*AM:${formattedAmount}*CC:CZK`;
-        }
-
-        function updateQR() {
-            const amount = document.getElementById('amount').value - (parseInt(document.getElementById('sleva').value) || 0);
-            const canvas = document.getElementById('canvas');
-            
-            if (amount <= 0) {
-                canvas.style.display = 'none';
-                return;
-            }
-            canvas.style.display = 'block';
-
-            const spaydString = createSpayd(amount);
-
-            QRCode.toCanvas(canvas, spaydString, {
-                width: 250,
-                margin: 2,
-                errorCorrectionLevel: 'M'
-            }, function (error) {
-                if (error) console.error(error);
-            });
-        }
-
-
-        function updatePayment(method){
-            const qr_wrapper = document.getElementById("qr-section-wrap");
-            const credit_wrapper = document.getElementById("credit-section-wrap");
-            if( method=="qr") {
-                qr_wrapper.style.display = 'block';
-                credit_wrapper.style.display = 'none';
-            } else if ( method=="credit"){ 
-                qr_wrapper.style.display = 'none';
-                credit_wrapper.style.display = 'block';
-            } else {
-                qr_wrapper.style.display = 'none';
-                credit_wrapper.style.display = 'none';
-            }
-        }
-        window.onload = updateQR;
-    </script>
 </body>
 </html>

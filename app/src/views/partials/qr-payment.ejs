@@ -1,0 +1,12 @@
+<%# QR payment section; params: sectionId, canvasId, refresh (name of the JS function that redraws the QR code) %>
+<div class="qr-section" id="<%= sectionId %>">
+    <button type="button" class="btn-submit" data-qr-refresh="<%= refresh %>">Obnovit QR kód</button>
+
+    <div class="qr-wrap">
+        <canvas class="qr-canvas" id="<%= canvasId %>"></canvas>
+    </div>
+
+    <div class="qr-account" data-iban="<%= iban %>">
+        Účet: <b><%= iban %></b>
+    </div>
+</div>

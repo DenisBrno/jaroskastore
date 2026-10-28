@@ -1,0 +1,20 @@
+<%# Jaroska.store payment: amount, sleva, payment method, QR code and customer for credit (scripts/checkout.js) %>
+<div class="form-group amount-box">
+    <label for="amount">Celková částka k zaplacení</label>
+    <input type="number" id="amount" name="amount" value="0" step="1">
+    <label for="sleva">Sleva</label>
+    <input type="number" id="sleva" name="sleva" value="0" min="0" step="1">
+</div>
+
+<label for="payment-method">Způsob platby</label>
+<select name="paymentMethod" id="payment-method">
+    <option value="qr">QR</option>
+    <option value="cash">Hotově</option>
+    <option value="credit">Kredit</option>
+</select>
+
+<%- include('qr-payment', { sectionId: 'qr-section-wrap', canvasId: 'canvas', refresh: 'updateQR' }) %>
+
+<div id="credit-section-wrap" hidden>
+    <%- include('customer-search') %>
+</div>

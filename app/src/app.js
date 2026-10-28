@@ -24,6 +24,7 @@ app.use('/scripts', blockDirectNavigation, express.static(path.join(__dirname, '
 
 // View engine
 app.set('view engine', 'ejs');
+app.locals.iban = config.IBAN;
 app.set('views', path.join(__dirname, 'views'));
 
 // Session store configuration
