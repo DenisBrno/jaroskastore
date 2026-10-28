@@ -11,6 +11,12 @@ const { MIN_PASSWORD_LENGTH } = require('./utils/password');
 const app = express();
 const port = 3000;
 
+// In production the app runs behind the ingress (one proxy), which terminates TLS:
+// trust its X-Forwarded-* headers for the client IP and https
+if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+}
+
 // Middleware
 app.use('/resources', express.static(config.DATA_DIR)); 
 app.use(express.urlencoded({ extended: true }));
@@ -46,10 +52,13 @@ app.use(session({
     secret: process.env.SESSION_SECRET, 
     resave: false,
     saveUninitialized: false,
+    // Every request renews the expiry, so a login ends after 7 days without activity
+    rolling: true,
     cookie: {
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         httpOnly: true,
-        secure: false, 
+        // Secure (https only) whenever the request came over https
+        secure: 'auto',
         sameSite: 'lax'
     }
 }));
