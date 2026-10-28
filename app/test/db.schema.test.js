@@ -1,6 +1,6 @@
 /**
  * Schema contract tests: every query in src/utils/db.js runs against a real
- * PostgreSQL initialised from init-db/, so code referencing a column or table
+ * PostgreSQL with the schema from migrations/, so code referencing a column or table
  * that the schema doesn't have (e.g. "column vprodeji does not exist") fails here.
  *
  * Run: npm run test:docker
@@ -14,7 +14,7 @@ const suffix = Date.now();
 const LOGIN = `test_user_${suffix}`;
 const PRODUCT = `Test produkt ${suffix}`;
 
-describe('db.js against init-db schema', () => {
+describe('db.js against the migrated schema', () => {
   let userId;
   let orderId;
 
@@ -50,10 +50,33 @@ describe('db.js against init-db schema', () => {
     assert.equal(row.kredit, 50);
   });
 
+  test('getUserById returns the role (new users are customers)', async () => {
+    const user = await db.getUserById(userId);
+    assert.deepEqual(user, { id: userId, login: LOGIN, role: 'customer' });
+    assert.equal(await db.getUserById(-12345), null);
+  });
+
+  test('chargeUserCredit only charges when the balance is high enough', async () => {
+    // balance 50: an order of 60 needs 60 before paying -> refused
+    assert.equal(await db.chargeUserCredit(userId, 60, 60), null);
+    // a payment only needs a non-negative balance and may go below zero
+    assert.equal(await db.chargeUserCredit(userId, 60, 0), -10);
+    // negative balance -> refused
+    assert.equal(await db.chargeUserCredit(userId, 5, 0), null);
+    await db.updateUserCredit(userId, 60);
+  });
+
   test('createProduct', async () => {
     assert.equal(await db.createProduct(PRODUCT, 5, 2), true);
     // createProduct doesn't set a price, toggleOrderStatus below needs one
     await db.query('UPDATE sklad SET cena = 10 WHERE produkt = $1', [PRODUCT]);
+  });
+
+  test('getProductsForSale only returns products with vprodeji = true', async () => {
+    assert.ok(!(await db.getProductsForSale()).some(p => p.produkt === PRODUCT));
+    await db.query('UPDATE sklad SET vprodeji = true WHERE produkt = $1', [PRODUCT]);
+    assert.ok((await db.getProductsForSale()).some(p => p.produkt === PRODUCT));
+    await db.query('UPDATE sklad SET vprodeji = false WHERE produkt = $1', [PRODUCT]);
   });
 
   test('getInventory returns all columns the views use', async () => {
