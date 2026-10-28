@@ -3,9 +3,9 @@
         <div class="top-bar-user">
             <span>Ahoj, <%= user.login %></span>
             <% if (hasRole('admin')) { %>
-                <a href="/admin" class="btn btn-warning">Admin</a>
-                <a href="/payment" class="btn btn-warning">Payment</a>
-                <a href="/finances" class="btn btn-warning">Finances</a>
+                <a href="/admin" class="btn btn-warning">Administrace</a>
+                <a href="/payment" class="btn btn-warning">Platba</a>
+                <a href="/finances" class="btn btn-warning">Finance</a>
             <% } %>
             <% if (hasRole('admin', 'terminal')) { %>
                 <a href="/toasty/terminal" class="btn btn-warning">Terminál</a>

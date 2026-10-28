@@ -174,7 +174,7 @@ const toggleOrderStatus = async (orderId) => {
         orderDetails[0].quantity, 
         productData.price, 
         0, 
-        `Order filled through admin panel, paid with user (${orderDetails[0].customer_name}) credit.`
+        `Objednávka vyřízena přes administraci, zaplaceno kreditem (${orderDetails[0].customer_name}).`
       );
       // Added await here as well
       await linkOrder(orderDetails[0].id, movement.id);
@@ -202,7 +202,7 @@ const notifyNewOrder = async (message) => {
       method: "POST",
       headers: {
         "Authorization": `Basic ${auth}`,
-        "Title": "New Order",
+        "Title": "Nova objednavka", // HTTP header values must be ASCII
         "Priority": "high"
       },
       body: message
@@ -229,7 +229,7 @@ const addOrder = async (login, product, quantity, room, breakStart, breakEnd, no
   try {
     await DB_Pool.query(queryText, [login, product, quantity, room, breakStart, breakEnd, note]);
 
-    await notifyNewOrder(`New order from ${login}, product: ${product} x ${quantity} to ${room} at ${breakStart}. Note: ${note}`);
+    await notifyNewOrder(`Nová objednávka od ${login}: ${product} x ${quantity}, učebna ${room}, přestávka ${breakStart}. Poznámka: ${note}`);
 
     return true;
   } catch (err) {

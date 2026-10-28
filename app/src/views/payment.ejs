@@ -61,11 +61,11 @@
                     <input type="number" id="sleva" name="sleva" value="0" min="0" step="1" oninput="updateQR()">
                 </div>
 
-                <label for="payment-method">Payment method</label>
+                <label for="payment-method">Způsob platby</label>
                 <select name="paymentMethod" id="payment-method" onchange="updatePayment(this.value)">
                     <option value="qr">QR</option>
-                    <option value="cash">Cash</option>
-                    <option value="credit">Credit</option>
+                    <option value="cash">Hotově</option>
+                    <option value="credit">Kredit</option>
                 </select>
                 <div class="qr-section" id="qr-section-wrap">
                     <button type="button" class="btn-submit" onclick="updateQR()">Obnovit QR kód</button>
