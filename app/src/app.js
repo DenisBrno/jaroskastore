@@ -13,13 +13,13 @@ const port = 3000;
 app.use('/resources', express.static(config.DATA_DIR)); 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use('/style.css', (req, res, next) => {
+app.use('/styles', (req, res, next) => {
     const fetchDest = req.headers['sec-fetch-dest'];
     if (fetchDest === 'document') {
         return res.status(403).send('Forbidden');
     }
     next();
-}, express.static(path.join(__dirname, 'style.css')));
+}, express.static(path.join(__dirname, 'styles')));
 
 // View engine
 app.set('view engine', 'ejs');

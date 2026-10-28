@@ -1,0 +1,164 @@
+/* Hero Section / Header */
+.hero-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    box-sizing: border-box;
+    gap: 30px;
+}
+
+.header-content {
+    flex: 1;
+}
+
+.hero-section h1 {
+    color: #004aad;
+    margin: 0;
+    font-size: 3em;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.subtitle {
+    font-size: 1.2em;
+    color: #64748b;
+    margin-top: 10px;
+}
+
+/* Status Card in Hero */
+.status-card {
+    background: #004aad;
+    color: white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 10px 15px -3px rgba(0, 74, 173, 0.2);
+}
+
+.status-card h3 {
+    margin: 0 0 15px 0;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+.status-badge {
+    font-size: 1.4em;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.status-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.status-time { font-size: 1.1em; opacity: 0.9; }
+.status-room { font-weight: 600; }
+
+/* Products Grid */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 24px;
+    width: 100%;
+}
+
+.product-item {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    border: 1px solid #f1f5f9;
+}
+
+.product-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    border-color: #004aad;
+}
+
+.chlazeno-tag {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 0.7em;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+
+.product-image {
+    width: 100%;
+    height: 160px;
+    object-fit: contain;
+    margin-bottom: 20px;
+}
+
+.product-name {
+    font-weight: 700;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    color: #334155;
+    height: 3.5em; /* Fix výšky pro zarovnání */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.product-price {
+    color: #004aad;
+    font-size: 1.8em;
+    font-weight: 800;
+    margin: 10px 0;
+}
+
+.product-stock {
+    color: #94a3b8;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+/* Promo Card */
+.promo-card {
+    background: linear-gradient(135deg, #004aad 0%, #0066ff 100%);
+    color: white;
+    padding: 40px;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 10px 15px -3px rgba(0, 74, 173, 0.3);
+}
+
+.promo-card h2 { margin-top: 0; font-size: 2em; }
+.promo-card a { color: white; font-weight: 700; }
+.promo-divider { border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 25px 0; }
+
+@media (max-width: 850px) {
+    .hero-section { flex-direction: column; text-align: center; padding: 30px; }
+    .status-card { width: 100%; }
+    .hero-section h1 { font-size: 2.2em; }
+}
+
+@media (max-width: 600px) {
+    .hero-section { border-radius: 20px; width: 100%; padding: 25px; }
+    .hero-section h1 { font-size: 1.8em; }
+    .status-card { padding: 20px; }
+    .promo-card { padding: 25px; border-radius: 20px; }
+}

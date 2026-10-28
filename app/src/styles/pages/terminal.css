@@ -1,0 +1,43 @@
+.terminal {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    grid-template-rows: 1fr auto;   /* Top row expands, bottom row fits content */
+    gap: 16px;                     /* Adjust spacing between boxes */
+    min-height: 100vh;             /* Takes up full screen height */
+    box-sizing: border-box;
+    padding: 16px;
+    width: 100%;
+}
+
+/* Container holding image + content */
+.image-container {
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevents child overflow */
+  align-items: center;
+ margin-bottom: 25px;
+}
+
+/* Image constraints */
+.toast-image {
+  width: 100%;
+  height: 300px;        /* Takes fixed 200px out of the 350px container */
+  object-fit: contain;  /* Use 'contain' for logos so it doesn't crop edges, or 'cover' to fill */
+  flex-shrink: 0;       /* Prevents the image from shrinking */
+}
+
+/* Content area below image */
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;              /* Automatically fills the remaining 150px height */
+  overflow-y: auto;     /* Adds a scrollbar if the content exceeds 150px */
+}
+
+div .payment {
+  grid-column: 1 / -1;           /* Spans across both columns */
+  min-height: 60px;              /* Set your desired thickness */
+}
+

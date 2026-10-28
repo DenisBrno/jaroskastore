@@ -1,0 +1,47 @@
+.table-container {
+    width: 100%;
+    overflow-x: auto; /* Tohle zapne vodorovné posouvání */
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Jemný stín, aby tabulka vynikla */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px; /* Důležité: Tabulka se nebude smršťovat, ale raději se začne scrollovat */
+    background: white;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+
+.table-wrapper {
+    max-height: 600px;
+    overflow-y: auto;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.table-wrapper thead th {
+    position: sticky;
+    top: 0;
+    background: #f8fafc;
+    z-index: 10;
+}
+
+.date-divider {
+    background-color: #f1f5f9 !important;
+    font-weight: 700;
+    text-align: center;
+    color: #475569;
+}
+
+.date-divider td {
+    padding: 10px;
+}
+
