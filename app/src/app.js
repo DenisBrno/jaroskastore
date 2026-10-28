@@ -6,6 +6,7 @@ const { DB_Pool } = require('./utils/db');
 const config = require('./config');
 const { loadUser } = require('./middleware/auth');
 const { migrateToLatest } = require('./utils/migrate');
+const { MIN_PASSWORD_LENGTH } = require('./utils/password');
 
 const app = express();
 const port = 3000;
@@ -26,6 +27,7 @@ app.use('/scripts', blockDirectNavigation, express.static(path.join(__dirname, '
 // View engine
 app.set('view engine', 'ejs');
 app.locals.iban = config.IBAN;
+app.locals.minPasswordLength = MIN_PASSWORD_LENGTH;
 app.set('views', path.join(__dirname, 'views'));
 
 // Session store configuration

@@ -4,7 +4,7 @@ const { getUserById } = require('../utils/db');
  * Access control
  *
  *   public        /, /rozvrh, /login, /register, /health
- *   requireLogin  /order
+ *   requireLogin  /order, /account/password
  *   terminal      /toasty/terminal, /bistro-payment, /api/users (admin too)
  *   admin         /admin/*, /payment, /finances/*, /manage-items/*
  *

@@ -1,13 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const { requireAdmin } = require('../middleware/auth');
-const { getOrders, createUser, toggleOrderStatus, updateUserCredit, query } = require('../utils/db');
+const { getOrders, createUser, setUserPassword, toggleOrderStatus, updateUserCredit, query } = require('../utils/db');
+const { isValidNewPassword } = require('../utils/password');
 
 router.get('/admin', requireAdmin, async (req, res) => {
     try {
         const objednavky = await getOrders();
         res.render('admin', {
-            objednavky: objednavky
+            objednavky: objednavky,
+            status: req.query.status,
+            error: req.query.error
         });
     } catch (err) {
         res.status(500).send('Chyba při načítání objednávek');
@@ -15,13 +18,37 @@ router.get('/admin', requireAdmin, async (req, res) => {
 });
 
 router.post('/admin/create-user', requireAdmin, async (req, res) => {
-    const { username, password } = req.body;
-    const success = await createUser(username, password);
+    const username = String(req.body.username || '').trim();
+    const { password } = req.body;
 
-    if (success) {
-        res.redirect('/admin?status=user_created');
-    } else {
+    if (!username || !isValidNewPassword(password)) {
+        return res.redirect('/admin?error=invalid_password');
+    }
+    try {
+        const success = await createUser(username, password);
+        res.redirect(success ? '/admin?status=user_created' : '/admin?error=user_exists');
+    } catch (err) {
         res.redirect('/admin?error=create_failed');
+    }
+});
+
+// Sets a new password for any user and logs them out on all devices
+router.post('/admin/set-password', requireAdmin, async (req, res) => {
+    const userId = parseInt(req.body.userId);
+    const { password } = req.body;
+
+    if (Number.isNaN(userId)) {
+        return res.redirect('/admin?error=no_user');
+    }
+    if (!isValidNewPassword(password)) {
+        return res.redirect('/admin?error=invalid_password');
+    }
+    try {
+        const success = await setUserPassword(userId, password);
+        res.redirect(success ? '/admin?status=password_set' : '/admin?error=no_user');
+    } catch (err) {
+        console.error('Setting the password failed:', err);
+        res.redirect('/admin?error=password_failed');
     }
 });
 

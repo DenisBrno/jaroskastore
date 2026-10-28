@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 require('dotenv').config({ path: './.env'});
+const { hashPassword, verifyPassword, verifyDummyPassword } = require('./password');
 
 const DB_Pool = new Pool({
   user: process.env.DB_USER || 'jaroskastore_user',
@@ -16,14 +17,46 @@ const DB_Pool = new Pool({
  * @returns {Promise<object|null>} - Returns the user object or null if not found
  */
 const verifyUser = async (login, password) => {
-  const queryText = 'SELECT id, login FROM uzivatele_tb WHERE login = $1 AND password = $2';
+  const queryText = 'SELECT id, login, password FROM uzivatele_tb WHERE login = $1';
   try {
-    const { rows } = await DB_Pool.query(queryText, [login, password]);
-    return rows.length > 0 ? rows[0] : null;
+    const { rows } = await DB_Pool.query(queryText, [login]);
+    if (rows.length === 0) {
+      return verifyDummyPassword(password).then(() => null);
+    }
+    for (const row of rows) {
+      if (await verifyPassword(password, row.password)) {
+        return { id: row.id, login: row.login };
+      }
+    }
+    return null;
   } catch (err) {
     console.error('Error during password verification:', err);
     throw err;
   }
+};
+
+/**
+ * Checks the password of a logged-in user (e.g. before changing it)
+ */
+const checkUserPassword = async (id, password) => {
+  const { rows } = await DB_Pool.query('SELECT password FROM uzivatele_tb WHERE id = $1', [id]);
+  return rows.length > 0 && verifyPassword(password, rows[0].password);
+};
+
+/**
+ * Sets a new password and logs the user out everywhere except the session in keepSessionId.
+ * Returns false when the user does not exist.
+ */
+const setUserPassword = async (id, password, keepSessionId = null) => {
+  const res = await DB_Pool.query('UPDATE uzivatele_tb SET password = $1 WHERE id = $2', [await hashPassword(password), id]);
+  if (res.rowCount === 0) {
+    return false;
+  }
+  await DB_Pool.query(
+    "DELETE FROM session WHERE sess->>'userId' = $1 AND sid IS DISTINCT FROM $2",
+    [String(id), keepSessionId]
+  );
+  return true;
 };
 
 /**
@@ -66,13 +99,16 @@ const getOrders = async () => {
 };
 
 /**
- * Creates a new user
+ * Creates a new user, returns false when the login is already taken
  */
 const createUser = async (login, password) => {
-  const queryText = 'INSERT INTO uzivatele_tb (login, password, kredit) VALUES ($1, $2, 0)';
+  const queryText = `
+    INSERT INTO uzivatele_tb (login, password, kredit)
+    SELECT $1::varchar, $2, 0
+    WHERE NOT EXISTS (SELECT 1 FROM uzivatele_tb WHERE LOWER(login) = LOWER($1))`;
   try {
-    await DB_Pool.query(queryText, [login, password]);
-    return true;
+    const res = await DB_Pool.query(queryText, [login, await hashPassword(password)]);
+    return res.rowCount > 0;
   } catch (err) {
     console.error('Error creating user:', err);
     throw err;
@@ -420,6 +456,8 @@ module.exports = {
   DB_Pool,
   query: (text, params) => DB_Pool.query(text, params),
   verifyUser,
+  checkUserPassword,
+  setUserPassword,
   getUserById,
   addOrder,
   getOrders,

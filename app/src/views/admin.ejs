@@ -9,6 +9,20 @@
 
         <div class="card">
             <h2>Administrace</h2>
+
+            <% if (status === 'user_created') { %>
+                <div class="form-success">Uživatel byl vytvořen.</div>
+            <% } else if (status === 'password_set') { %>
+                <div class="form-success">Heslo bylo nastaveno, uživatel byl odhlášen na všech zařízeních.</div>
+            <% } else if (error === 'user_exists') { %>
+                <div class="form-error">Uživatel s tímto jménem už existuje.</div>
+            <% } else if (error === 'invalid_password') { %>
+                <div class="form-error">Vyplňte jméno a heslo s alespoň <%= minPasswordLength %> znaky.</div>
+            <% } else if (error === 'no_user') { %>
+                <div class="form-error">Vyberte zákazníka ze seznamu.</div>
+            <% } else if (error) { %>
+                <div class="form-error">Akce se nezdařila. Zkuste to prosím znovu.</div>
+            <% } %>
             
             <section class="card-section">
                 <h3>Posledních 10 objednávek</h3>
@@ -69,7 +83,7 @@
                     </div>
                     <div class="form-group">
                         <label for="new_password">Heslo</label>
-                        <input type="password" id="new_password" name="password" required>
+                        <input type="password" id="new_password" name="password" minlength="<%= minPasswordLength %>" autocomplete="new-password" required>
                     </div>
                     <button type="submit" class="btn-submit">Vytvořit uživatele</button>
                 </form>
@@ -88,6 +102,21 @@
                         <input type="number" id="charge" name="charge" required>
                     </div>
                     <button type="submit" class="btn-submit">Dobít kredit</button>
+                </form>
+            </section>
+
+            <section class="card-section">
+                <h3>Nastavit nové heslo</h3>
+                <form action="/admin/set-password" method="POST" class="form form-narrow">
+                    <div class="form-group">
+                        <label for="password-user-search">Uživatel</label>
+                        <%- include('partials/customer-search', { inputId: 'password-user-search' }) %>
+                    </div>
+                    <div class="form-group">
+                        <label for="reset_password">Nové heslo</label>
+                        <input type="password" id="reset_password" name="password" minlength="<%= minPasswordLength %>" autocomplete="new-password" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Nastavit heslo</button>
                 </form>
             </section>
             

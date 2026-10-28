@@ -38,6 +38,20 @@ describe('db.js against the migrated schema', () => {
     userId = user.id;
   });
 
+  test('passwords are stored hashed, duplicate logins are refused', async () => {
+    const { rows } = await db.query('SELECT password FROM uzivatele_tb WHERE id = $1', [userId]);
+    assert.match(rows[0].password, /^scrypt\$/);
+    assert.equal(await db.verifyUser(LOGIN, 'wrong'), null);
+    assert.equal(await db.createUser(LOGIN.toUpperCase(), 'other'), false);
+  });
+
+  test('setUserPassword + checkUserPassword', async () => {
+    assert.equal(await db.setUserPassword(userId, 'new-secret'), true);
+    assert.equal(await db.checkUserPassword(userId, 'secret'), false);
+    assert.equal(await db.checkUserPassword(userId, 'new-secret'), true);
+    assert.equal(await db.setUserPassword(-12345, 'x'), false);
+  });
+
   test('getUsers finds the user', async () => {
     const users = await db.getUsers(LOGIN);
     assert.deepEqual(Object.keys(users[0]).sort(), ['id', 'kredit', 'login']);
