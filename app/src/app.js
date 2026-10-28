@@ -119,9 +119,10 @@ app.get('/health', async (req, res) => {
       timestamp: new Date().toISOString()
     });
   } catch (err) {
+    // Details only in the log, the endpoint is public
+    console.error('[HEALTH] Database check failed:', err.message);
     res.status(503).json({
-      status: 'unhealthy',
-      error: err.message
+      status: 'unhealthy'
     });
   }
 });
