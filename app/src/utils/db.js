@@ -357,6 +357,27 @@ const getUserCredit = async (userId) => {
   }
 };
 
+/**
+ * Deducts an amount from a user's credit, but only when the current balance is not negative.
+ * The balance may end up below zero after the deduction.
+ * Returns the new balance, or null when the user does not exist or has a negative balance.
+ */
+const chargeUserCredit = async (userId, amount) => {
+  const query = `
+  UPDATE uzivatele_tb
+  SET kredit = COALESCE(kredit, 0) - $1
+  WHERE id = $2 AND COALESCE(kredit, 0) >= 0
+  RETURNING kredit;`;
+
+  try {
+    const res = await DB_Pool.query(query, [amount, userId]);
+    return res.rowCount > 0 ? res.rows[0].kredit : null;
+  } catch (err) {
+    console.error('Charging user credit failed:', err);
+    throw err;
+  }
+};
+
 module.exports = {
   DB_Pool,
   query: (text, params) => DB_Pool.query(text, params),
@@ -375,5 +396,6 @@ module.exports = {
   getUsers,
   updateUserCredit,
   getUserCredit,
+  chargeUserCredit,
   getOrderDetails
 };
