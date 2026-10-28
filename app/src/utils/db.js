@@ -189,6 +189,31 @@ const toggleOrderStatus = async (orderId) => {
 };
 
 /**
+ * Sends a push notification about a new order. Failures are only logged: a missing or
+ * unreachable ntfy server must not fail an order that is already saved.
+ */
+const notifyNewOrder = async (message) => {
+  if (!process.env.NTFY_HOST) {
+    return;
+  }
+  try {
+    const auth = Buffer.from(`${process.env.NTFY_USER}:${process.env.NTFY_PASS}`).toString("base64");
+    const response = await fetch(process.env.NTFY_HOST, {
+      method: "POST",
+      headers: {
+        "Authorization": `Basic ${auth}`,
+        "Title": "New Order",
+        "Priority": "high"
+      },
+      body: message
+    });
+    console.log("NTFY Status:", response.status);
+  } catch (err) {
+    console.error('Sending the order notification failed:', err);
+  }
+};
+
+/**
  * Adds a new order to the database
  * @param {string} login - User's login name
  * @param {string} product - Product name
@@ -204,23 +229,8 @@ const addOrder = async (login, product, quantity, room, breakStart, breakEnd, no
   try {
     await DB_Pool.query(queryText, [login, product, quantity, room, breakStart, breakEnd, note]);
 
-    const auth = Buffer.from(`${process.env.NTFY_USER}:${process.env.NTFY_PASS}`).toString("base64");
+    await notifyNewOrder(`New order from ${login}, product: ${product} x ${quantity} to ${room} at ${breakStart}. Note: ${note}`);
 
-    const response = await fetch(process.env.NTFY_HOST, {
-      method: "POST",
-      headers: {
-        "Authorization": `Basic ${auth}`,
-        "Title": "New Order",
-        "Priority": "high"
-      },
-      body: `New order from ${login}, product: ${product} x ${quantity} to ${room} at ${breakStart}. Note: ${note}`  
-    });
-
-    console.log("NTFY Status:", response.status);
-
-    const result = await response.json();
-    console.log("NTFY Result:", result);
-    
     return true;
   } catch (err) {
     console.error('Error saving the order:', err);
@@ -386,19 +396,19 @@ const getUserCredit = async (userId) => {
 };
 
 /**
- * Deducts an amount from a user's credit, but only when the current balance is not negative.
- * The balance may end up below zero after the deduction.
- * Returns the new balance, or null when the user does not exist or has a negative balance.
+ * Atomically deducts an amount from a user's credit, but only when the balance before paying
+ * is at least minBalance (0 = may go below zero after paying, amount = must stay >= 0).
+ * Returns the new balance, or null when the user does not exist or the balance is too low.
  */
-const chargeUserCredit = async (userId, amount) => {
+const chargeUserCredit = async (userId, amount, minBalance) => {
   const query = `
   UPDATE uzivatele_tb
   SET kredit = COALESCE(kredit, 0) - $1
-  WHERE id = $2 AND COALESCE(kredit, 0) >= 0
+  WHERE id = $2 AND COALESCE(kredit, 0) >= $3
   RETURNING kredit;`;
 
   try {
-    const res = await DB_Pool.query(query, [amount, userId]);
+    const res = await DB_Pool.query(query, [amount, userId, minBalance]);
     return res.rowCount > 0 ? res.rows[0].kredit : null;
   } catch (err) {
     console.error('Charging user credit failed:', err);

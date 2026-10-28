@@ -58,7 +58,7 @@ const recordShopPayment = async (body, { movementType, note, authorId }) => {
             if (Number.isNaN(userId)) {
                 return 'no_user';
             }
-            const novyKredit = await chargeUserCredit(userId, kZaplaceni);
+            const novyKredit = await chargeUserCredit(userId, kZaplaceni, 0);
             if (novyKredit === null) {
                 return 'negative_credit';
             }
