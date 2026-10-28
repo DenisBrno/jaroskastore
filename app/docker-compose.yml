@@ -16,7 +16,7 @@ services:
       - "host.docker.internal:host-gateway"
 
   db:
-      image: postgres:16-alpine
+      image: postgres:18-alpine
       container_name: jaroskastore_db
       environment:
         POSTGRES_DB: jaroskastore
@@ -25,10 +25,10 @@ services:
       ports:
         - "5432:5432"
       volumes:
-        - pgdata:/var/lib/postgresql/data
+        - pgdata18:/var/lib/postgresql  # Postgres 18+ keeps versioned data under this path
         - ./init-db/postgres_users.sql:/docker-entrypoint-initdb.d/01-container_name.sql
 
 
 
 volumes:
-  pgdata:
+  pgdata18:
