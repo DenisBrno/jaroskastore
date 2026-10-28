@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
+const helmet = require('helmet');
 const pgSession = require('connect-pg-simple')(session);
 const { DB_Pool } = require('./utils/db');
 const config = require('./config');
@@ -16,6 +17,20 @@ const port = 3000;
 if (process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1);
 }
+
+// Security headers. Scripts may only come from this app and cdnjs (QR library, pinned with SRI),
+// inline scripts and event handlers are blocked.
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            'script-src': ["'self'", 'https://cdnjs.cloudflare.com'],
+            'frame-ancestors': ["'none'"],
+            // Production is https only, locally the app runs over plain http
+            'upgrade-insecure-requests': process.env.NODE_ENV === 'production' ? [] : null,
+        },
+    },
+    strictTransportSecurity: { maxAge: 180 * 24 * 60 * 60, includeSubDomains: false },
+}));
 
 // Middleware
 app.use('/resources', express.static(config.DATA_DIR)); 

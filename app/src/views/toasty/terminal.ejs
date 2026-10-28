@@ -2,8 +2,9 @@
 <html lang="cs">
 <head>
     <%- include('../partials/head', { title: 'Terminál Bistra Napoleon' }) %>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.1/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.1/qrcode.min.js" integrity="sha512-PEhlWBZBrQL7flpJPY8lXx8tIN7HWX912GzGhFTDqA3iWFrakVH3lVHomCoU9BhfKzgxfEk6EG2C3xej+9srOQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/scripts/checkout.js" defer></script>
+    <script src="/scripts/toast-calculator.js" defer></script>
 </head>
 <body>
     <div class="container">
@@ -49,26 +50,5 @@
             </div>
         </form>
     </div>
-
-    <script>
-        // Toasts: 1 for 25 Kč, 2 for 45 Kč
-        const TOAST_PRICE = 25;
-        const TOAST_PAIR_PRICE = 45;
-
-        function updateToastQR() {
-            renderQR('canvas-toast', Number(document.getElementById('amount-toast').value));
-        }
-
-        document.getElementById('toast').addEventListener('change', (e) => {
-            const count = parseInt(e.target.value);
-            document.getElementById('amount-toast').value = Math.trunc(count / 2) * TOAST_PAIR_PRICE + (count % 2) * TOAST_PRICE;
-            updateToastQR();
-        });
-        document.getElementById('amount-toast').addEventListener('input', updateToastQR);
-        document.getElementById('payment-method-toast').addEventListener('change', (e) => {
-            document.getElementById('qr-section-wrap-toast').style.display = e.target.value === 'qr' ? 'block' : 'none';
-        });
-        window.addEventListener('load', updateToastQR);
-    </script>
 </body>
 </html>
