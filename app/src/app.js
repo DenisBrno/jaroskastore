@@ -5,6 +5,7 @@ const pgSession = require('connect-pg-simple')(session);
 const { DB_Pool } = require('./utils/db');
 const config = require('./config');
 const { loadUser } = require('./middleware/auth');
+const { migrateToLatest } = require('./utils/migrate');
 
 const app = express();
 const port = 3000;
@@ -95,6 +96,14 @@ app.get('/health', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-    console.log(`✅ Jaroska.store běží na: http://localhost:${port}/`);
-});
+// Serve requests only once the database schema matches the code
+migrateToLatest()
+    .then(() => {
+        app.listen(port, () => {
+            console.log(`✅ Jaroska.store běží na: http://localhost:${port}/`);
+        });
+    })
+    .catch((err) => {
+        console.error('[MIGRATE] Database migration failed, not starting:', err);
+        process.exit(1);
+    });

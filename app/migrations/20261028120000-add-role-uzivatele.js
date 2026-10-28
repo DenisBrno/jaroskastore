@@ -18,7 +18,7 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db) {
   const sql = `
     ALTER TABLE uzivatele_tb
-      ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'customer'
+      ADD COLUMN IF NOT EXISTS role VARCHAR(20) NOT NULL DEFAULT 'customer'
       CONSTRAINT uzivatele_tb_role_check CHECK (role IN ('admin', 'terminal', 'customer'));
 
     UPDATE uzivatele_tb SET role = 'admin' WHERE id = 0;

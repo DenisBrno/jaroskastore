@@ -35,7 +35,9 @@ RUN npm ci --frozen-lockfile --omit=dev
 
 # Copy build artifacts
 COPY --from=builder /app/src ./src
-# If no build step, use: COPY --from=builder /app/src ./src
+# Migrations run on startup (src/utils/migrate.js)
+COPY --from=builder /app/migrations ./migrations
+COPY --from=builder /app/database.json ./database.json
 
 # Set ownership
 RUN chown -R jaroskastore_user:jaroskastore_group /app
