@@ -10,7 +10,7 @@ services:
     environment:
       POSTGRES_DB: jaroskastore
       POSTGRES_USER: jaroskastore_user
-      POSTGRES_PASSWORD: ***REMOVED***
+      POSTGRES_PASSWORD: ${DB_PASS}
     tmpfs:
       - /var/lib/postgresql
     healthcheck:
@@ -26,7 +26,7 @@ services:
       DB_PORT: "5432"
       DB_NAME: jaroskastore
       DB_USER: jaroskastore_user
-      DB_PASS: ***REMOVED***
+      DB_PASS: ${DB_PASS}
     volumes:
       - ./:/app:z
       - /app/node_modules

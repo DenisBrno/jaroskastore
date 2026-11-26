@@ -21,7 +21,7 @@ services:
       environment:
         POSTGRES_DB: jaroskastore
         POSTGRES_USER: jaroskastore_user
-        POSTGRES_PASSWORD: ***REMOVED***
+        POSTGRES_PASSWORD: ${DB_PASS}
       ports:
         - "5432:5432"
       volumes:
