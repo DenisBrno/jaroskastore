@@ -118,27 +118,6 @@ exports.up = function(db) {
     (92, '2026-06-11 10:36:23.002092', 'P', 1, 20.00, 0.00, 'QR Platba', 'Dupetky')
     ON CONFLICT (id) DO NOTHING;
 
-    -- 4. objednavky_tb
-    INSERT INTO objednavky_tb (id, customer_name, product_name, quantity, created_at, status, ucebna, prestavka_start, prestavka_end, poznamka) VALUES
-    (14, 'Denis', 'Monster Mango Loco', 1, '2026-03-16 09:51:18.052299', true, NULL, NULL, NULL, NULL),
-    (13, 'Denis', 'Monster Ultra Strawberry Dreams', 1, '2026-03-14 22:08:15.243735', true, NULL, NULL, NULL, NULL),
-    (15, 'Denis', 'Monster Mango Loco', 1, '2026-03-17 11:43:25.999103', true, NULL, NULL, NULL, NULL),
-    (16, 'Denis', 'Monster Mango Loco', 1, '2026-03-22 14:51:07.305384', false, NULL, NULL, NULL, NULL),
-    (17, 'Denis', 'Monster Mango Loco', 1, '2026-03-22 14:53:15.923236', false, NULL, NULL, NULL, NULL),
-    (18, 'Denis', 'Monster Mango Loco', 1, '2026-03-22 15:00:56.384759', false, '', '09:35:00', '09:45:00', NULL),
-    (19, 'Denis', 'RedBull Classic', 1, '2026-03-22 15:01:23.244102', false, '4A', '09:35:00', '09:45:00', NULL),
-    (20, 'Denis', 'Monster Mango Loco', 1, '2026-03-22 15:11:22.874719', false, '4A', '09:35:00', '09:45:00', NULL),
-    (21, 'Denis', 'Monster Mango Loco', 1, '2026-03-22 15:11:51.53384', false, '4A', '10:35:00', '10:45:00', NULL),
-    (22, 'Denis', 'Monster Ultra Strawberry Dreams', 1, '2026-03-22 15:12:33.042726', false, '4A', '09:25:00', '09:35:00', NULL),
-    (23, 'Denis', 'RedBull Classic', 1, '2026-03-22 15:18:04.034475', false, '', '09:35:00', '09:45:00', NULL),
-    (24, 'Denis', 'Monster Ultra Strawberry Dreams', 1, '2026-03-22 15:21:44.63943', false, '', '09:35:00', '09:45:00', 'afsaf'),
-    (25, 'Denis', 'Monster Ultra Strawberry Dreams', 1, '2026-03-22 15:58:55.141332', false, 'dnf', '09:35:00', '09:45:00', 'rdh'),
-    (26, 'Bedry', 'Kinder Bueno', 1, '2026-04-08 14:40:24.048835', false, '', '09:35:00', '09:45:00', 'Nigger'),
-    (27, 'Bedry', 'RedBull Classic', 1, '2026-04-18 18:59:07.876922', false, '', '09:35:00', '09:45:00', ''),
-    (28, 'KarolinaBobkova', 'Monster Mango Loco', 1, '2026-04-23 11:55:11.810462', false, '', '12:45:00', '12:55:00', ''),
-    (29, 'Denis', 'Monster Ultra Strawberry Dreams', 1, '2026-05-03 21:09:47.268484', false, '4A2', '09:35:00', '09:45:00', 'qs')
-    ON CONFLICT (id) DO NOTHING;
-
     -- Update sequence counters to prevent key collisions on future inserts
     SELECT setval('uzivatele_tb_id_seq', 4, true);
     SELECT setval('sklad_id_seq', 17, true);
